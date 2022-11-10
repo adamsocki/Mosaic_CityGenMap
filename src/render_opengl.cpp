@@ -290,6 +290,15 @@ void InitGlyphBuffers(int32 count) {
     }
 }
 
+void DrawLinearQuad(vec2 positionStart, vec2 positionEnd, vec2 size, real32 angle, Sprite* texture)
+{
+    Shader* shader = &Game->texturedQuadShader;
+    SetShader(shader);
+
+
+}
+
+
 void DrawSprite(vec2 position, vec2 scale, real32 angle, Sprite *texture) {
     Shader *shader = &Game->texturedQuadShader;
     SetShader(shader);
@@ -336,6 +345,8 @@ void DrawSprite(vec2 position, vec2 scale, real32 angle, Sprite *texture) {
 void DrawSprite(vec2 position, vec2 scale, Sprite *texture) {
     DrawSprite(position, scale, 0.0f, texture);
 }
+
+
 
 
 void DrawRect(vec2 pos, vec2 scale, real32 angle, vec4 color) {
@@ -463,7 +474,37 @@ void DrawLine(vec2 a, vec2 b, real32 width, vec4 color) {
 
     DrawRect(c, V2(length, width), angle, color);
 }
+void DrawRectBottomLeft(vec2 pos, vec2 scale, real32 angle, vec4 color)
+{
+    // @PERF: don't do this every draw call
+    Shader* shader = &Game->shader;
+    SetShader(shader);
 
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+    Mesh* mesh = &Game->quadBottomLeft;
+
+    mat4 model = TRS(V3(pos.x, pos.y, 0), AxisAngle(V3(0, 0, 1), angle), V3(scale.x, scale.y, 0.0f));
+
+    glUniformMatrix4fv(shader->uniforms[0].id, 1, GL_FALSE, model.data);
+    glUniformMatrix4fv(shader->uniforms[1].id, 1, GL_FALSE, Game->camera.viewProjection.data);
+
+    glUniform4fv(shader->uniforms[2].id, 1, color.data);
+
+    glBindBuffer(GL_ARRAY_BUFFER, mesh->vertBufferID);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->indexBufferID);
+
+    // 1st attribute buffer : vertices
+    int vert = glGetAttribLocation(shader->programID, "vertexPosition_modelspace");
+    glEnableVertexAttribArray(vert);
+    glVertexAttribPointer(vert, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+
+
+    glDrawElements(GL_TRIANGLES, mesh->indexCount, GL_UNSIGNED_INT, (GLvoid*)0);
+
+    glDisableVertexAttribArray(vert);
+}
 
 void AllocateRectBuffer(int32 capacity, RectBuffer *buffer) {
     buffer->count = 0;

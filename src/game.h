@@ -101,11 +101,13 @@ struct GameMemory {
 
     Shader textShader;
 
+
     Mesh tri;
     Mesh quad;
     Mesh glyphQuad;
     Mesh quadTopLeft;
     Mesh cube;
+    Mesh quadBottomLeft;
 
     InputManager inputManager;
     InputDevice *keyboard;

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<osm version="0.6" generator="CGImap 0.8.8 (1049 spike-07.openstreetmap.org)" copyright="OpenStreetMap and contributors" attribution="http://www.openstreetmap.org/copyright" license="http://opendatacommons.org/licenses/odbl/1-0/">
+ <bounds minlat="29.7592500" minlon="-95.3822700" maxlat="29.7596200" maxlon="-95.3819500"/>
+ <node id="8838758539" visible="true" version="1" changeset="106469051" timestamp="2021-06-16T12:51:39Z" user="vaidhev" uid="10145809" lat="29.7595334" lon="-95.3822111"/>
+ <node id="8838758540" visible="true" version="1" changeset="106469051" timestamp="2021-06-16T12:51:39Z" user="vaidhev" uid="10145809" lat="29.7595014" lon="-95.3822115"/>
+ <node id="8838758541" visible="true" version="1" changeset="106469051" timestamp="2021-06-16T12:51:39Z" user="vaidhev" uid="10145809" lat="29.7595010" lon="-95.3822440"/>
+ <node id="8838758542" visible="true" version="1" changeset="106469051" timestamp="2021-06-16T12:51:39Z" user="vaidhev" uid="10145809" lat="29.7594884" lon="-95.3822440"/>
+ <node id="8838758543" visible="true" version="1" changeset="106469051" timestamp="2021-06-16T12:51:39Z" user="vaidhev" uid="10145809" lat="29.7594883" lon="-95.3822477"/>
+ <node id="8838758544" visible="true" version="1" changeset="106469051" timestamp="2021-06-16T12:51:39Z" user="vaidhev" uid="10145809" lat="29.7594791" lon="-95.3822478"/>
+ <node id="8838758545" visible="true" version="1" changeset="106469051" timestamp="2021-06-16T12:51:39Z" user="vaidhev" uid="10145809" lat="29.7594791" lon="-95.3822441"/>
+ <node id="8838758546" visible="true" version="1" changeset="106469051" timestamp="2021-06-16T12:51:39Z" user="vaidhev" uid="10145809" lat="29.7594572" lon="-95.3822440"/>
+ <node id="8838758547" visible="true" version="1" changeset="106469051" timestamp="2021-06-16T12:51:39Z" user="vaidhev" uid="10145809" lat="29.7594572" lon="-95.3822481"/>
+ <node id="8838758548" visible="true" version="1" changeset="106469051" timestamp="2021-06-16T12:51:39Z" user="vaidhev" uid="10145809" lat="29.7594460" lon="-95.3822481"/>
+ <node id="8838758549" visible="true" version="1" changeset="106469051" timestamp="2021-06-16T12:51:39Z" user="vaidhev" uid="10145809" lat="29.7594460" lon="-95.3822448"/>
+ <node id="8838758550" visible="true" version="1" changeset="106469051" timestamp="2021-06-16T12:51:39Z" user="vaidhev" uid="10145809" lat="29.7594251" lon="-95.3822448"/>
+ <node id="8838758551" visible="true" version="1" changeset="106469051" timestamp="2021-06-16T12:51:39Z" user="vaidhev" uid="10145809" lat="29.7594251" lon="-95.3822484"/>
+ <node id="8838758552" visible="true" version="1" changeset="106469051" timestamp="2021-06-16T12:51:39Z" user="vaidhev" uid="10145809" lat="29.7594139" lon="-95.3822485"/>
+ <node id="8838758553" visible="true" version="1" changeset="106469051" timestamp="2021-06-16T12:51:39Z" user="vaidhev" uid="10145809" lat="29.7593925" lon="-95.3822454"/>
+ <node id="8838758554" visible="true" version="1" changeset="106469051" timestamp="2021-06-16T12:51:39Z" user="vaidhev" uid="10145809" lat="29.7593925" lon="-95.3822490"/>
+ <node id="8838758555" visible="true" version="1" changeset="106469051" timestamp="2021-06-16T12:51:39Z" user="vaidhev" uid="10145809" lat="29.7593811" lon="-95.3822491"/>
+ <node id="8838758556" visible="true" version="1" changeset="106469051" timestamp="2021-06-16T12:51:39Z" user="vaidhev" uid="10145809" lat="29.7593811" lon="-95.3822454"/>
+ <node id="8838758557" visible="true" version="1" changeset="106469051" timestamp="2021-06-16T12:51:39Z" user="vaidhev" uid="10145809" lat="29.7593699" lon="-95.3822455"/>
+ <node id="8838758558" visible="true" version="1" changeset="106469051" timestamp="2021-06-16T12:51:39Z" user="vaidhev" uid="10145809" lat="29.7593692" lon="-95.3820504"/>
+ <node id="8838758559" visible="true" version="1" changeset="106469051" timestamp="2021-06-16T12:51:39Z" user="vaidhev" uid="10145809" lat="29.7595006" lon="-95.3820498"/>
+ <node id="8838758560" visible="true" version="1" changeset="106469051" timestamp="2021-06-16T12:51:39Z" user="vaidhev" uid="10145809" lat="29.7595008" lon="-95.3821104"/>
+ <node id="8838758561" visible="true" version="1" changeset="106469051" timestamp="2021-06-16T12:51:39Z" user="vaidhev" uid="10145809" lat="29.7595331" lon="-95.3821102"/>
+ <node id="8838758562" visible="true" version="1" changeset="106469051" timestamp="2021-06-16T12:51:39Z" user="vaidhev" uid="10145809" lat="29.7594138" lon="-95.3822454"/>
+ <way id="954937152" visible="true" version="1" changeset="106469051" timestamp="2021-06-16T12:51:39Z" user="vaidhev" uid="10145809">
+  <nd ref="8838758539"/>
+  <nd ref="8838758540"/>
+  <nd ref="8838758541"/>
+  <nd ref="8838758542"/>
+  <nd ref="8838758543"/>
+  <nd ref="8838758544"/>
+  <nd ref="8838758545"/>
+  <nd ref="8838758546"/>
+  <nd ref="8838758547"/>
+  <nd ref="8838758548"/>
+  <nd ref="8838758549"/>
+  <nd ref="8838758550"/>
+  <nd ref="8838758551"/>
+  <nd ref="8838758552"/>
+  <nd ref="8838758562"/>
+  <nd ref="8838758553"/>
+  <nd ref="8838758554"/>
+  <nd ref="8838758555"/>
+  <nd ref="8838758556"/>
+  <nd ref="8838758557"/>
+  <nd ref="8838758558"/>
+  <nd ref="8838758559"/>
+  <nd ref="8838758560"/>
+  <nd ref="8838758561"/>
+  <nd ref="8838758539"/>
+  <tag k="building" v="yes"/>
+ </way>
+</osm>

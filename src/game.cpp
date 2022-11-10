@@ -233,6 +233,9 @@ void GameInit(GameMemory *gameMem) {
     AllocateGlyphQuad(&gameMem->glyphQuad);
     InitMesh(&gameMem->glyphQuad);
 
+    AllocateQuadBottomLeft(&gameMem->quadBottomLeft);
+    InitMesh(&gameMem->quadBottomLeft);
+
     AllocateQuadTopLeft(&gameMem->quadTopLeft);
     InitMesh(&gameMem->quadTopLeft);
 
@@ -245,6 +248,8 @@ void GameInit(GameMemory *gameMem) {
     InitGlyphBuffers(GlyphBufferCount);
 
 #if WINDOWS
+    
+
     {
         LoadShader("shaders/mesh.vert", "shaders/mesh.frag", &gameMem->shader);
         const char *uniforms[] = {

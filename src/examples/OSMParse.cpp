@@ -138,6 +138,14 @@ void ParseOSM()
 				
 				*/
 			}
+			while (isLetter(c))
+			{
+				if (t.start == NULL)
+				{
+					t.type = TokenType_Identifier;
+					t.start = (char*)&file.data[file.offset - 1];
+				}
+			}
 
         AddToken:
             PushBack(&tokens, t);

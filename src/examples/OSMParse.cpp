@@ -88,12 +88,12 @@ void ParseOSM()
 
             if (isNegative(c))
             {
-               /*  char nextChar = file.data[file.offset];
+                char nextChar = file.data[file.offset];
 				if (isDigit(nextChar))
 				{
 					t.start = (char*)&file.data[file.offset - 1];
-
-				} */
+					// need something here...
+				}
             }
 			if (isDoubleQuoteMarks(c))
 			{
@@ -105,38 +105,25 @@ void ParseOSM()
 			}
             while (isDigit(c))
 			{
-
-                // TODO: add 
-				/* if (t.start == NULL)
+				if (t.start == NULL)
 				{
 					t.type = TokenType_Real32;
 					t.start = (char*)&file.data[file.offset - 1];
 				}
 				t.length++;
-				char nextChar = file.data[file.offset];
-				//if (!isDigit(nextChar))
-				//{
-				//	goto AddToken;
-				//	break;
-				//}                
-				else
+				if (!isLetter(nextChar))
 				{
-					c = ReadChar(&file);
-					if (isPeriod(c))
+					char nextNextChar = file.data[file.offset + 1];
+					if (!isDoubleQuoteMarks(nextNextChar))
 					{
-						t.length++;
 						c = ReadChar(&file);
 					}
-				} 
-				
-				if (isDoubleQuoteMarks(c))
-				{
-					goto AddToken;
-					break;
+					else
+					{
+						goto AddToken;
+						break;
+					}
 				}
-				
-				
-				*/
 			}
 			while (isLetter(c))
 			{
@@ -145,6 +132,23 @@ void ParseOSM()
 					t.type = TokenType_Identifier;
 					t.start = (char*)&file.data[file.offset - 1];
 				}
+				t.length++;
+
+				char nextChar = file.data[file.offset];
+				if (!isLetter(nextChar))
+				{
+					char nextNextChar = file.data[file.offset + 1];
+					if (!isDoubleQuoteMarks(nextNextChar))
+					{
+						c = ReadChar(&file);
+					}
+					else
+					{
+						goto AddToken;
+						break;
+					}
+				}
+
 			}
 
         AddToken:

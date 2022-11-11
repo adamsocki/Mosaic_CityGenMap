@@ -38,6 +38,11 @@ struct Bound
 	real32 minlat;
 };
 
+struct Tag
+{
+	// char* k;
+	// char* v;
+};
 
 struct Node
 {
@@ -47,13 +52,11 @@ struct Node
 	int32 uid;
 	real32 lat;
 	real32 lon;
+
+	DynamicArray<Tag> tagList;
 };
 
-struct Tag
-{
-	// char* k;
-	// char* v;
-};
+
 
 
 struct Way
@@ -90,6 +93,8 @@ enum TokenTypeForLevel
 	TokenType_DoubleQuoteMark,
 	TokenType_ForwardSlash,
 	TokenType_Real32,
+	TokenType_QuestionMark,
+	TokenType_Value,
 
 	TokenType_Integer,
 	TokenType_PeriodSymb,

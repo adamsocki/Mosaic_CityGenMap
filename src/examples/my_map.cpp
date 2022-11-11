@@ -4,7 +4,10 @@
 // Doneish: Create a street grid
 // TODO: Create a Controller to move around scene (cam)
 MemoryArena nodeArena = {};
+MemoryArena boundArena = {};
 MemoryArena tokenArena = {};
+MemoryArena tagArena = {};
+
 
 // TODO: Import and Render single XML file OSM
 
@@ -14,6 +17,7 @@ MemoryArena tokenArena = {};
 #include "geoTools.cpp"
 
 #include <math.h>
+#include "OSMParse.cpp"
 
 
 
@@ -27,7 +31,9 @@ void MyInit()
 
 
     AllocateMemoryArena(&nodeArena, Megabytes(20));
+    AllocateMemoryArena(&boundArena, Megabytes(1));
     AllocateMemoryArena(&tokenArena, Megabytes(20));
+    AllocateMemoryArena(&tagArena, Megabytes(10));
 
     Game->myData = malloc(sizeof(MyData));
     memset(Game->myData, 0, sizeof(MyData));
@@ -181,6 +187,7 @@ void MyGameUpdate()
     
    // DrawRectBottomLeft(nodeConvert, V2(1, 1), 0, color);
 
-
+    // step 5
+    ParseOSM();
 
 }

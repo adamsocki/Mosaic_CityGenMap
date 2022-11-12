@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<osm version="0.6" generator="CGImap 0.8.8 (3547002 spike-07.openstreetmap.org)" copyright="OpenStreetMap and contributors" attribution="http://www.openstreetmap.org/copyright" license="http://opendatacommons.org/licenses/odbl/1-0/">
+ <bounds minlat="29.7545000" minlon="-95.3815000" maxlat="29.7565000" maxlon="-95.3790000"/>
+ <node id="152153163" visible="true" version="4" changeset="75795977" timestamp="2019-10-16T17:46:04Z" user="rivermont" uid="4085780" lat="29.7563968" lon="-95.3831314"/>
+ <node id="152153169" visible="true" version="4" changeset="75795977" timestamp="2019-10-16T17:46:04Z" user="rivermont" uid="4085780" lat="29.7557561" lon="-95.3831125"/>
+ <node id="152153171" visible="true" version="4" changeset="53774143" timestamp="2017-11-14T15:14:06Z" user="afdreher" uid="1110270" lat="29.7551163" lon="-95.3831052"/>
+ <node id="152153173" visible="true" version="3" changeset="29962385" timestamp="2015-04-03T22:22:37Z" user="42429" uid="42429" lat="29.7545140" lon="-95.3830939"/>
+ <node id="152193655" visible="true" version="3" changeset="13187726" timestamp="2012-09-20T19:44:47Z" user="ELadner" uid="22925" lat="29.7578906" lon="-95.3813484"/>
+ <node id="152193657" visible="true" version="3" changeset="75795977" timestamp="2019-10-16T17:46:04Z" user="rivermont" uid="4085780" lat="29.7570349" lon="-95.3813473"/>
+ <node id="152193660" visible="true" version="5" changeset="75795977" timestamp="2019-10-16T17:46:04Z" user="rivermont" uid="4085780" lat="29.7564098" lon="-95.3813404"/>
+ <node id="152193667" visible="true" version="4" changeset="44656049" timestamp="2016-12-25T05:27:19Z" user="clay_c" uid="119881" lat="29.7557737" lon="-95.3813311"/>
+ <node id="152193670" visible="true" version="3" changeset="44656049" timestamp="2016-12-25T05:27:19Z" user="clay_c" uid="119881" lat="29.7551541" lon="-95.3813212"/>
+ <node id="152193676" visible="true" version="4" changeset="75795977" timestamp="2019-10-16T17:46:04Z" user="rivermont" uid="4085780" lat="29.7545188" lon="-95.3813103"/>
+ <node id="152193678" visible="true" version="4" changeset="75795977" timestamp="2019-10-16T17:46:04Z" user="rivermont" uid="4085780" lat="29.7539019" lon="-95.3813181"/>
+ <node id="152193684" visible="true" version="3" changeset="75795977" timestamp="2019-10-16T17:46:04Z" user="rivermont" uid="4085780" lat="29.7532680" lon="-95.3813088"/>
+ <node id="152196366" visible="true" version="3" changeset="107173177" timestamp="2021-06-29T22:37:35Z" user="skquinn" uid="243003" lat="29.7551942" lon="-95.3751179"/>
+ <node id="152196369" visible="true" version="3" changeset="75795977" timestamp="2019-10-16T17:46:04Z" user="rivermont" uid="4085780" lat="29.7551843" lon="-95.3760398"/>
+ <node id="152196372" visible="true" version="4" changeset="75795977" timestamp="2019-10-16T17:46:04Z" user="rivermont" uid="4085780" lat="29.7551779" lon="-95.3769158"/>
+ <node id="152196376" visible="true" version="3" changeset="75795977" timestamp="2019-10-16T17:46:04Z" user="rivermont" uid="4085780" lat="29.7551730" lon="-95.3778045"/>
+ <node id="152196378" visible="true" version="3" changeset="75795977" timestamp="2019-10-16T17:46:04Z" user="rivermont" uid="4085780" lat="29.7551680" lon="-95.3786895"/>
+ 

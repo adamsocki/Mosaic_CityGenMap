@@ -7,14 +7,20 @@ MemoryArena nodeArena = {};
 MemoryArena boundArena = {};
 MemoryArena tokenArena = {};
 MemoryArena tagArena = {};
-
+MemoryArena wayArena = {};
 
 // TODO: Import and Render single XML file OSM
 
 #include "structs.cpp"
+
+
+
+MyData* Data = {};
+
 #include "renderCode.cpp"
 #include "cameraController.cpp"
 #include "geoTools.cpp"
+#include "EntityManager.cpp"
 
 #include <math.h>
 #include "OSMParse.cpp"
@@ -23,17 +29,20 @@ MemoryArena tagArena = {};
 
 
 
-MyData* Data = {};
+
 
 void MyInit()
 {
 
 
 
-    AllocateMemoryArena(&nodeArena, Megabytes(20));
+    AllocateMemoryArena(&nodeArena, Megabytes(50));
     AllocateMemoryArena(&boundArena, Megabytes(1));
-    AllocateMemoryArena(&tokenArena, Megabytes(20));
-    AllocateMemoryArena(&tagArena, Megabytes(10));
+    AllocateMemoryArena(&tokenArena, Megabytes(50));
+    AllocateMemoryArena(&tagArena, Megabytes(50));
+    AllocateMemoryArena(&wayArena, Megabytes(50));
+
+
 
     Game->myData = malloc(sizeof(MyData));
     memset(Game->myData, 0, sizeof(MyData));
@@ -45,9 +54,13 @@ void MyInit()
     cam->type = CameraType_Orthographic;
 
 
+    InitializeEntityManager();
+    InitializeEntityBuffers();
+    ParseOSM();
+
 }
 
-
+int32 counter = 0;
 
 void MyGameUpdate()
 {
@@ -67,7 +80,7 @@ void MyGameUpdate()
     // step 4
     //<node id="152193676" visible="true" version="4" changeset="75795977" timestamp="2019-10-16T17:46:04Z" user="rivermont" uid="4085780" lat="29.7545188" lon="-95.3813103"/>
 
-    Bound bound1 = {};
+    /* Bound bound1 = {};
     bound1.minlon = -95.3790000f;
     bound1.maxlon = -95.3815000f;
     bound1.maxlat = 29.7565000f;
@@ -79,7 +92,7 @@ void MyGameUpdate()
     setBBox(&bbox, bound1);
     // BBoxLatLonToMeter(bound1);
     BBoxLatLonToMeter(&bbox);
-    BBoxCalculateSizeInMeters(&bbox);
+    BBoxCalculateSizeInMeters(&bbox); */
 
 /*
 <node id="152263425" visible="true" version="5" changeset="52662183" timestamp="2017-10-05T17:57:47Z" user="afdreher" uid="1110270" lat="29.7563899" lon="-95.3840460"/>
@@ -104,7 +117,7 @@ void MyGameUpdate()
   <nd ref="6886703711"/>      4085780" lat="29.7564097" lon="-95.3813977"> 
   <nd ref="152193660"/>       5780" lat="29.7564098" lon="-95.3813404"/>     
     */
-    vec2 latLonCord = V2(29.7563899f, -95.3840460f);
+   /* vec2 latLonCord = V2(29.7563899f, -95.3840460f);
     vec2 latLonCord1 = V2(29.7563968f, -95.3831314f);
     vec2 latLonCord2 = V2(29.7563997f, -95.3827948f);
     vec2 latLonCord3 = V2(29.7564013f,-95.3826002f);
@@ -182,12 +195,258 @@ void MyGameUpdate()
     DrawLine(nodeConvert5, nodeConvert6, laneWidth, color6);
     DrawLine(nodeConvert6, nodeConvert7, laneWidth, color7);
     DrawLine(nodeConvert7, nodeConvert8, laneWidth, color8);
-    
+    */
     
     
    // DrawRectBottomLeft(nodeConvert, V2(1, 1), 0, color);
 
     // step 5
-    ParseOSM();
+    //ParseOSM();
+
+    // step 6
+    // Call and Render Nodes
+    //        BUFFER
+    EntityTypeBuffer* nodeBuffer  = &Data->em.buffers[OSMType_Node];
+    EntityTypeBuffer* boundBuffer = &Data->em.buffers[OSMType_Bound];
+    EntityTypeBuffer* wayBuffer = &Data->em.buffers[OSMType_Way];
+    //        ENTITIES
+    Node* nodeEntitiesInBuffer   = (Node*)nodeBuffer->entities;
+    Bound* boundEntitiesInBuffer = (Bound*)boundBuffer->entities;
+    Way* wayEntitiesInBuffer = (Way*)wayBuffer->entities;
+
+
+
+    Bound bound1 = {};
+
+    for (int i = 0; i < boundBuffer->count; i++)
+    {
+        Bound* boundEntity = (Bound*)GetEntity(&Data->em, boundEntitiesInBuffer[i].handle);
+
+        bound1.minlon = boundEntity->minlon;
+        bound1.maxlon = boundEntity->maxlon;
+        bound1.maxlat = boundEntity->maxlat;
+        bound1.minlat = boundEntity->minlat;
+    }
+
+
+    BBox bbox = {};
+
+    setBBox(&bbox, bound1);
+    // BBoxLatLonToMeter(bound1);
+    BBoxLatLonToMeter(&bbox);
+    BBoxCalculateSizeInMeters(&bbox);
+
+    vec2 shift = V2(bbox.meterBottom, bbox.meterLeft);
+
+    
+
+    struct NodeTest
+    {
+        vec2 loc;
+        int32 renderTestID;
+    };
+
+    NodeTest node[3000] = {};
+    NodeTest nodeDisplay[20] = {};
+
+    //for(int i = 0; i < nodeBuffer->count; i++)
+    //{
+    //    
+    //    Node* nodeEntity = (Node*)GetEntity(&Data->em, nodeEntitiesInBuffer[i].handle);
+    //    vec2 latLon = V2(nodeEntity->lat, nodeEntity->lon);
+    //    vec2 meterNode = convertLatLonToMeters(latLon.x, latLon.y);
+
+    //    vec2 shiftNode = V2(meterNode.x - shift.x, meterNode.y - shift.y);
+    //    node[i].loc = V2(shiftNode.x / bbox.lengthTop, shiftNode.y / bbox.lengthRight);
+
+
+    //    //switch (nodeEntity->id) 
+    //    //{
+
+    //    //    case 152328806:
+    //    //    {
+    //    //        nodeDisplay[0].loc = node[i].loc;
+    //    //        break;
+    //    //    }
+    //    //    case 152328809:
+    //    //    {
+    //    //        nodeDisplay[1].loc = node[i].loc;
+    //    //        break;
+    //    //    }
+    //    //    case 152328811:
+    //    //    {
+    //    //        nodeDisplay[2].loc = node[i].loc;
+    //    //        break;
+    //    //    }
+    //    //    case 152328813:
+    //    //    {
+    //    //        nodeDisplay[3].loc = node[i].loc;
+    //    //        break;
+    //    //    }
+    //    //    case 4571250516:
+    //    //    {
+    //    //        nodeDisplay[4].loc = node[i].loc;
+    //    //        break;
+    //    //    }
+    //    //    case 152328816:
+    //    //    {
+    //    //        nodeDisplay[5].loc = node[i].loc;
+    //    //        break;
+    //    //    }
+    //    //    case 152328819:
+    //    //    {
+    //    //        nodeDisplay[6].loc = node[i].loc;
+    //    //        break;
+    //    //    }
+    //    //    case 152328822:
+    //    //    {
+    //    //        nodeDisplay[7].loc = node[i].loc;
+    //    //        break;
+    //    //    }
+    //    //    case 152328825:
+    //    //    {
+    //    //        nodeDisplay[8].loc = node[i].loc;
+    //    //        break;
+    //    //    }
+    //    //    case 152328828:
+    //    //    {
+    //    //        nodeDisplay[9].loc = node[i].loc;
+    //    //        break;
+    //    //    }
+    //    //    case 4571250515:
+    //    //    {
+    //    //        nodeDisplay[10].loc = node[i].loc;
+    //    //        break;
+    //    //    }
+    //    //    case 4571250521:
+    //    //    {
+    //    //        nodeDisplay[11].loc = node[i].loc;
+    //    //        break;
+    //    //    }
+    //    //    case 4571250514:
+    //    //    {
+    //    //        nodeDisplay[12].loc = node[i].loc;
+    //    //        break;
+    //    //    }
+    //    //    case 152328831:
+    //    //    {
+    //    //        nodeDisplay[13].loc = node[i].loc;
+    //    //        break;
+    //    //    }
+    //    //    default:
+    //    //    {
+    //    //        //nodeDisplay[].loc = node[i];
+    //    //        break;
+    //    //    }
+
+    //    //}
+    //    
+
+    //}
+
+    vec4 color1 = V4(0.0f, 0.3f, 0.0f, 1.0f);
+    vec4 color2 = V4(0.2f, 0.4f, 0.0f, 1.0f);
+    vec4 color3 = V4(0.3f, 0.5f, 0.0f, 1.0f);
+    vec4 color4 = V4(0.4f, 0.6f, 0.0f, 1.0f);
+    vec4 color5 = V4(0.5f, 0.7f, 0.0f, 1.0f);
+    vec4 color6 = V4(0.6f, 0.0f, 0.0f, 1.0f);
+    vec4 color7 = V4(0.7f, 0.0f, 0.0f, 1.0f);
+    vec4 color8 = V4(0.8f, 0.0f, 0.0f, 1.0f);
+
+    vec2 nodeToDrawA[30] = {};
+    vec2 nodeToDrawB[30] = {};
+    //countA = 0;
+    //countB = 0;
+
+    if (InputPressed(Keyboard, Input_RightArrow))
+    {
+        counter += 5;
+    }
+    if (InputPressed(Keyboard, Input_LeftArrow))
+    {
+        counter--;
+    }
+    for (int i = 0; i < counter; i++)
+    {
+        Way* wayEntity = (Way*)GetEntity(&Data->em, wayEntitiesInBuffer[i].handle);
+
+
+
+
+        for (int j = 0; j < wayEntity->nodeCount; j++)
+        {
+            vec2 lineA = {};
+            vec2 lineB = {};
+
+            for (int k = 0; k < nodeBuffer->count; k++)
+            {
+                Node* nodeEntity = (Node*)GetEntity(&Data->em, nodeEntitiesInBuffer[k].handle);
+                
+                if (nodeEntity->id == wayEntity->nodeEntities[j].id)
+                {
+                    vec2 latLon = V2(nodeEntity->lat, nodeEntity->lon);
+                    vec2 meterNode = convertLatLonToMeters(latLon.x, latLon.y);
+                    vec2 shiftNode = V2(meterNode.x - shift.x, meterNode.y - shift.y);
+                    lineA = V2(shiftNode.x / bbox.lengthTop, shiftNode.y / bbox.lengthRight);
+                    //countA++;
+                    for (int l = 0; l < nodeBuffer->count; l++)
+                    {
+                        Node* nodeEntity2 = (Node*)GetEntity(&Data->em, nodeEntitiesInBuffer[l].handle);
+
+                        if (nodeEntity2->id == wayEntity->nodeEntities[j + 1].id)
+                        {
+                            vec2 latLon2 = V2(nodeEntity2->lat, nodeEntity2->lon);
+                            vec2 meterNode2 = convertLatLonToMeters(latLon2.x, latLon2.y);
+                            vec2 shiftNode2 = V2(meterNode2.x - shift.x, meterNode2.y - shift.y);
+                            lineB = V2(shiftNode2.x / bbox.lengthTop, shiftNode2.y / bbox.lengthRight);
+
+                            DrawLine(lineA, lineB, laneWidth, color1);
+                        }
+                    }
+
+
+
+
+                }
+                
+            }
+
+            //DrawLine(nodeDisplay[i].loc, nodeDisplay[i + 1].loc, laneWidth, color1);
+        }
+
+    }
+      /*<nd ref="node[i].id == 152328806  ||"/>
+        <nd ref="node[i].id == 152328809  ||"/>
+        <nd ref="node[i].id == 152328811  ||"/>
+        <nd ref="node[i].id == 152328813  ||"/>
+        <nd ref="node[i].id == 4571250516 ||"/>
+        <nd ref="node[i].id == 152328816  ||"/>
+        <nd ref="node[i].id == 152328819  ||"/>
+        <nd ref="node[i].id == 152328822  ||"/>
+        <nd ref="node[i].id == 152328825  ||"/>
+        <nd ref="node[i].id == 152328828  ||"/>
+        <nd ref="node[i].id == 4571250515 ||"/>
+        <nd ref="node[i].id == 4571250521 ||"/>
+        <nd ref="node[i].id == 4571250514 ||"/>
+        <nd ref="node[i].id == 152328831  ||"/>*/
+
+    
+
+    for (int i = 0; i < 30; i ++)
+    {
+    }
+
+     //DrawLine(node[0], node[5], laneWidth, color1);
+     //DrawLine(node[3], node[10], laneWidth, color1);
+
+
+    for (int i = 0; i < 15; i++)
+    {
+       // DrawLine(nodeDisplay[i].loc, nodeDisplay[i + 1].loc, laneWidth, color1);
+    }
+
+
+    //DrawTextScreenPixel(&Game->monoFont, V2(530, 20), 10.0f, RGB(1.0f, 1.0f, 1.0f), "X: %.10f", node[3].x);
+//    DrawTextScreenPixel(&Game->monoFont, V2(530, 60), 10.0f, RGB(1.0f, 1.0f, 1.0f), "X: %.10f", node[3].y);
 
 }

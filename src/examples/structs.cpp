@@ -1,13 +1,56 @@
 
 
+enum OSMType
+{
+	OSMType_Way,
+	OSMType_Relation,
+	OSMType_Node,
+	OSMType_Bound,
+
+	OSMType_Count,
+};
+
+
+
+
+struct EntityHandle {
+	int32 generation;
+	int32 indexInInfo;
+	OSMType type;
+};
+
+
+struct EntityInfo {
+	int32 generation;
+	int32 indexInBuffer;
+	
+	OSMType type;
+};
+
+struct EntityTypeBuffer {
+	int32 count;
+	int32 capacity;
+	int32 sizeInBytes;
+
+	void* entities;
+};
+
+
+struct EntityManager {
+	EntityTypeBuffer buffers[OSMType_Count];
+	EntityInfo *entities;
+	int32 entityCapacity;
+
+	int32 nextID;
+};
 
 
 
 struct MyData
 {
-
+	EntityManager em;
+	int32 currentLevel;
 };
-
 
 
 
@@ -30,7 +73,37 @@ struct BBox
 };
 
 
-struct Bound
+
+
+struct Entity
+{
+	EntityHandle handle;
+	int32 id;
+};
+
+struct Tag : Entity
+{
+	// char* k;
+	// char* v;
+};
+
+struct Node : Entity
+{
+	
+	bool visible;
+	int32 version;
+	int32 uid;
+	real32 lat;
+	real32 lon;
+
+	int32 renderTestID;
+
+	DynamicArray<Tag> tagList;
+	
+};
+
+
+struct Bound : Entity
 {
 	real32 minlon;
 	real32 maxlon;
@@ -38,33 +111,15 @@ struct Bound
 	real32 minlat;
 };
 
-struct Tag
+
+struct Way : Entity
 {
-	// char* k;
-	// char* v;
+	Node* nodeEntities;
+	int32 nodeCount;
+	//DynamicArray<Node> nodeArrayForWay;
 };
 
-struct Node
-{
-	real32 id;
-	bool visible;
-	int32 version;
-	int32 uid;
-	real32 lat;
-	real32 lon;
-
-	DynamicArray<Tag> tagList;
-};
-
-
-
-
-struct Way
-{
-
-};
-
-struct Relation
+struct Relation : Entity
 {
 
 };
@@ -111,4 +166,5 @@ struct TokenVal
 	char* start;
 	int32 length;
 };
+
 

@@ -29,6 +29,9 @@
 //#include "dx12/d3dx12.h"
 #endif
 
+//#include <assimp/assimp-vc143-mtd.lib>
+#include <assimp/config.h>
+
 
 #include "types.h"
 

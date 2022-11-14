@@ -1,4 +1,5 @@
 
+#include <string>
 
 enum OSMType
 {
@@ -45,11 +46,25 @@ struct EntityManager {
 };
 
 
+struct MeshManager
+{
+	
+	Mesh* meshes;
+	int32 meshCount;
+	int32 meshCapacity;
+
+	//string directory;
+
+};
+
 
 struct MyData
 {
 	EntityManager em;
 	int32 currentLevel;
+
+	MeshManager meshManager;
+	//eshManager meshManager;
 };
 
 

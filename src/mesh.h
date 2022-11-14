@@ -18,3 +18,14 @@ struct Mesh {
 };
 
 // @TODO: material, submesh which knows the start and end indices
+
+
+//struct Model
+//{
+//
+//    vector<Texture> textures_loaded;	// stores all the textures loaded so far, optimization to make sure textures aren't loaded more than once.
+//    vector<Mesh>    meshes;
+//    string directory;
+//
+//
+//};

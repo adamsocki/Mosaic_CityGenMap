@@ -1,3 +1,13 @@
+
+//void AllocateModelMesh(Mesh* mesh)
+//{
+//    //mesh->vertCount = 
+//
+//
+//
+//}
+
+
 void AllocateQuadBottomLeft(Mesh* mesh)
 {
     mesh->vertCount = 4;

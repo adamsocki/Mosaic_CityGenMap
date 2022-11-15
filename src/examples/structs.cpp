@@ -1,5 +1,7 @@
 
-#include <string>
+#include <string.h>
+
+using namespace std;
 
 enum OSMType
 {
@@ -12,6 +14,20 @@ enum OSMType
 };
 
 
+
+struct OBJModel
+{
+	int32 vVertexCount;
+	int32 vnVertexCount;
+	int32 fCount;
+};
+
+struct OBJVertex
+{
+	int32 vVertexCount;
+
+	vec3* vectorArray;
+};
 
 
 struct EntityHandle {
@@ -53,7 +69,7 @@ struct MeshManager
 	int32 meshCount;
 	int32 meshCapacity;
 
-	//string directory;
+	//string dir;
 
 };
 

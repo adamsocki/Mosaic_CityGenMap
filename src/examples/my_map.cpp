@@ -88,8 +88,11 @@ int32 counter = 0;
 void MyGameUpdate()
 {
     
-    DrawLine(V2(0.3f, 0.3f), V2(1.0f, 1.0f), 1, V4(1.0f, 0.4f, 0.4f, 1.0f));
 
+
+    LoadModel();
+    //DrawLine(V2(0.3f, 0.3f), V2(1.0f, 1.0f), 1, V4(1.0f, 0.4f, 0.4f, 1.0f));
+    DrawModel();
 }
 
 

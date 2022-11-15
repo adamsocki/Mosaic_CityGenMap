@@ -116,7 +116,7 @@ Mesh processMesh(aiMesh* mesh, const aiScene* scene)
 void processNode(aiNode* node, const aiScene* scene)
 {
 	// process all the node's meshes (if any)
-	for (unsigned int i = 0; i < node->mNumMeshes; i++)
+		for (unsigned int i = 0; i < node->mNumMeshes; i++)
 	{
 		aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
 		Data->meshManager.meshes[Data->meshManager.meshCount] = processMesh(mesh, scene);
@@ -135,7 +135,9 @@ void processNode(aiNode* node, const aiScene* scene)
 void LoadModel()
 {
 
-	char* path[] =
+	string path1 = "data/building1.obj";
+
+	char *path[] =
 	{
 	   "data/map.osm",
 	   "data/building1.obj",
@@ -156,7 +158,9 @@ void LoadModel()
 		//cout << "ERROR::ASSIMP::" << import.GetErrorString() << endl;
 		return;
 	}
-	//Data->meshManager.directory = path.substr(0, path.find_last_of('/'));
+	string valueString = path1.substr(0, path1.find_last_of('/'));
+
+
 
 	processNode(scene->mRootNode, scene);
 }
@@ -187,6 +191,10 @@ enum TextureType
 {
 
 };
+
+
+
+
 
 
 //struct Vertex

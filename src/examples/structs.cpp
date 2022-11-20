@@ -14,14 +14,6 @@ enum OSMType
 };
 
 
-
-struct OBJModel
-{
-	int32 vVertexCount;
-	int32 vnVertexCount;
-	int32 fCount;
-};
-
 struct OBJVertex
 {
 	int32 vVertexCount;
@@ -29,6 +21,54 @@ struct OBJVertex
 	vec3* vectorArray;
 };
 
+struct OBJvNormals
+{
+	int32 vNormalsCount;
+
+	vec3* vNormalsArray;
+};
+
+struct OBJvTexture
+{
+	int32 vTextureCount;
+
+	vec2* vTextureArray;
+};
+
+struct OBJFaceVec
+{
+	int32 facVecCount;
+
+	vec3* faceValue;
+
+	//<DyanmicArray> <
+};
+
+
+
+
+
+struct OBJFaceArray
+{
+	//int32 faceArrayCount;
+
+	vec3 face1;
+	vec3 face2;
+	vec3 face3;
+	vec3 face4;
+};
+
+struct OBJModel
+{
+	int32 vectorsCount;
+	vec3* vectors;
+	int32 normalsCount;
+	vec3* normals;
+	int32 textureCoordsCount;
+	vec2* textureCoords;
+	int32 facesCount;
+	OBJFaceArray* faces;
+};
 
 struct EntityHandle {
 	int32 generation;
@@ -81,6 +121,9 @@ struct MyData
 
 	MeshManager meshManager;
 	//eshManager meshManager;
+
+	OBJModel model;
+
 };
 
 

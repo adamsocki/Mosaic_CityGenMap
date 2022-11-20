@@ -7,6 +7,8 @@ struct Mesh {
     vec3 *verts;
     vec3 *normals;
 
+    uint32 normalsCount;
+
     uint32 indexCount;
     uint32 *indices;
 
@@ -15,6 +17,11 @@ struct Mesh {
 
     int32 vertBufferID;
     int32 indexBufferID;
+};
+
+struct OBJMesh : Mesh
+{
+   
 };
 
 // @TODO: material, submesh which knows the start and end indices

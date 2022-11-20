@@ -108,6 +108,7 @@ struct GameMemory {
     Mesh quadTopLeft;
     Mesh cube;
     Mesh quadBottomLeft;
+    Mesh modelMesh;
 
     InputManager inputManager;
     InputDevice *keyboard;

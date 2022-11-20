@@ -9,6 +9,13 @@
 //MemoryArena wayArena = {};
 
 MemoryArena meshArena = {};
+MemoryArena tokenArena = {};
+MemoryArena facesArena = {};
+MemoryArena vertexArena = {};
+
+MemoryArena normalArena = {};
+MemoryArena textureArena = {};
+
 
 
 // TODO: Import and Render single XML file OSM
@@ -25,7 +32,7 @@ MyData* Data = {};
 #include "geoTools.cpp"
 #include "EntityManager.cpp"
 
-
+#include "ParseOBJ.cpp"
 
 #include <vector>
 #include <string>
@@ -42,7 +49,9 @@ using namespace std;
 
 
 
+int32 counter = 0;
 
+//#include "ModelRender.cpp"
 
 
 void MyInit()
@@ -52,12 +61,16 @@ void MyInit()
 
    /* AllocateMemoryArena(&nodeArena, Megabytes(50));
     AllocateMemoryArena(&boundArena, Megabytes(1));
-    AllocateMemoryArena(&tokenArena, Megabytes(50));
+    
     AllocateMemoryArena(&tagArena, Megabytes(50));
     AllocateMemoryArena(&wayArena, Megabytes(50));*/
     AllocateMemoryArena(&meshArena, Megabytes(10));
-
-
+    AllocateMemoryArena(&tokenArena, Megabytes(50));
+    AllocateMemoryArena(&facesArena, Megabytes(10));
+    AllocateMemoryArena(&vertexArena, Megabytes(10));
+    AllocateMemoryArena(&normalArena, Megabytes(50));
+    AllocateMemoryArena(&textureArena, Megabytes(10));
+   
     Game->myData = malloc(sizeof(MyData));
     memset(Game->myData, 0, sizeof(MyData));
 
@@ -70,29 +83,41 @@ void MyInit()
     Data->meshManager.meshCount = 0;
 
     Camera* cam = &Game->camera;
-    cam->type = CameraType_Orthographic;
+    cam->type = CameraType_Perspective;
+    cam->projection = Perspective(1, 16.0f / 9.0f, 0.1f, 1000.0f);
+    Game->cameraPosition = V3(0, 0, -10);
+    Game->cameraRotation = IdentityQuaternion();
+    //// gameMem->cameraRotation = AxisAngle(V3(0, 1, 0), gameMem->camAngle);
 
+    mat4 camWorld = TRS(Game->cameraPosition, Game->cameraRotation, V3(0));
+    cam->view = OrthogonalInverse(camWorld);
+
+    cam->viewProjection = cam->projection * cam->view;
 
     //InitializeEntityManager();
     //InitializeEntityBuffers();
     //ParseOSM();
-
+   
+   
+    LoadModelParse(&Data->model);
+    // LoadModel();
     //meshes = MakeDynamicArray<Mesh>(&meshArena, 1000);
 
 }
 
-int32 counter = 0;
 
-#include "ModelRender.cpp"
 
 void MyGameUpdate()
 {
     
+    //Mesh* meshModel = {};
+   // DisplayOBJModel(&Data->model, &Game->modelMesh,0);
 
+    DisplayOBJModel(&Data->model, &Game->modelMesh, 2);
 
-    LoadModel();
+   
     //DrawLine(V2(0.3f, 0.3f), V2(1.0f, 1.0f), 1, V4(1.0f, 0.4f, 0.4f, 1.0f));
-    DrawModel();
+    //DrawModel();
 }
 
 

@@ -8,6 +8,7 @@
 //}
 
 
+
 void AllocateQuadBottomLeft(Mesh* mesh)
 {
     mesh->vertCount = 4;

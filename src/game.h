@@ -101,6 +101,8 @@ struct GameMemory {
 
     Shader textShader;
 
+    Shader modelShader;
+
 
     Mesh tri;
     Mesh quad;
@@ -108,6 +110,7 @@ struct GameMemory {
     Mesh quadTopLeft;
     Mesh cube;
     Mesh quadBottomLeft;
+
     Mesh modelMesh;
 
     InputManager inputManager;

@@ -76,7 +76,6 @@ void MyInit()
 
     Data = (MyData*)Game->myData;
 
-
     Data->meshManager.meshCapacity = 100000;
     Data->meshManager.meshes = (Mesh*)malloc(sizeof(Mesh) * Data->meshManager.meshCapacity);
     memset(Data->meshManager.meshes, 0, sizeof(Mesh) * Data->meshManager.meshCapacity);
@@ -109,11 +108,96 @@ void MyInit()
 
 void MyGameUpdate()
 {
+    vec2 mousePos = Input->mousePosNormSigned;
+    mousePos.x = mousePos.x * 8;
+    mousePos.y = mousePos.y * 4.5f;
+
+    vec3 pos = V3(mousePos.x, mousePos.y, -1.0f);
+    vec3 scale = V3(1.0f, 1.0f, 1.0f);
+    real32 angle = 0;
+    vec4 color = V4(1.0f, 0.1f, 1.0f, 1.0f);
+
+    pos = V3(-20, -3, 1);
+    AllocateModelOBJMesh(&Game->modelMesh, &Data->model);
+    InitMesh(&Game->modelMesh);
+
+
+    //RenderOBJModel(&Game->modelMesh, pos, scale, color, (AxisAngle(V3(0, 0, 0), Game->time)));
+
+    for (int i = 0; i < 20; i++)
+    {
+       
+        pos.z += (1 * i);
+        pos.x = -20;
+
+        for (int j = 0; j < 20; j++)
+        {
+
+            pos.x += j / 2;
+            RenderOBJModel(&Game->modelMesh, pos, scale, color, (AxisAngle(V3(0, 0, 0), Game->time)));
+
+        }
+       
+        
+        
+    }
+   /* pos.z = 1;
+    for (int i = 0; i < 20; i++)
+    {
+
+        pos.z += (5 * i);
+
+        RenderOBJModel(&Game->modelMesh, pos, scale, color, (AxisAngle(V3(0, 0, 0), Game->time)));
+
+
+    }*/
+
+    Camera* cam = &Game->camera;
+    int32 cameraSpeed = 8;
+    if (InputHeld(Keyboard, Input_Q))
+    {
+        Game->cameraPosition.y += cameraSpeed * Game->deltaTime;
+    }
+    if (InputHeld(Keyboard, Input_E))
+    {
+        Game->cameraPosition.y -= cameraSpeed * Game->deltaTime;
+    }
+    if (InputHeld(Keyboard, Input_Z))
+    {
+        Game->cameraPosition.x += cameraSpeed * Game->deltaTime;
+    }
+    if (InputHeld(Keyboard, Input_C))
+    {
+        Game->cameraPosition.x -= cameraSpeed * Game->deltaTime;
+    }
+    if (InputHeld(Keyboard, Input_W))
+    {
+        Game->cameraPosition.z += cameraSpeed * Game->deltaTime;
+    }
+    if (InputHeld(Keyboard, Input_S))
+    {
+        Game->cameraPosition.z -= cameraSpeed * Game->deltaTime;
+    }
+    
+
+  //  DrawLine(V2(1, 1), V2(0, 0), 3, color);
     
     //Mesh* meshModel = {};
    // DisplayOBJModel(&Data->model, &Game->modelMesh,0);
 
-    DisplayOBJModel(&Data->model, &Game->modelMesh, 2);
+    //DisplayOBJModel(&Data->model, &Game->modelMesh, 0);
+
+
+
+   // int32 indexCount = Data->model.facesCount;
+
+    /*for (int i = 0; i < indexCount; i++)
+    {
+        DisplayOBJModel(&Data->model, &Game->modelMesh, i);
+    }*/
+    
+   /* DisplayOBJModel(&Data->model, &Game->modelMesh, 3);
+    DisplayOBJModel(&Data->model, &Game->modelMesh, 4);*/
 
    
     //DrawLine(V2(0.3f, 0.3f), V2(1.0f, 1.0f), 1, V4(1.0f, 0.4f, 0.4f, 1.0f));

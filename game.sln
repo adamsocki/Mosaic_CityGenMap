@@ -1,20 +1,14 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.4.33110.190
+VisualStudioVersion = 17.4.33103.184
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{911E67C6-3D85-4FCE-B560-20A9C3E3FF48}") = "game", "build\game.exe", "{99BD4881-1431-4DC1-8EE6-012A204B859C}"
+Project("{911E67C6-3D85-4FCE-B560-20A9C3E3FF48}") = "game", "build\game.exe", "{7D29C3F0-8382-45BD-8BF5-AC23DF216C81}"
 	ProjectSection(DebuggerProjectSystem) = preProject
 		PortSupplier = 00000000-0000-0000-0000-000000000000
-<<<<<<< Updated upstream
 		Executable = C:\Users\adamsocki\Desktop\School\MapProject\Mosaic_CityGenMap\build\game.exe
-		RemoteMachine = 
+		RemoteMachine = ADAMSOCKI0964
 		StartingDirectory = C:\Users\adamsocki\Desktop\School\MapProject\Mosaic_CityGenMap\build
-=======
-		Executable = C:\Users\AdamS\Desktop\SchoolWork\Mosaic_CityGenMap\build\game.exe
-		RemoteMachine = DESKTOP-JQ060UJ
-		StartingDirectory = C:\Users\AdamS\Desktop\SchoolWork\Mosaic_CityGenMap\build
->>>>>>> Stashed changes
 		Environment = Default
 		LaunchingEngine = 00000000-0000-0000-0000-000000000000
 		UseLegacyDebugEngines = No
@@ -28,12 +22,12 @@ Global
 		Release|x64 = Release|x64
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{99BD4881-1431-4DC1-8EE6-012A204B859C}.Release|x64.ActiveCfg = Release|x64
+		{7D29C3F0-8382-45BD-8BF5-AC23DF216C81}.Release|x64.ActiveCfg = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {E7C6CBB5-2D3E-4EE7-AD6E-480FB704C133}
+		SolutionGuid = {FAF94E01-B427-4238-B082-4BD46C854C1C}
 	EndGlobalSection
 EndGlobal

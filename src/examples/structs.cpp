@@ -50,7 +50,7 @@ struct OBJFaceVec
 
 struct OBJFaceArray
 {
-	//int32 faceArrayCount;
+	int32 faceArrayCount;
 
 	vec3 face1;
 	vec3 face2;
@@ -68,6 +68,8 @@ struct OBJModel
 	vec2* textureCoords;
 	int32 facesCount;
 	OBJFaceArray* faces;
+	
+	int32 indexCount;
 };
 
 struct EntityHandle {

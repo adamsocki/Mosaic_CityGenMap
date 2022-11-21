@@ -13,6 +13,8 @@ struct FileHandle {
     uint64 offset;
 
     u8 *data;
+
+    int32 currentLine;
 };
 
 bool OpenFileForRead(char *path, FileHandle *file, MAllocator *alloc) {

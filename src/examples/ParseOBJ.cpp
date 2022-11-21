@@ -43,6 +43,7 @@ void LoadModelParse(OBJModel* model)
     DynamicArray<OBJvTexture> textures = MakeDynamicArray<OBJvTexture>(&textureArena, 10000);
    
     FileHandle file;
+    file.currentLine = 0;
 
     char* path[] = 
     {
@@ -60,11 +61,16 @@ void LoadModelParse(OBJModel* model)
             char c = ReadChar(&file);
 
             while (c == ' ' || c == '\n' || c == '\r') {
+                if (isNewLine(c))
+                {
+                    file.currentLine++;
+                }
 				goto Advance;
 			}
 
-            while (isLetter(c))
+            while (isLetter(c) && file.currentLine > 2)
             {
+
                 if (t.start == NULL)
                 {
                     t.type = TokenType_Identifier;
@@ -147,71 +153,84 @@ void LoadModelParse(OBJModel* model)
         {
             if (strncmp(t.start, "v", t.length) == 0)
             {
-                tokenIndex++;
-                t = tokens[tokenIndex];
+               
 
                 // vec3 objVertex = {};
 
-                model->vectors = (vec3*)malloc(sizeof(vec3) * 1000);
-                memset(model->vectors, 0, sizeof(vec3) * 1000);
+                model->vectors = (vec3*)malloc(sizeof(vec3) * 5000);
+                memset(model->vectors, 0, sizeof(vec3) * 5000);
 
-                model->vectors[model->vectorsCount].x = strtod(t.start, NULL);
-                tokenIndex++;
-                t = tokens[tokenIndex];
-                model->vectors[model->vectorsCount].y = strtod(t.start, NULL);
-                tokenIndex++;
-                t = tokens[tokenIndex];
-                model->vectors[model->vectorsCount].z = strtod(t.start, NULL);
-                tokenIndex++;
-                t = tokens[tokenIndex];
-                model->vectorsCount++;
+                while (strncmp(t.start, "vt", 2) != 0)
+                {
+                    tokenIndex++;
+                    t = tokens[tokenIndex];
+                    model->vectors[model->vectorsCount].x = strtod(t.start, NULL);
+                    tokenIndex++;
+                    t = tokens[tokenIndex];
+                    model->vectors[model->vectorsCount].y = strtod(t.start, NULL);
+                    tokenIndex++;
+                    t = tokens[tokenIndex];
+                    model->vectors[model->vectorsCount].z = strtod(t.start, NULL);
+                    tokenIndex++;
+                    t = tokens[tokenIndex];
+                    model->vectorsCount++;
+                }
+
+               
 
                 //PushBack(&vertices, model.vectors);
             }
             else if (strncmp(t.start, "vn", 2) == 0)
             {
-
-                tokenIndex++;
-                t = tokens[tokenIndex];
-
                 //vec3 objvNormal = {};
 
-                model->normals = (vec3*)malloc(sizeof(vec3) * 1000);
-                memset(model->normals, 0, sizeof(vec3) * 1000);
+                model->normals = (vec3*)malloc(sizeof(vec3) * 5000);
+                memset(model->normals, 0, sizeof(vec3) * 5000);
 
-                model->normals[model->normalsCount].x = strtod(t.start, NULL);
-                tokenIndex++;
-                t = tokens[tokenIndex];
-                model->normals[model->normalsCount].x = strtod(t.start, NULL);
-                tokenIndex++;
-                t = tokens[tokenIndex];
-                model->normals[model->normalsCount].x = strtod(t.start, NULL);
-                tokenIndex++;
-                t = tokens[tokenIndex];
-                model->normalsCount++;
+                while (strncmp(t.start, "vn", 2) == 0)
+                {
+                    tokenIndex++;
+                    t = tokens[tokenIndex];
+                    model->normals[model->normalsCount].x = strtod(t.start, NULL);
+                    tokenIndex++;
+                    t = tokens[tokenIndex];
+                    model->normals[model->normalsCount].x = strtod(t.start, NULL);
+                    tokenIndex++;
+                    t = tokens[tokenIndex];
+                    model->normals[model->normalsCount].x = strtod(t.start, NULL);
+                    tokenIndex++;
+                    t = tokens[tokenIndex];
+                    model->normalsCount++;
+                }
+
+               
 
                 //PushBack(&normals, objvNormal);
             }
             else if (strncmp(t.start, "vt", 2) == 0)
             {
-                tokenIndex++;
-                t = tokens[tokenIndex];
-
                 //OBJvTexture objvTexture = {};
 
-                model->textureCoords = (vec2*)malloc(sizeof(vec2) * 1000);
-                memset(model->textureCoords, 0, sizeof(vec2) * 1000);
+                model->textureCoords = (vec2*)malloc(sizeof(vec2) * 5000);
+                memset(model->textureCoords, 0, sizeof(vec2) * 5000);
 
-                model->textureCoords[model->textureCoordsCount].x = strtod(t.start, NULL);
-                tokenIndex++;
-                t = tokens[tokenIndex];
-                model->textureCoords[model->textureCoordsCount].x = strtod(t.start, NULL);
-                tokenIndex++;
-                t = tokens[tokenIndex];
-                model->textureCoords[model->textureCoordsCount].x = strtod(t.start, NULL);
-                tokenIndex++;
-                t = tokens[tokenIndex];
-                model->textureCoordsCount++;
+                while (strncmp(t.start, "vt", t.length) == 0)
+                {
+                    tokenIndex++;
+                    t = tokens[tokenIndex]; 
+                    model->textureCoords[model->textureCoordsCount].x = strtod(t.start, NULL);
+                    tokenIndex++;
+                    t = tokens[tokenIndex];
+                    model->textureCoords[model->textureCoordsCount].x = strtod(t.start, NULL);
+                    tokenIndex++;
+                    t = tokens[tokenIndex];
+                    model->textureCoords[model->textureCoordsCount].x = strtod(t.start, NULL);
+                    tokenIndex++;
+                    t = tokens[tokenIndex];
+                    model->textureCoordsCount++;
+                }
+
+                
 
             }
             else if (strncmp(t.start, "f", t.length) == 0)
@@ -219,47 +238,71 @@ void LoadModelParse(OBJModel* model)
                 tokenIndex++;
                 t = tokens[tokenIndex];
 
-                model->faces = (OBJFaceArray*)malloc(sizeof(OBJFaceArray) * 1000);
-                memset(model->faces, 0, sizeof(OBJFaceArray) * 1000);
+                model->faces = (OBJFaceArray*)malloc(sizeof(OBJFaceArray) * 5000);
+                memset(model->faces, 0, sizeof(OBJFaceArray) * 5000);
 
                 while (strncmp(t.start, "\n", t.length) != 0)
                 {
                     model->faces[model->facesCount].face1.x = strtod(t.start, NULL);
+                   // model->indexCount++;
                     tokenIndex++;
                     t = tokens[tokenIndex];
                     model->faces[model->facesCount].face1.y = strtod(t.start, NULL);
+                   // model->indexCount++;
                     tokenIndex++;
                     t = tokens[tokenIndex];
                     model->faces[model->facesCount].face1.z = strtod(t.start, NULL);
+                   // model->indexCount++;
                     tokenIndex++;
                     t = tokens[tokenIndex];
                     model->faces[model->facesCount].face2.x = strtod(t.start, NULL);
+                    //model->indexCount++;
                     tokenIndex++;
                     t = tokens[tokenIndex];
                     model->faces[model->facesCount].face2.y = strtod(t.start, NULL);
+                    //model->indexCount++;
                     tokenIndex++;
                     t = tokens[tokenIndex];
                     model->faces[model->facesCount].face2.z = strtod(t.start, NULL);
+                    //model->indexCount++;
                     tokenIndex++;
                     t = tokens[tokenIndex];
                     model->faces[model->facesCount].face3.x = strtod(t.start, NULL);
+                    //model->indexCount++;
                     tokenIndex++;
                     t = tokens[tokenIndex];
                     model->faces[model->facesCount].face3.y = strtod(t.start, NULL);
+                    //model->indexCount++;
                     tokenIndex++;
                     t = tokens[tokenIndex];
                     model->faces[model->facesCount].face3.z = strtod(t.start, NULL);
+                   // model->indexCount++;
                     tokenIndex++;
                     t = tokens[tokenIndex];
-                    model->faces[model->facesCount].face4.x = strtod(t.start, NULL);
-                    tokenIndex++;
-                    t = tokens[tokenIndex];
-                    model->faces[model->facesCount].face4.y = strtod(t.start, NULL);
-                    tokenIndex++;
-                    t = tokens[tokenIndex];
-                    model->faces[model->facesCount].face4.z = strtod(t.start, NULL);
-                    tokenIndex++;
-                    t = tokens[tokenIndex];
+                   /* if (t.type != TokenType_Identifier)
+                    {
+                        model->faces[model->facesCount].faceArrayCount = 4;
+                        model->faces[model->facesCount].face4.x = strtod(t.start, NULL);
+                        model->indexCount++;
+                        tokenIndex++;
+                        t = tokens[tokenIndex];
+                        model->faces[model->facesCount].face4.y = strtod(t.start, NULL);
+                        model->indexCount++;
+                        tokenIndex++;
+                        t = tokens[tokenIndex];
+                        model->faces[model->facesCount].face4.z = strtod(t.start, NULL);
+                        model->indexCount++;
+                        tokenIndex++;
+                        t = tokens[tokenIndex];
+                    }
+                    else
+                    {
+                        model->faces[model->facesCount].faceArrayCount = 3;
+                    }*/
+                    //tokenIndex++;
+                    //t = tokens[tokenIndex];
+
+
                     model->facesCount++;
                     tokenIndex++;
                     t = tokens[tokenIndex];
@@ -312,6 +355,177 @@ void LoadModelParse(OBJModel* model)
 }
 
 
+void AllocateModelOBJMesh(Mesh* mesh, OBJModel* objModel)
+{
+    uint32 vertexSize = sizeof(vec3) * sizeof(vec3) + sizeof(vec2);
+
+    mesh->vertCount = objModel->vectorsCount;
+    mesh->size = vertexSize * mesh->vertCount;
+    mesh->data = malloc(mesh->size);
+
+    mesh->verts = (vec3*)(mesh->data);
+    mesh->normals = (vec3*)((uint8*)mesh->data + sizeof(vec3) * mesh->vertCount);
+    mesh->texcoords = (vec2*)((uint8*)mesh->data + (sizeof(vec3) + sizeof(vec3)) * mesh->vertCount);
+    /*AllocateModel(&gameMem->modelMesh);
+    InitMesh(&gameMem->modelMesh);*/
+
+    mesh->indexCount = objModel->facesCount * 3;
+    mesh->indices = (uint32*)malloc(sizeof(uint32) * mesh->indexCount);
+
+    uint32 vertexOffset = 0;
+    uint32 indexOffset = 0;
+
+    for (int i = 0; i < objModel->facesCount; i++)
+    {
+        int32 faceVert1 = objModel->faces[i].face1.x - 1;
+        int32 faceVert2 = objModel->faces[i].face2.x - 1;
+        int32 faceVert3 = objModel->faces[i].face3.x - 1;
+
+        int32 faceNormal1 = objModel->faces[i].face1.z;
+        int32 faceNormal2 = objModel->faces[i].face2.z;
+        int32 faceNormal3 = objModel->faces[i].face3.z;
+
+        mesh->verts[vertexOffset + 0] = objModel->vectors[faceVert1];
+        mesh->verts[vertexOffset + 1] = objModel->vectors[faceVert2];
+        mesh->verts[vertexOffset + 2] = objModel->vectors[faceVert3];
+       
+
+        mesh->normals[vertexOffset + 0] = objModel->normals[faceNormal1];
+        mesh->normals[vertexOffset + 1] = objModel->normals[faceNormal2];
+        mesh->normals[vertexOffset + 2] = objModel->normals[faceNormal3];
+       
+
+        mesh->indices[indexOffset + 0] = vertexOffset + 0;
+        mesh->indices[indexOffset + 1] = vertexOffset + 1;
+        mesh->indices[indexOffset + 2] = vertexOffset + 2;
+       
+        vertexOffset += 3;
+        indexOffset += 3;
+        /* mesh->indices[indexOffset + 3] = vertexOffset + 0;
+         mesh->indices[indexOffset + 4] = vertexOffset + 3;
+         mesh->indices[indexOffset + 5] = vertexOffset + 2;*/
+
+       // if (fourCount)
+       // {
+       //     vertexOffset += 4;
+       //     indexOffset += 4;
+       // }
+       // else
+       // {
+       //     vertexOffset += 3;
+       //     indexOffset += 3;
+       // }
+
+       // bool threeCount = false;
+       // bool fourCount = false;
+       // if (objModel->faces[i].faceArrayCount)
+       // {
+       //     fourCount = true;
+       // }
+       // else
+       // {
+       //     threeCount = true;
+       // }
+       // int32 faceVert1 = objModel->faces[i].face1.x - 1;
+       // int32 faceVert2 = objModel->faces[i].face2.x - 1;
+       // int32 faceVert3 = objModel->faces[i].face3.x - 1;
+       // int32 faceVert4;
+       // if (fourCount)
+       // {
+       //     faceVert4 = objModel->faces[i].face4.x - 1;
+       // }
+
+       // int32 faceNormal1 = objModel->faces[i].face1.z;
+       // int32 faceNormal2 = objModel->faces[i].face2.z;
+       // int32 faceNormal3 = objModel->faces[i].face3.z;
+
+       // int32 faceNormal4;
+       // if (fourCount)
+       // {
+       //    faceNormal4 = objModel->faces[i].face4.z;
+       // }
+
+       // mesh->verts[vertexOffset + 0] = objModel->vectors[faceVert1];
+       // mesh->verts[vertexOffset + 1] = objModel->vectors[faceVert2];
+       // mesh->verts[vertexOffset + 2] = objModel->vectors[faceVert3];
+       // if (fourCount)
+       // {
+       //     mesh->verts[vertexOffset + 3] = objModel->vectors[faceVert4];
+       // }
+       //
+
+       // mesh->normals[vertexOffset + 0] = objModel->normals[faceNormal1];
+       // mesh->normals[vertexOffset + 1] = objModel->normals[faceNormal2];
+       // mesh->normals[vertexOffset + 2] = objModel->normals[faceNormal3];
+       // if (fourCount)
+       // {
+       //     mesh->normals[vertexOffset + 3] = objModel->normals[faceNormal4];
+       // }
+
+       // 
+
+       // mesh->indices[indexOffset + 0] = vertexOffset + 0;
+       // mesh->indices[indexOffset + 1] = vertexOffset + 1;
+       // mesh->indices[indexOffset + 2] = vertexOffset + 2;
+       // if (fourCount)
+       // {
+
+       //     mesh->indices[indexOffset + 4] = vertexOffset + 3;
+       // }
+
+       ///* mesh->indices[indexOffset + 3] = vertexOffset + 0;
+       // mesh->indices[indexOffset + 4] = vertexOffset + 3;
+       // mesh->indices[indexOffset + 5] = vertexOffset + 2;*/
+
+       // if (fourCount)
+       // {
+       //     vertexOffset += 4;
+       //     indexOffset += 4;
+       // }
+       // else
+       // {
+       //     vertexOffset += 3;
+       //     indexOffset += 3;
+       // }
+       
+    }
+}
+
+void RenderOBJModel(Mesh* mesh, vec3 pos, vec3 scale, vec4 color, quaternion rotation)
+{
+    Shader* shader = &Game->shader;
+    SetShader(shader);
+
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+    mat4 model = TRS(pos, rotation, scale);
+
+    glUniformMatrix4fv(shader->uniforms[0].id, 1, GL_FALSE, model.data);
+    glUniformMatrix4fv(shader->uniforms[1].id, 1, GL_FALSE, Game->camera.viewProjection.data);
+    glUniform4fv(shader->uniforms[2].id, 1, color.data);
+
+    glBindBuffer(GL_ARRAY_BUFFER, mesh->vertBufferID);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->indexBufferID);
+
+    // 1st attribute buffer : vertices
+    int vert = glGetAttribLocation(shader->programID, "vertexPosition_modelspace");
+    glEnableVertexAttribArray(vert);
+    glVertexAttribPointer(vert, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+
+    int normals = glGetAttribLocation(shader->programID, "normals");
+    //glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
+    glEnableVertexAttribArray(normals);
+    glVertexAttribPointer(normals, 3, GL_FLOAT, GL_FALSE, 0, (void*)((sizeof(vec3) * mesh->vertCount)));
+
+
+    glDrawElements(GL_TRIANGLES, mesh->indexCount, GL_UNSIGNED_INT, (GLvoid*)0);
+
+    glDisableVertexAttribArray(vert);
+    glDisableVertexAttribArray(normals);
+}
+
+
 
 
 void DisplayOBJModel(OBJModel* model, Mesh* meshModel, int32 faceNum)
@@ -345,17 +559,22 @@ void DisplayOBJModel(OBJModel* model, Mesh* meshModel, int32 faceNum)
     meshModel->indexCount = model->facesCount;
     meshModel->indices = (uint32*)malloc(sizeof(uint32) * meshModel->indexCount);
 
-    meshModel->indices[0 + (faceNum * 4)] = model->faces[faceNum].face1.x;
+    /*meshModel->indices[0 + (faceNum * 4)] = model->faces[faceNum].face1.x;
     meshModel->indices[1 + (faceNum * 4)] = model->faces[faceNum].face2.x;
-    meshModel->indices[2 + (faceNum * 4)] = model->faces[faceNum].face3.x;
-    meshModel->indices[3 + (faceNum * 4)] = model->faces[faceNum].face4.x;
+    meshModel->indices[2 + (faceNum * 4)] = model->faces[faceNum].face3.x;*/
+    
+    meshModel->indices[0] = model->faces[faceNum].face1.x;
+    meshModel->indices[1] = model->faces[faceNum].face2.x;
+    meshModel->indices[2] = model->faces[faceNum].face3.x;  
+    
+    //meshModel->indices[3 + (faceNum * 4)] = model->faces[faceNum].face4.x;
 
-    for (int i = 0; i < 1; i++)
+    /*for (int i = 0; i < meshModel->indexCount; i++)
     {
-        
-
-       
-    }
+        meshModel->indices[0 + (i * 4)] = model->faces[i].face1.x;
+        meshModel->indices[1 + (i * 4)] = model->faces[i].face2.x;
+        meshModel->indices[2 + (i * 4)] = model->faces[i].face3.x;
+    }*/
 
     //meshModel->
     vec2 mousePos = Input->mousePosNormSigned;
@@ -367,14 +586,43 @@ void DisplayOBJModel(OBJModel* model, Mesh* meshModel, int32 faceNum)
     real32 angle = 0;
     vec4 color = V4(1.0f, 0.1f, 1.0f, 1.0f);
         
+    //RenderOBJ()
 
-    glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT);
-    /*AllocateQuad(meshModel);
-    InitMesh(meshModel);*/
+
+    //AllocateQuad(meshModel);
+    //InitMesh(meshModel);
 
     //Shader* shader = &Game->shader;
     //SetShader(shader);
+
+    //glEnable(GL_BLEND);
+    //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+    ////Mesh* mesh = meshModel;
+
+    //mat4 model_ = TRS(V3(pos.x, pos.y, 0), AxisAngle(V3(0, 0, 1), angle), V3(scale.x, scale.y, 0.0f));
+
+    //glUniformMatrix4fv(shader->uniforms[0].id, 1, GL_FALSE, model_.data);
+    //glUniformMatrix4fv(shader->uniforms[1].id, 1, GL_FALSE, Game->camera.viewProjection.data);
+
+    //glUniform4fv(shader->uniforms[2].id, 1, color.data);
+
+    //glBindBuffer(GL_ARRAY_BUFFER, meshModel->vertBufferID);
+    //glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, meshModel->indexBufferID);
+
+    //// 1st attribute buffer : vertices
+    //int vert = glGetAttribLocation(shader->programID, "vertexPosition_modelspace");
+    //glEnableVertexAttribArray(vert);
+    //glVertexAttribPointer(vert, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+
+
+    //glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, (GLvoid*)0);
+
+    //glDisableVertexAttribArray(vert);
+    /*AllocateQuad(meshModel);
+    InitMesh(meshModel);*/
+
+    
 
     //glEnable(GL_BLEND);
     //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);

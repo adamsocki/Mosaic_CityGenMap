@@ -200,7 +200,7 @@ void GameInit(GameMemory *gameMem) {
     Input = &Game->inputManager;
 
     AllocateMemoryArena(&Game->permanentArena, Megabytes(256));
-    AllocateMemoryArena(&Game->frameMem, Megabytes(32));
+    AllocateMemoryArena(&Game->frameMem, Megabytes(100));
 
     Game->log.head = (DebugLogNode *)malloc(sizeof(DebugLogNode));
     AllocateDebugLogNode(Game->log.head, LOG_BUFFER_CAPACITY);
@@ -224,6 +224,8 @@ void GameInit(GameMemory *gameMem) {
 
     
     // INIT GRAPHICS
+    
+
     AllocateTriangle(&gameMem->tri);
     InitMesh(&gameMem->tri);
 
@@ -248,7 +250,15 @@ void GameInit(GameMemory *gameMem) {
     InitGlyphBuffers(GlyphBufferCount);
 
 #if WINDOWS
-    
+    {
+        LoadShader("shaders/modelMesh.vert", "shaders/modelMesh.frag", &gameMem->modelShader);
+        const char* uniforms[] = {
+            "model",
+            "viewProjection",
+            "color",
+        };
+        CompileShader(&gameMem->modelShader, 3, uniforms);
+    }
 
     {
         LoadShader("shaders/mesh.vert", "shaders/mesh.frag", &gameMem->shader);

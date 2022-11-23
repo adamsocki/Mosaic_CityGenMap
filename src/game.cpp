@@ -224,7 +224,6 @@ void GameInit(GameMemory *gameMem) {
 
     
     // INIT GRAPHICS
-    
 
     AllocateTriangle(&gameMem->tri);
     InitMesh(&gameMem->tri);
@@ -258,6 +257,16 @@ void GameInit(GameMemory *gameMem) {
             "color",
         };
         CompileShader(&gameMem->modelShader, 3, uniforms);
+    }
+    {
+        LoadShader("shaders/objMesh.vert", "shaders/objMesh.frag", &gameMem->objShader);
+        const char* uniforms[] = {
+            "model",
+            "viewProjection",
+            "color",
+            "texture0",
+        };
+        CompileShader(&gameMem->objShader, 4, uniforms);
     }
 
     {

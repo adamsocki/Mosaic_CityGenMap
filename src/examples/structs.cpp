@@ -1,7 +1,5 @@
 
-#include <string.h>
 
-using namespace std;
 
 enum OSMType
 {
@@ -43,9 +41,6 @@ struct OBJFaceVec
 
 	//<DyanmicArray> <
 };
-
-
-
 
 
 struct OBJFaceArray
@@ -115,9 +110,13 @@ struct MeshManager
 
 };
 
+struct EntitySprites {
+	Sprite bld;
+};
 
 struct MyData
 {
+	EntitySprites sprites;
 	EntityManager em;
 	int32 currentLevel;
 
@@ -149,6 +148,25 @@ struct BBox
 };
 
 
+struct Points
+{
+	int32 pointCount;
+	int32 pointCapacity;
+
+	vec3* points;
+};
+
+struct VoronoiLine
+{
+
+	vec3 startOfLine;
+	vec3 endOfLine;
+
+	vec3 calcMidpoint;
+
+	real32 slopeOfLine;
+
+};
 
 
 struct Entity

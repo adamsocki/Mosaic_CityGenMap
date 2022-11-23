@@ -103,6 +103,8 @@ struct GameMemory {
 
     Shader modelShader;
 
+    Shader objShader;
+
 
     Mesh tri;
     Mesh quad;

@@ -198,6 +198,35 @@ void ClearColor(vec4 color) {
 }
 
 
+void InitMeshOBJ(Mesh *mesh) {
+    GLuint vertexBuffer;
+
+    glGenBuffers(1, &vertexBuffer);
+    // The following commands will talk about our 'vertexbuffer' buffer
+    glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
+    // Give our vertices to OpenGL.
+    glBufferData(GL_ARRAY_BUFFER, mesh->size, mesh->data, GL_STATIC_DRAW);
+
+    GLuint normalBuffer;
+    glGenBuffers(1, &normalBuffer);
+    // The following commands will talk about our 'normalBuffer' buffer
+    glBindBuffer(GL_ARRAY_BUFFER, normalBuffer);
+    // Give our vertices to OpenGL.
+    glBufferData(GL_ARRAY_BUFFER, mesh->size, mesh->data, GL_STATIC_DRAW);
+
+    
+
+    GLuint indexBuffer;
+    glGenBuffers(1, &indexBuffer);
+    // The following commands will talk about our 'vertexbuffer' buffer
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBuffer);
+    // Give our vertices to OpenGL.
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, mesh->indexCount * sizeof(uint32), mesh->indices, GL_STATIC_DRAW);
+
+    mesh->vertBufferID = vertexBuffer;
+    mesh->indexBufferID = indexBuffer;
+}
+
 void InitMesh(Mesh *mesh) {
     GLuint vertexBuffer;
 

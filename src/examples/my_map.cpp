@@ -4,10 +4,10 @@
 // TODO: Create a Controller to move around scene (cam)
 //MemoryArena nodeArena = {};
 //MemoryArena boundArena = {};
-//MemoryArena tokenArena = {};
 //MemoryArena tagArena = {};
 //MemoryArena wayArena = {};
 
+/*
 MemoryArena meshArena = {};
 MemoryArena tokenArena = {};
 MemoryArena facesArena = {};
@@ -15,8 +15,9 @@ MemoryArena vertexArena = {};
 
 MemoryArena normalArena = {};
 MemoryArena textureArena = {};
+*/
 
-
+MemoryArena tokenArena = {};
 
 // TODO: Import and Render single XML file OSM
 
@@ -31,14 +32,15 @@ MyData* Data = {};
 #include "cameraController.cpp"
 #include "geoTools.cpp"
 #include "EntityManager.cpp"
+#include "LoadSprites.cpp"
 
 #include "ParseOBJ.cpp"
+#include "Voronoi.cpp"
 
 #include <vector>
 #include <string>
 #include <string>
 #include <math.h>
-using namespace std;
 
 
 
@@ -64,22 +66,25 @@ void MyInit()
     
     AllocateMemoryArena(&tagArena, Megabytes(50));
     AllocateMemoryArena(&wayArena, Megabytes(50));*/
-    AllocateMemoryArena(&meshArena, Megabytes(10));
+   /* AllocateMemoryArena(&meshArena, Megabytes(10));
     AllocateMemoryArena(&tokenArena, Megabytes(50));
     AllocateMemoryArena(&facesArena, Megabytes(10));
     AllocateMemoryArena(&vertexArena, Megabytes(10));
     AllocateMemoryArena(&normalArena, Megabytes(50));
-    AllocateMemoryArena(&textureArena, Megabytes(10));
-   
+    AllocateMemoryArena(&textureArena, Megabytes(10));*/
+
+    AllocateMemoryArena(&tokenArena, Megabytes(90));
     Game->myData = malloc(sizeof(MyData));
     memset(Game->myData, 0, sizeof(MyData));
 
     Data = (MyData*)Game->myData;
 
-    Data->meshManager.meshCapacity = 100000;
+    Data->meshManager.meshCapacity = 10000;
     Data->meshManager.meshes = (Mesh*)malloc(sizeof(Mesh) * Data->meshManager.meshCapacity);
     memset(Data->meshManager.meshes, 0, sizeof(Mesh) * Data->meshManager.meshCapacity);
     Data->meshManager.meshCount = 0;
+
+    LoadSprites();
 
     Camera* cam = &Game->camera;
     cam->type = CameraType_Perspective;
@@ -96,9 +101,14 @@ void MyInit()
     //InitializeEntityManager();
     //InitializeEntityBuffers();
     //ParseOSM();
+
+
    
    
+
+    
     LoadModelParse(&Data->model);
+    
     // LoadModel();
     //meshes = MakeDynamicArray<Mesh>(&meshArena, 1000);
 
@@ -117,24 +127,24 @@ void MyGameUpdate()
     real32 angle = 0;
     vec4 color = V4(1.0f, 0.1f, 1.0f, 1.0f);
 
-    pos = V3(-20, -3, 1);
+    pos = V3(-10, -3, 1);
+
+   
     AllocateModelOBJMesh(&Game->modelMesh, &Data->model);
     InitMesh(&Game->modelMesh);
-
-
     //RenderOBJModel(&Game->modelMesh, pos, scale, color, (AxisAngle(V3(0, 0, 0), Game->time)));
 
-    for (int i = 0; i < 20; i++)
+    for (int i = 0; i < 8; i++)
     {
        
         pos.z += (1 * i);
         pos.x = -20;
 
-        for (int j = 0; j < 20; j++)
+        for (int j = 0; j < 8; j++)
         {
 
             pos.x += j / 2;
-            RenderOBJModel(&Game->modelMesh, pos, scale, color, (AxisAngle(V3(0, 0, 0), Game->time)));
+            RenderOBJModel(&Game->modelMesh, pos, scale, color, (AxisAngle(V3(0, 0, 0), Game->time)), &Data->sprites.bld);
 
         }
        
@@ -151,6 +161,8 @@ void MyGameUpdate()
 
 
     }*/
+
+    DrawSprite(V2(0), V2(1, 1), &Data->sprites.bld);
 
     Camera* cam = &Game->camera;
     int32 cameraSpeed = 8;

@@ -59,7 +59,8 @@ int32 counter = 0;
 void MyInit()
 {
 
-
+    
+    
 
    /* AllocateMemoryArena(&nodeArena, Megabytes(50));
     AllocateMemoryArena(&boundArena, Megabytes(1));
@@ -151,6 +152,8 @@ void MyGameUpdate()
         
         
     }
+
+    TestVoronoi();
    /* pos.z = 1;
     for (int i = 0; i < 20; i++)
     {

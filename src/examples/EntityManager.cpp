@@ -1,6 +1,6 @@
 
 
-int32 freeList[1000];
+int32 freeList[10000];
 int32 freeListCount = 0;
 
 
@@ -36,7 +36,7 @@ void DeleteEntity(EntityManager* em, EntityHandle handle) {
 	buffer->count--;
 }
 
-EntityHandle AddEntity(EntityManager *em, OSMType type) {
+EntityHandle AddEntity(EntityManager *em, EntityType type) {
 	int32 nextFreeIdInIndex = em->nextID;
 	
 	if (freeListCount > 0) {
@@ -94,4 +94,25 @@ void InitializeEntityBuffers()
 	wayBuffer->count = 0;
 	wayBuffer->entities = (Way*)malloc(wayBuffer->capacity * wayBuffer->sizeInBytes);
 	memset(wayBuffer->entities, 0, sizeof(Way) * wayBuffer->capacity);
+
+	EntityTypeBuffer* vMapBuffer = &Data->em.buffers[VoronoiType_Map];
+	vMapBuffer->capacity = 2000;
+	vMapBuffer->sizeInBytes = sizeof(VoronoiMap);
+	vMapBuffer->count = 0;
+	vMapBuffer->entities = (VoronoiMap*)malloc(vMapBuffer->capacity * vMapBuffer->sizeInBytes);
+	memset(vMapBuffer->entities, 0, sizeof(VoronoiMap) * vMapBuffer->capacity);
+
+	EntityTypeBuffer* vNodeBuffer = &Data->em.buffers[VoronoiType_Node];
+	vNodeBuffer->capacity = 2000;
+	vNodeBuffer->sizeInBytes = sizeof(VoronoiNode);
+	vNodeBuffer->count = 0;
+	vNodeBuffer->entities = (VoronoiNode*)malloc(vNodeBuffer->capacity * vNodeBuffer->sizeInBytes);
+	memset(vNodeBuffer->entities, 0, sizeof(VoronoiNode) * vNodeBuffer->capacity);
+
+	EntityTypeBuffer* vLineBuffer = &Data->em.buffers[VoronoiType_Line];
+	vLineBuffer->capacity = 4000;
+	vLineBuffer->sizeInBytes = sizeof(VoronoiLine);
+	vLineBuffer->count = 0;
+	vLineBuffer->entities = (VoronoiLine*)malloc(vLineBuffer->capacity * vLineBuffer->sizeInBytes);
+	memset(vLineBuffer->entities, 0, sizeof(VoronoiLine) * vLineBuffer->capacity);
 }

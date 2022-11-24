@@ -1,14 +1,20 @@
 
 
 
-enum OSMType
+enum EntityType
 {
 	OSMType_Way,
 	OSMType_Relation,
 	OSMType_Node,
 	OSMType_Bound,
 
-	OSMType_Count,
+	VoronoiType_Line,
+	VoronoiType_Node,
+	VoronoiType_District,
+	VoronoiType_Map,
+
+
+	EntityType_Count,
 };
 
 
@@ -70,7 +76,7 @@ struct OBJModel
 struct EntityHandle {
 	int32 generation;
 	int32 indexInInfo;
-	OSMType type;
+	EntityType type;
 };
 
 
@@ -78,7 +84,7 @@ struct EntityInfo {
 	int32 generation;
 	int32 indexInBuffer;
 	
-	OSMType type;
+	EntityType type;
 };
 
 struct EntityTypeBuffer {
@@ -91,7 +97,7 @@ struct EntityTypeBuffer {
 
 
 struct EntityManager {
-	EntityTypeBuffer buffers[OSMType_Count];
+	EntityTypeBuffer buffers[EntityType_Count];
 	EntityInfo *entities;
 	int32 entityCapacity;
 
@@ -156,18 +162,53 @@ struct Points
 	vec3* points;
 };
 
+
+
 struct VoronoiLine
 {
+
+
 
 	vec3 startOfLine;
 	vec3 endOfLine;
 
-	vec3 calcMidpoint;
+	vec3 midpoint;
 
-	real32 slopeOfLine;
+	int32 district1;
+	int32 district2;
 
+	vec3 slopeVector;
+	vec3 perpSlopeVector;
+	real32 slopeReal;
+	real32 perpSlopeReal;
+
+	bool intersectsBottomBBox;
+	
+	bool undefinedVerticalSlope;
+
+	vec3 slopePointFromMidpoint;
+
+	vec3 yIntercept;
 };
 
+struct VoronoiNode
+{
+	int32 districtID;
+	
+	vec3 position;
+};
+
+
+struct VoronoiMap
+{
+	VoronoiNode* vNode;
+	int32 vNodeCount;
+	int32 vNodeCapacity;
+
+	VoronoiLine* vLines;
+	int32 vLineCount;
+	int32 vLineCapacity;
+};
 
 struct Entity
 {

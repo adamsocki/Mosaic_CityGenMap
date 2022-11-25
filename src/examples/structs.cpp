@@ -162,15 +162,22 @@ struct Points
 	vec3* points;
 };
 
+struct VoronoiEntity {
+	EntityHandle handle;
+	vec3 position;
+};
 
-
-struct VoronoiLine
+struct VoronoiLine : VoronoiEntity
 {
 
 
+	vec3 distPosA;
+	vec3 distPosB;
 
 	vec3 startOfLine;
 	vec3 endOfLine;
+
+	real32 length;
 
 	vec3 midpoint;
 
@@ -183,31 +190,37 @@ struct VoronoiLine
 	real32 perpSlopeReal;
 
 	bool intersectsBottomBBox;
+	bool intersectsRightBBox;
+	bool intersectsTopBBox;
+	bool intersectsLeftBBox;
 	
 	bool undefinedVerticalSlope;
-
+	bool undefinedVerticalPerpSlope;
 	vec3 slopePointFromMidpoint;
 
 	vec3 yIntercept;
 };
 
-struct VoronoiNode
+struct VoronoiNode : VoronoiEntity
 {
 	int32 districtID;
 	
-	vec3 position;
+	//vec3 position;
 };
 
 
-struct VoronoiMap
+struct VoronoiMap : VoronoiEntity
 {
-	VoronoiNode* vNode;
+	EntityHandle* vNodes;
 	int32 vNodeCount;
 	int32 vNodeCapacity;
+	int32 vNodeSizeInBytes;
 
 	VoronoiLine* vLines;
 	int32 vLineCount;
 	int32 vLineCapacity;
+
+	Rect mapSizeRect;
 };
 
 struct Entity

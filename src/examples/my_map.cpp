@@ -99,16 +99,16 @@ void MyInit()
 
     cam->viewProjection = cam->projection * cam->view;
 
-    //InitializeEntityManager();
-    //InitializeEntityBuffers();
+    InitializeEntityManager();
+    InitializeEntityBuffers();
     //ParseOSM();
 
 
    
-   
-
-    
     LoadModelParse(&Data->model);
+
+    InitializeVoronoiMap();
+    VoronoiTest2();
     
     // LoadModel();
     //meshes = MakeDynamicArray<Mesh>(&meshArena, 1000);
@@ -130,30 +130,21 @@ void MyGameUpdate()
 
     pos = V3(-10, -3, 1);
 
-   
     AllocateModelOBJMesh(&Game->modelMesh, &Data->model);
     InitMesh(&Game->modelMesh);
     //RenderOBJModel(&Game->modelMesh, pos, scale, color, (AxisAngle(V3(0, 0, 0), Game->time)));
 
     for (int i = 0; i < 8; i++)
     {
-       
         pos.z += (1 * i);
         pos.x = -20;
 
         for (int j = 0; j < 8; j++)
         {
-
             pos.x += j / 2;
             RenderOBJModel(&Game->modelMesh, pos, scale, color, (AxisAngle(V3(0, 0, 0), Game->time)), &Data->sprites.bld);
-
         }
-       
-        
-        
     }
-
-    TestVoronoi();
    /* pos.z = 1;
     for (int i = 0; i < 20; i++)
     {

@@ -171,8 +171,11 @@ struct VoronoiLine : VoronoiEntity
 {
 
 
+
 	vec3 distPosA;
+	EntityHandle distHandleA;
 	vec3 distPosB;
+	EntityHandle distHandleB;
 
 	vec3 startOfLine;
 	vec3 endOfLine;
@@ -216,9 +219,10 @@ struct VoronoiMap : VoronoiEntity
 	int32 vNodeCapacity;
 	int32 vNodeSizeInBytes;
 
-	VoronoiLine* vLines;
+	EntityHandle* vLines;
 	int32 vLineCount;
 	int32 vLineCapacity;
+	int32 vLineSizeInBytes;
 
 	Rect mapSizeRect;
 };

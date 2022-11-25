@@ -254,6 +254,12 @@ void InitializeVoronoiMap()
 	mapEntity->vNodes = (EntityHandle*)malloc(mapEntity->vNodeCapacity * mapEntity->vNodeSizeInBytes);
 	memset(mapEntity->vNodes, 0, sizeof(EntityHandle) * mapEntity->vNodeCapacity);
 
+	mapEntity->vLineCapacity = 2000;
+	mapEntity->vLineSizeInBytes = sizeof(EntityHandle);
+	mapEntity->vLineCount = 0;
+	mapEntity->vLines = (EntityHandle*)malloc(mapEntity->vLineCapacity * mapEntity->vLineSizeInBytes);
+	memset(mapEntity->vLines, 0, sizeof(EntityHandle) * mapEntity->vLineCapacity);
+
 	mapEntity->handle = mapHandle;
 	mapEntity->position = V3(0, 0, -10);
 	Rect mapSizeRect;
@@ -320,10 +326,15 @@ void VoronoiTest2()
 	//				CREATE VORONOI LINE FOR FIRST POINTS ITERATIONS
 	EntityHandle vLineHandle = AddEntity(&Data->em, VoronoiType_Line);
 	VoronoiLine* vLineEntity = (VoronoiLine*)GetEntity(&Data->em, vLineHandle);
-	
-	
+	vLineEntity->handle = vLineHandle;
+
+	vMapEntity->vLines[vMapEntity->vLineCount] = vLineHandle;
+	vMapEntity->vLineCount++;
+
 	vLineEntity->distPosA = vNodes[0]->position;
+	vLineEntity->distHandleA = vNodes[0]->handle;
 	vLineEntity->distPosB = vNodes[1]->position;
+	vLineEntity->distHandleB = vNodes[1]->handle;
 
 	vLineEntity->length = distanceBetweenPoints;
 
@@ -338,7 +349,6 @@ void VoronoiTest2()
 	// y - y1 = m(x - x1)
 	if (!vLineEntity->undefinedVerticalPerpSlope)
 	{
-
 		real32 y1 = vLineEntity->midpoint.y;
 		real32 x1 = vLineEntity->midpoint.x;
 		real32 m = vLineEntity->perpSlopeReal;
@@ -371,12 +381,12 @@ void VoronoiTest2()
 			vLineEntity->intersectsLeftBBox = true;
 			if (!startOfLineCreated)
 			{
-				vLineEntity->startOfLine.x = vMapEntity->mapSizeRect.max.x;
+				vLineEntity->startOfLine.x = vMapEntity->mapSizeRect.min.x;
 				vLineEntity->startOfLine.y = yLeft;
 			}
 			else
 			{
-				vLineEntity->endOfLine.x = vMapEntity->mapSizeRect.max.x;
+				vLineEntity->endOfLine.x = vMapEntity->mapSizeRect.min.x;
 				vLineEntity->endOfLine.y = yLeft;
 			}
 			startOfLineCreated = true;
@@ -384,10 +394,45 @@ void VoronoiTest2()
 		//topSide
 		real32 y = vMapEntity->mapSizeRect.max.y;
 		real32 leftSideEquation = (y - y1);
+		//(m*x)-(m*x1)
+		real32 eqStep2 = leftSideEquation + (m * x1);
+		real32 xTop = eqStep2 / m;
+		if (xTop < vMapEntity->mapSizeRect.max.x && xTop > vMapEntity->mapSizeRect.min.x)
+		{
+			vLineEntity->intersectsTopBBox = true;
+			if (!startOfLineCreated)
+			{
+				vLineEntity->startOfLine.x = xTop;
+				vLineEntity->startOfLine.y = vMapEntity->mapSizeRect.max.y;
+			}
+			else
+			{
+				vLineEntity->endOfLine.x = xTop;
+				vLineEntity->endOfLine.y = vMapEntity->mapSizeRect.max.y;
+			}
+			startOfLineCreated = true;
+		}
 
 		//bottomSide
 		y = vMapEntity->mapSizeRect.min.y;
 		leftSideEquation = (y - y1);
+		eqStep2 = leftSideEquation + (m * x1);
+		real32 xBottom = eqStep2 / m;
+		if (xBottom < vMapEntity->mapSizeRect.max.x && xBottom > vMapEntity->mapSizeRect.min.x)
+		{
+			vLineEntity->intersectsBottomBBox = true;
+			if (!startOfLineCreated)
+			{
+				vLineEntity->startOfLine.x = xBottom;
+				vLineEntity->startOfLine.y = vMapEntity->mapSizeRect.min.y;
+			}
+			else
+			{
+				vLineEntity->endOfLine.x = xBottom;
+				vLineEntity->endOfLine.y = vMapEntity->mapSizeRect.min.y;
+			}
+			startOfLineCreated = true;
+		}
 
 
 
@@ -395,4 +440,157 @@ void VoronoiTest2()
 	
 
 
+}
+
+
+void AddVoronoiPoint(vec2 newVPointPos)
+{
+	//				BUFFER REFERENCES
+	EntityTypeBuffer* vMapBuffer = &Data->em.buffers[VoronoiType_Map];
+	EntityTypeBuffer* vNodeBuffer = &Data->em.buffers[VoronoiType_Node];
+	EntityTypeBuffer* vLineBuffer = &Data->em.buffers[VoronoiType_Line];
+	VoronoiMap* vMapEntitiesInBuffer = (VoronoiMap*)vMapBuffer->entities;
+	VoronoiNode* vNodeEntitiesInBuffer = (VoronoiNode*)vNodeBuffer->entities;
+	VoronoiLine* vLineEntitiesInBuffer = (VoronoiLine*)vLineBuffer->entities;
+
+	// step 1 add node to buffer
+	EntityHandle vNodeHandle = AddEntity(&Data->em, VoronoiType_Node);
+	VoronoiNode* vNodeEntity = (VoronoiNode*)GetEntity(&Data->em, vNodeHandle);
+
+	vNodeEntity->handle = vNodeHandle;
+	vec3 projPos = V3(newVPointPos.x, newVPointPos.y, -10);
+	vNodeEntity->position = projPos;
+	//vNodeEntity->id = 3;
+
+
+	// step 2 add new node to map 
+	VoronoiMap* vMapEntity = (VoronoiMap*)GetEntity(&Data->em, vMapEntitiesInBuffer[0].handle);
+	vMapEntity->vNodes[vMapEntity->vNodeCount] = vNodeEntity->handle;
+	vMapEntity->vNodeCount++;
+
+	// step 3 create new vLine
+	EntityHandle vLineHandle = AddEntity(&Data->em, VoronoiType_Line);
+	VoronoiLine* vLineEntity = (VoronoiLine*)GetEntity(&Data->em, vLineHandle);
+	vLineEntity->handle = vLineHandle;
+
+	// step 3.1 add vLine to map
+	vMapEntity->vLines[vMapEntity->vLineCount] = vLineEntity->handle;
+	vMapEntity->vLineCount++;
+
+	// find closest existing node to new node
+
+	real32 closestDistance = 9999;
+	VoronoiNode* nearestNode = {};
+	for (int i = 0; i < vMapEntity->vNodeCount; i++)
+	{
+		VoronoiNode* vNodeNearestEntity = (VoronoiNode*)GetEntity(&Data->em, vMapEntity->vNodes[i]);
+		if (projPos != vNodeNearestEntity->position)
+		{
+			real32 dist = Distance(projPos, vNodeNearestEntity->position);
+			if (dist < closestDistance)
+			{
+				closestDistance = dist;
+				nearestNode = vNodeNearestEntity;
+			}
+		}
+		
+		
+	}
+
+	vLineEntity->distPosA = vNodeEntity->position;
+	vLineEntity->distPosB = nearestNode->position;
+	// step 5 calculate midpoint bewteen closest node and new node
+	CalcMidpointVoronoi(vLineEntity);
+	CalcSlopesVoronoi(vLineEntity);
+
+	if (!vLineEntity->undefinedVerticalPerpSlope)
+	{
+		real32 y1 = vLineEntity->midpoint.y;
+		real32 x1 = vLineEntity->midpoint.x;
+		real32 m = vLineEntity->perpSlopeReal;
+		//rightSide
+		real32 x = vMapEntity->mapSizeRect.max.x;
+		real32 rightSideEquation = (m * x) - (m * x1);
+		real32 yRight = rightSideEquation + y1;
+		bool startOfLineCreated = false;
+		if (yRight < vMapEntity->mapSizeRect.max.y && yRight > vMapEntity->mapSizeRect.min.y)
+		{
+			vLineEntity->intersectsRightBBox = true;
+			if (!startOfLineCreated)
+			{
+				vLineEntity->startOfLine.x = vMapEntity->mapSizeRect.max.x;
+				vLineEntity->startOfLine.y = yRight;
+			}
+			else
+			{
+				vLineEntity->endOfLine.x = vMapEntity->mapSizeRect.max.x;
+				vLineEntity->endOfLine.y = yRight;
+			}
+			startOfLineCreated = true;
+		}
+		//leftSide
+		x = vMapEntity->mapSizeRect.min.x;
+		rightSideEquation = (m * x) - (m * x1);
+		real32 yLeft = rightSideEquation + y1;
+		if (yLeft < vMapEntity->mapSizeRect.max.y && yLeft > vMapEntity->mapSizeRect.min.y)
+		{
+			vLineEntity->intersectsLeftBBox = true;
+			if (!startOfLineCreated)
+			{
+				vLineEntity->startOfLine.x = vMapEntity->mapSizeRect.min.x;
+				vLineEntity->startOfLine.y = yLeft;
+			}
+			else
+			{
+				vLineEntity->endOfLine.x = vMapEntity->mapSizeRect.min.x;
+				vLineEntity->endOfLine.y = yLeft;
+			}
+			startOfLineCreated = true;
+		}
+		//topSide
+		real32 y = vMapEntity->mapSizeRect.max.y;
+		real32 leftSideEquation = (y - y1);
+		//(m*x)-(m*x1)
+		real32 eqStep2 = leftSideEquation + (m * x1);
+		real32 xTop = eqStep2 / m;
+		if (xTop < vMapEntity->mapSizeRect.max.x && xTop > vMapEntity->mapSizeRect.min.x)
+		{
+			vLineEntity->intersectsTopBBox = true;
+			if (!startOfLineCreated)
+			{
+				vLineEntity->startOfLine.x = xTop;
+				vLineEntity->startOfLine.y = vMapEntity->mapSizeRect.max.y;
+			}
+			else
+			{
+				vLineEntity->endOfLine.x = xTop;
+				vLineEntity->endOfLine.y = vMapEntity->mapSizeRect.max.y;
+			}
+			startOfLineCreated = true;
+		}
+
+		//bottomSide
+		y = vMapEntity->mapSizeRect.min.y;
+		leftSideEquation = (y - y1);
+		eqStep2 = leftSideEquation + (m * x1);
+		real32 xBottom = eqStep2 / m;
+		if (xBottom < vMapEntity->mapSizeRect.max.x && xBottom > vMapEntity->mapSizeRect.min.x)
+		{
+			vLineEntity->intersectsBottomBBox = true;
+			if (!startOfLineCreated)
+			{
+				vLineEntity->startOfLine.x = xBottom;
+				vLineEntity->startOfLine.y = vMapEntity->mapSizeRect.min.y;
+			}
+			else
+			{
+				vLineEntity->endOfLine.x = xBottom;
+				vLineEntity->endOfLine.y = vMapEntity->mapSizeRect.min.y;
+			}
+			startOfLineCreated = true;
+		}
+
+
+
+	}
 }

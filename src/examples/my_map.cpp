@@ -109,6 +109,7 @@ void MyInit()
 
     InitializeVoronoiMap();
     VoronoiTest2();
+    AddVoronoiPoint(V2(1, -6));
     
     // LoadModel();
     //meshes = MakeDynamicArray<Mesh>(&meshArena, 1000);
@@ -137,7 +138,7 @@ void MyGameUpdate()
     for (int i = 0; i < 8; i++)
     {
         pos.z += (1 * i);
-        pos.x = -20;
+        pos.x = -10;
 
         for (int j = 0; j < 8; j++)
         {
@@ -156,7 +157,45 @@ void MyGameUpdate()
 
     }*/
 
-    DrawSprite(V2(0), V2(1, 1), &Data->sprites.bld);
+    EntityTypeBuffer* vMapBuffer = &Data->em.buffers[VoronoiType_Map];
+    EntityTypeBuffer* vNodeBuffer = &Data->em.buffers[VoronoiType_Node];
+    VoronoiMap* vMapEntitiesInBuffer = (VoronoiMap*)vMapBuffer->entities;
+    VoronoiNode* vNodeEntitiesInBuffer = (VoronoiNode*)vNodeBuffer->entities;
+
+    //				GET MAP ENTITY FOR REFERENCE WITHIN FUNCTION	
+    VoronoiMap* vMapEntity = (VoronoiMap*)GetEntity(&Data->em, vMapEntitiesInBuffer[0].handle);
+    //				GET REFERENCE TO NODES FOR REFERENCE WITHIN FUNCTION
+
+    real32 distanceBetweenPoints;
+    VoronoiNode* vNodes[2];
+    //vec3 pointB;
+    //				Get nodes 
+    for (int i = 0; i < vMapEntity->vNodeCount; i++)
+    {
+        VoronoiNode* vNodeEntity = (VoronoiNode*)GetEntity(&Data->em, vMapEntity->vNodes[i]);
+        vNodes[i] = vNodeEntity;
+        //vNodes[i] = vNodeEntity;
+    }
+
+    VoronoiLine* vLineEntity = (VoronoiLine*)GetEntity(&Data->em, vMapEntity->vLines[0]);
+    vec2 rectPos = V2(vMapEntity->position.x, vMapEntity->position.y);
+   // DrawRect(rectPos, V2(10, 10), 0, color);
+    vec2 startLine = V2(vLineEntity->startOfLine.x, vLineEntity->startOfLine.y);
+    vec2 endLine = V2(vLineEntity->endOfLine.x, vLineEntity->endOfLine.y);
+    DrawLine(startLine, endLine, 0.25f, V4(1.0f, 0.4f, 0.4f, 1.0f));
+   
+   
+    DrawSprite(V2(vNodes[0]->position.x, vNodes[0]->position.y), V2(1, 1), &Data->sprites.bld);
+    DrawSprite(V2(vNodes[1]->position.x, vNodes[1]->position.y), V2(1, 1), &Data->sprites.bld);
+    DrawSprite(V2(vNodes[2]->position.x, vNodes[2]->position.y), V2(1, 1), &Data->sprites.bld);
+
+    VoronoiLine* vLineEntity1 = (VoronoiLine*)GetEntity(&Data->em, vMapEntity->vLines[1]);
+    vec2 startLine1 = V2(vLineEntity1->startOfLine.x, vLineEntity1->startOfLine.y);
+    vec2 endLine1 = V2(vLineEntity1->endOfLine.x, vLineEntity1->endOfLine.y);
+    DrawLine(startLine1, endLine1, 0.25f, V4(1.0f, 0.4f, 0.4f, 1.0f));
+
+   
+    
 
     Camera* cam = &Game->camera;
     int32 cameraSpeed = 8;

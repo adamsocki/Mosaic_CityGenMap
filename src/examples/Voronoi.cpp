@@ -6,11 +6,24 @@ vec2 IntersectionFourPoints(vec2 line1PointA, vec2 line1PointB, vec2 line2PointA
 	real32 a = line1PointB.y - line1PointA.y;
 	real32 b = line1PointA.x - line1PointB.x;
 	real32 c = (a * line1PointA.x) + (b * line1PointA.y);
-	
+
 	real32 a1 = line2PointB.y - line2PointA.y;
 	real32 b1 = line2PointA.x - line2PointB.x;
-	real32 c1 = 
-	
+	real32 c1 = (a1 * line2PointA.x) + (b1 * line2PointA.y);
+
+	real32 det = a * b1 - a1 * b;
+
+	if (det == 0)
+	{
+		// ??
+	}
+	else
+	{
+		real32 x = (b1 * c - b * c1) / det;
+		real32 y = (a * c1 - a1 * c) / det;
+		return V2(x, y);
+	}
+}
 	/*Start
 		//Step 1->Declare function to print the x and y coordinates
 		//void display(mk_pair par)
@@ -44,9 +57,7 @@ vec2 IntersectionFourPoints(vec2 line1PointA, vec2 line1PointB, vec2 line2PointA
 		Call display(inter)
 		End
 		Stop*/
-	return vec2 V2(0);
 
-}
 
 real32 TwoPointSlopeReal(vec3 pointA, vec3 pointB)
 {

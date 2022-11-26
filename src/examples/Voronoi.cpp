@@ -3,6 +3,37 @@
 
 vec2 IntersectionFourPoints(vec2 line1PointA, vec2 line1PointB, vec2 line2PointA, vec2 line2PointB)
 {
+
+	/*Start
+		Step 1->Declare function to print the x and y coordinates
+		void display(mk_pair par)
+		Print par.first and par.second
+		Step 2->declare function to calculate the intersection point
+		mk_pair intersection(mk_pair A, mk_pair B, mk_pair C, mk_pair D)
+		Declare double a = B.second - A.second
+		Declare double b = A.first - B.first
+		Declare double c = a * (A.first) + b * (A.second)
+		Declare double a1 = D.second - C.second
+		Declare double b1 = C.first - D.first
+		Declare double c1 = a1 * (C.first) + b1 * (C.second)
+		Declare double det = a * b1 - a1 * b
+		IF(det = 0)
+		return make_pair(FLT_MAX, FLT_MAX)
+		End
+		Else
+		Declare double x = (b1 * c - b * c1) / det
+		Declare double y = (a * c1 - a1 * c) / det
+		return make_pair(x, y)
+		End
+		Step 3->In main()
+		Declare and call function for points as mk_pair q = make_pair(2, 1)
+		IF(inter.first = FLT_MAX AND inter.second = FLT_MAX)
+		Print “given lines are parallel“
+		End
+		Else
+		Call display(inter)
+		End
+		Stop*/
 	return vec2 V2(0);
 
 }

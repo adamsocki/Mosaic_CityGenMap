@@ -110,6 +110,8 @@ void MyInit()
     InitializeVoronoiMap();
     VoronoiTest2();
     AddVoronoiPoint(V2(1, -6));
+
+    AddVoronoiPoint(V2(-6, -2));
     
     // LoadModel();
     //meshes = MakeDynamicArray<Mesh>(&meshArena, 1000);
@@ -189,12 +191,17 @@ void MyGameUpdate()
     DrawSprite(V2(vNodes[1]->position.x, vNodes[1]->position.y), V2(1, 1), &Data->sprites.bld);
     DrawSprite(V2(vNodes[2]->position.x, vNodes[2]->position.y), V2(1, 1), &Data->sprites.bld);
 
+    DrawSprite(V2(vNodes[3]->position.x, vNodes[3]->position.y), V2(1, 1), &Data->sprites.bld);
+
     VoronoiLine* vLineEntity1 = (VoronoiLine*)GetEntity(&Data->em, vMapEntity->vLines[1]);
     vec2 startLine1 = V2(vLineEntity1->startOfLine.x, vLineEntity1->startOfLine.y);
     vec2 endLine1 = V2(vLineEntity1->endOfLine.x, vLineEntity1->endOfLine.y);
     DrawLine(startLine1, endLine1, 0.25f, V4(1.0f, 0.4f, 0.4f, 1.0f));
 
-   
+    VoronoiLine* vLineEntity2 = (VoronoiLine*)GetEntity(&Data->em, vMapEntity->vLines[2]);
+    vec2 startLine2 = V2(vLineEntity2->startOfLine.x, vLineEntity2->startOfLine.y);
+    vec2 endLine2 = V2(vLineEntity2->endOfLine.x, vLineEntity2->endOfLine.y);
+    DrawLine(startLine2, endLine2, 0.25f, V4(1.0f, 0.4f, 0.4f, 1.0f));
     
 
     Camera* cam = &Game->camera;

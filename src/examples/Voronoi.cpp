@@ -1,6 +1,11 @@
 ﻿
 
 
+vec2 IntersectionFourPoints(vec2 line1PointA, vec2 line1PointB, vec2 line2PointA, vec2 line2PointB)
+{
+	return vec2 V2(0);
+
+}
 
 real32 TwoPointSlopeReal(vec3 pointA, vec3 pointB)
 {
@@ -438,8 +443,6 @@ void VoronoiTest2()
 
 	}
 	
-
-
 }
 
 
@@ -505,6 +508,31 @@ void AddVoronoiPoint(vec2 newVPointPos)
 
 	if (!vLineEntity->undefinedVerticalPerpSlope)
 	{
+
+		// step 6 determine if intersecting with any other vLines
+
+		for (int i = 0; i < vMapEntity->vLineCount; i++)
+		{
+			VoronoiLine* vLineNearestEntity = (VoronoiLine*)GetEntity(&Data->em, vMapEntity->vLines[i]);
+			/*if (vLineNearestEntity->handle != vLineEntity->handle)
+			{
+				
+			}*/
+			vec3 vLineNearestPointA = vLineNearestEntity->startOfLine;
+			vec3 vLineNearestPointB = vLineNearestEntity->endOfLine;
+			vec3 vLineEntityPointA = vLineEntity->startOfLine;
+			vec3 vLineEntityPointB = vLineEntity->endOfLine;
+
+
+
+		}
+
+		// if no...continue
+
+		// if yes...calculate where the intersection is
+		//		find midpoint between other 
+
+
 		real32 y1 = vLineEntity->midpoint.y;
 		real32 x1 = vLineEntity->midpoint.x;
 		real32 m = vLineEntity->perpSlopeReal;
@@ -564,7 +592,7 @@ void AddVoronoiPoint(vec2 newVPointPos)
 			else
 			{
 				vLineEntity->endOfLine.x = xTop;
-				vLineEntity->endOfLine.y = vMapEntity->mapSizeRect.max.y;
+					vLineEntity->endOfLine.y = vMapEntity->mapSizeRect.max.y;
 			}
 			startOfLineCreated = true;
 		}

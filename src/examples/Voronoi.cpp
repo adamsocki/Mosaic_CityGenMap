@@ -1,4 +1,11 @@
 ﻿
+vec2 vec3ToVec2 (vec3 vec)
+{
+	vec2 vecOut ={};
+	vecOut = V2(vec.x, vec.y);
+	return vecOut;
+}
+
 
 
 vec2 IntersectionFourPoints(vec2 line1PointA, vec2 line1PointB, vec2 line2PointA, vec2 line2PointB)
@@ -150,6 +157,17 @@ vec3 intersection(float m1, float b1, float m2, float b2)
 	p.x = (b2 - b1) / (m1 - m2);
 	p.y = p.x * m1 + b1;
 	return p;
+}
+
+bool IsWithinBBox(vec2 point, Rect bbox)
+{
+	bool isInside = false;
+	
+	if (point.x > bbox.min.x && point.x < bbox.max.x && point.y > bbox.min.y && point.y < bbox.max.y)
+	{
+		isInside = true;
+	}
+	return isInside;
 }
 
 
@@ -562,7 +580,9 @@ void AddVoronoiPoint(vec2 newVPointPos)
 	{
 
 		// step 6 determine if intersecting with any other vLines
-
+		real32 vLineIntShortestDistance;
+		VoronoiLine* closestIntersectVLineEntity;
+		vec2 intersectionPointToChange;
 		for (int i = 0; i < vMapEntity->vLineCount; i++)
 		{
 			VoronoiLine* vLineNearestEntity = (VoronoiLine*)GetEntity(&Data->em, vMapEntity->vLines[i]);
@@ -570,14 +590,41 @@ void AddVoronoiPoint(vec2 newVPointPos)
 			{
 				
 			}*/
-			vec3 vLineNearestPointA = vLineNearestEntity->startOfLine;
-			vec3 vLineNearestPointB = vLineNearestEntity->endOfLine;
-			vec3 vLineEntityPointA = vLineEntity->startOfLine;
-			vec3 vLineEntityPointB = vLineEntity->endOfLine;
+			vec3 vLineNearestPointA  = vLineNearestEntity->startOfLine;
+			vec2 vLineNearestPointA_ = vec3ToVec2(vLineNearestPointA);
+			vec3 vLineNearestPointB  = vLineNearestEntity->endOfLine;
+			vec2 vLineNearestPointB_ = vec3ToVec2(vLineNearestPointB);
+			vec3 vLineEntityPointA   = vLineEntity->startOfLine;
+			vec2 vLineEntityPointA_  = vec3ToVec2(vLineEntityPointA);
+			vec3 vLineEntityPointB   = vLineEntity->endOfLine;
+			vec2 vLineEntityPointB_  = vec3ToVec2(vLineEntityPointB);
 
-
-
+			vec2 intersectionPoint = IntersectionFourPoints(vLineNearestPointA_,vLineNearestPointB_,vLineEntityPointA_,vLineEntityPointB_);
+			// is it within the bbox
+			bool isWithinBox = IsWithinBBox(intersectionPoint, vMapEntity->mapSizeRect);
+			if (!isWithinBox)
+			{
+				// is it the nearest line tested so far?
+				// TODO: Potential for optimization ==> select only lines within radius
+				
+				// distance between vLineMidpoint and intersection
+				// is ^^ this value the smallest value calculated?
+				real32 distance = Distance(intersectionPoint, vec3ToVec2(vLineEntity->midpoint));
+				if (vLineIntShortestDistance > distance)
+				{
+					vLineIntShortestDistance = distance;
+					closestIntersectVLineEntity = vLineNearestEntity;
+					intersectionPointToChange = intersectionPoint;
+				}
+			}
+			else
+			{
+				
+			}
 		}
+		
+		vLineEntity->startOfLine.x = intersectionPointToChange.x;
+		vLineEntity->startOfLine.y = intersectionPointToChange.y;
 
 		// if no...continue
 

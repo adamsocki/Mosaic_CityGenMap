@@ -3,13 +3,20 @@
 
 vec2 IntersectionFourPoints(vec2 line1PointA, vec2 line1PointB, vec2 line2PointA, vec2 line2PointB)
 {
-
+	real32 a = line1PointB.y - line1PointA.y;
+	real32 b = line1PointA.x - line1PointB.x;
+	real32 c = (a * line1PointA.x) + (b * line1PointA.y);
+	real
+	
 	/*Start
-		Step 1->Declare function to print the x and y coordinates
-		void display(mk_pair par)
-		Print par.first and par.second
-		Step 2->declare function to calculate the intersection point
-		mk_pair intersection(mk_pair A, mk_pair B, mk_pair C, mk_pair D)
+		//Step 1->Declare function to print the x and y coordinates
+		//void display(mk_pair par)
+		//Print par.first and par.second
+		//Step 2->declare function to calculate the intersection point
+		//mk_pair intersection(mk_pair A, mk_pair B, mk_pair C, mk_pair D)
+		
+		
+		
 		Declare double a = B.second - A.second
 		Declare double b = A.first - B.first
 		Declare double c = a * (A.first) + b * (A.second)

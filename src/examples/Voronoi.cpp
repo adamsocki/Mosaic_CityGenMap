@@ -6,7 +6,10 @@ vec2 IntersectionFourPoints(vec2 line1PointA, vec2 line1PointB, vec2 line2PointA
 	real32 a = line1PointB.y - line1PointA.y;
 	real32 b = line1PointA.x - line1PointB.x;
 	real32 c = (a * line1PointA.x) + (b * line1PointA.y);
-	real
+	
+	real32 a1 = line2PointB.y - line2PointA.y;
+	real32 b1 = line2PointA.x - line2PointB.x;
+	real32 c1 = 
 	
 	/*Start
 		//Step 1->Declare function to print the x and y coordinates

@@ -171,7 +171,8 @@ struct VoronoiLine : VoronoiEntity
 {
 
 
-
+	bool lineFinalized;
+	
 	vec3 distPosA;
 	EntityHandle distHandleA;
 	vec3 distPosB;

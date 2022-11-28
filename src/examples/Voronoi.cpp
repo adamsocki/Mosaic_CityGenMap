@@ -509,7 +509,7 @@ void VoronoiTest2()
 			startOfLineCreated = true;
 		}
 
-
+		vLineEntity->lineFinalized = true;
 
 	}
 	
@@ -580,9 +580,10 @@ void AddVoronoiPoint(vec2 newVPointPos)
 	if (!vLineEntity->undefinedVerticalPerpSlope)
 	{
 		// step 6 determine if perpSlope of the new vLine is intersecting with any other existing vLines
-		real32 vLineIntShortestDistance;
+		real32 vLineIntShortestDistance = 9999;
 		VoronoiLine* closestIntersectVLineEntity;
 		vec2 intersectionPointToChange;
+		bool intersectionModChangeRequired = false;
 		for (int i = 0; i < vMapEntity->vLineCount; i++)
 		{
 			VoronoiLine* vLineNearestEntity = (VoronoiLine*)GetEntity(&Data->em, vMapEntity->vLines[i]);
@@ -590,138 +591,167 @@ void AddVoronoiPoint(vec2 newVPointPos)
 			{
 				
 			}*/
-			// start and end point of teseting vLine
-			vec3 vLineNearestPointA  = vLineNearestEntity->startOfLine;
-			vec2 vLineNearestPointA_ = vec3ToVec2(vLineNearestPointA);
-			vec3 vLineNearestPointB  = vLineNearestEntity->endOfLine;
-			vec2 vLineNearestPointB_ = vec3ToVec2(vLineNearestPointB);
-
-			// start and end point of new line using midpoint and perpSlopeVector
-			vec3 vLineEntityPointA   = vLineEntity->midpoint;
-			vec2 vLineEntityPointA_  = vec3ToVec2(vLineEntityPointA);
-			vec3 vLineEntityPointB   = vLineEntity->perpSlopeVector;
-			vec2 vLineEntityPointB_  = vec3ToVec2(vLineEntityPointB);
-
-			// location of intersecting point between test line and new line
-			vec2 intersectionPoint = IntersectionFourPoints(vLineNearestPointA_,vLineNearestPointB_,vLineEntityPointA_,vLineEntityPointB_);
-			// is it within the bbox
-			bool isWithinBox = IsWithinBBox(intersectionPoint, vMapEntity->mapSizeRect);
-			if (isWithinBox)
+			if (vLineNearestEntity->lineFinalized)
 			{
-				// is it the nearest line tested so far?
-				// TODO: Potential for optimization ==> select only lines within radius
 				
-				// distance between vLineMidpoint and intersection
-				// is ^^ this value the smallest value calculated?
-				real32 distance = Distance(intersectionPoint, vec3ToVec2(vLineEntity->midpoint));
-				if (vLineIntShortestDistance > distance)
+				// start and end point of teseting vLine
+				vec3 vLineNearestPointA  = vLineNearestEntity->startOfLine;
+				vec2 vLineNearestPointA_ = vec3ToVec2(vLineNearestPointA);
+				vec3 vLineNearestPointB  = vLineNearestEntity->endOfLine;
+				vec2 vLineNearestPointB_ = vec3ToVec2(vLineNearestPointB);
+
+				// start and end point of new line using midpoint and perpSlopeVector
+				vec3 vLineEntityPointA   = vLineEntity->midpoint;
+				vec2 vLineEntityPointA_  = vec3ToVec2(vLineEntityPointA);
+				vec3 vLineEntityPointB   = vLineEntity->perpSlopeVector;
+				vec2 vLineEntityPointB_  = vec3ToVec2(vLineEntityPointB);
+
+				// location of intersecting point between test line and new line
+				vec2 intersectionPoint = IntersectionFourPoints(vLineNearestPointA_,vLineNearestPointB_,vLineEntityPointA_,vLineEntityPointB_);
+				// is it within the bbox
+				bool isWithinBox = IsWithinBBox(intersectionPoint, vMapEntity->mapSizeRect);
+				if (isWithinBox)
 				{
-					vLineIntShortestDistance = distance;
-					closestIntersectVLineEntity = vLineNearestEntity;
-					intersectionPointToChange = intersectionPoint;
+					// is it the nearest line tested so far?
+					// TODO: Potential for optimization ==> select only lines within radius
+					
+					// distance between vLineMidpoint and intersection
+					// is ^^ this value the smallest value calculated?
+					real32 distance = Distance(intersectionPoint, vec3ToVec2(vLineEntity->midpoint));
+					if (vLineIntShortestDistance > distance)
+					{
+						vLineIntShortestDistance = distance;
+						closestIntersectVLineEntity = vLineNearestEntity;
+						intersectionPointToChange = intersectionPoint;
+						intersectionModChangeRequired = true;
+						
+						
+					}
+				}
+				else
+				{
+					
 				}
 			}
-			else
-			{
-				
-			}
+			
+		}
+		bool startOfLineCreated = false;
+		bool endOfLineCreated = false;
+		if (intersectionModChangeRequired)
+		{
+			vLineEntity->startOfLine.x = intersectionPointToChange.x;
+			vLineEntity->startOfLine.y = intersectionPointToChange.y;
+			startOfLineCreated = true;
+
+			//vLineEntity->startOfLine.
+			// check and see what side of the bbox
+			// TODO - this is only temporary because i know where the point is going. 
+			// TODO - I NEED to change this to find the other side of the line
+			//if (intersectionPointToChange.x > vLineEntity->midPoint.x && intersectionPointToChange.x > vLineEntity->midPoint.x)
+
 		}
 		
-		vLineEntity->startOfLine.x = intersectionPointToChange.x;
-		vLineEntity->startOfLine.y = intersectionPointToChange.y;
 
 		// if no...continue
 
 		// if yes...calculate where the intersection is
 		//		find midpoint between other 
 
-
-		real32 y1 = vLineEntity->midpoint.y;
-		real32 x1 = vLineEntity->midpoint.x;
-		real32 m = vLineEntity->perpSlopeReal;
-		//rightSide
-		real32 x = vMapEntity->mapSizeRect.max.x;
-		real32 rightSideEquation = (m * x) - (m * x1);
-		real32 yRight = rightSideEquation + y1;
-		bool startOfLineCreated = false;
-		if (yRight < vMapEntity->mapSizeRect.max.y && yRight > vMapEntity->mapSizeRect.min.y)
+		if (true)
 		{
-			vLineEntity->intersectsRightBBox = true;
-			if (!startOfLineCreated)
+			real32 y1 = vLineEntity->midpoint.y;
+			real32 x1 = vLineEntity->midpoint.x;
+			real32 m = vLineEntity->perpSlopeReal;
+			//rightSide
+			real32 x = vMapEntity->mapSizeRect.max.x;
+			real32 rightSideEquation = (m * x) - (m * x1);
+			real32 yRight = rightSideEquation + y1;
+			
+			if (yRight < vMapEntity->mapSizeRect.max.y && yRight > vMapEntity->mapSizeRect.min.y)
 			{
-				vLineEntity->startOfLine.x = vMapEntity->mapSizeRect.max.x;
-				vLineEntity->startOfLine.y = yRight;
+				vLineEntity->intersectsRightBBox = true;
+				if (!startOfLineCreated)
+				{
+					vLineEntity->startOfLine.x = vMapEntity->mapSizeRect.max.x;
+					vLineEntity->startOfLine.y = yRight;
+				}
+				else if (!endOfLineCreated)
+				{
+					vLineEntity->endOfLine.x = vMapEntity->mapSizeRect.max.x;
+					vLineEntity->endOfLine.y = yRight;
+				}
+				startOfLineCreated = true;
 			}
-			else
+			//leftSide
+			x = vMapEntity->mapSizeRect.min.x;
+			rightSideEquation = (m * x) - (m * x1);
+			real32 yLeft = rightSideEquation + y1;
+			if (yLeft < vMapEntity->mapSizeRect.max.y && yLeft > vMapEntity->mapSizeRect.min.y)
 			{
-				vLineEntity->endOfLine.x = vMapEntity->mapSizeRect.max.x;
-				vLineEntity->endOfLine.y = yRight;
+				vLineEntity->intersectsLeftBBox = true;
+				if (!startOfLineCreated)
+				{
+					vLineEntity->startOfLine.x = vMapEntity->mapSizeRect.min.x;
+					vLineEntity->startOfLine.y = yLeft;
+				}
+				else if (!endOfLineCreated)
+				{
+					vLineEntity->endOfLine.x = vMapEntity->mapSizeRect.min.x;
+					vLineEntity->endOfLine.y = yLeft;
+				}
+				startOfLineCreated = true;
 			}
-			startOfLineCreated = true;
-		}
-		//leftSide
-		x = vMapEntity->mapSizeRect.min.x;
-		rightSideEquation = (m * x) - (m * x1);
-		real32 yLeft = rightSideEquation + y1;
-		if (yLeft < vMapEntity->mapSizeRect.max.y && yLeft > vMapEntity->mapSizeRect.min.y)
-		{
-			vLineEntity->intersectsLeftBBox = true;
-			if (!startOfLineCreated)
+			//topSide
+			real32 y = vMapEntity->mapSizeRect.max.y;
+			real32 leftSideEquation = (y - y1);
+			//(m*x)-(m*x1)
+			real32 eqStep2 = leftSideEquation + (m * x1);
+			real32 xTop = eqStep2 / m;
+			if (xTop < vMapEntity->mapSizeRect.max.x && xTop > vMapEntity->mapSizeRect.min.x)
 			{
-				vLineEntity->startOfLine.x = vMapEntity->mapSizeRect.min.x;
-				vLineEntity->startOfLine.y = yLeft;
-			}
-			else
-			{
-				vLineEntity->endOfLine.x = vMapEntity->mapSizeRect.min.x;
-				vLineEntity->endOfLine.y = yLeft;
-			}
-			startOfLineCreated = true;
-		}
-		//topSide
-		real32 y = vMapEntity->mapSizeRect.max.y;
-		real32 leftSideEquation = (y - y1);
-		//(m*x)-(m*x1)
-		real32 eqStep2 = leftSideEquation + (m * x1);
-		real32 xTop = eqStep2 / m;
-		if (xTop < vMapEntity->mapSizeRect.max.x && xTop > vMapEntity->mapSizeRect.min.x)
-		{
-			vLineEntity->intersectsTopBBox = true;
-			if (!startOfLineCreated)
-			{
-				vLineEntity->startOfLine.x = xTop;
-				vLineEntity->startOfLine.y = vMapEntity->mapSizeRect.max.y;
-			}
-			else
-			{
-				vLineEntity->endOfLine.x = xTop;
+				vLineEntity->intersectsTopBBox = true;
+				if (!startOfLineCreated)
+				{
+					vLineEntity->startOfLine.x = xTop;
+					vLineEntity->startOfLine.y = vMapEntity->mapSizeRect.max.y;
+				}
+				else if (!endOfLineCreated)
+				{
+					vLineEntity->endOfLine.x = xTop;
 					vLineEntity->endOfLine.y = vMapEntity->mapSizeRect.max.y;
+				}
+				startOfLineCreated = true;
 			}
-			startOfLineCreated = true;
-		}
 
-		//bottomSide
-		y = vMapEntity->mapSizeRect.min.y;
-		leftSideEquation = (y - y1);
-		eqStep2 = leftSideEquation + (m * x1);
-		real32 xBottom = eqStep2 / m;
-		if (xBottom < vMapEntity->mapSizeRect.max.x && xBottom > vMapEntity->mapSizeRect.min.x)
+			//bottomSide
+			y = vMapEntity->mapSizeRect.min.y;
+			leftSideEquation = (y - y1);
+			eqStep2 = leftSideEquation + (m * x1);
+			real32 xBottom = eqStep2 / m;
+			if (xBottom < vMapEntity->mapSizeRect.max.x && xBottom > vMapEntity->mapSizeRect.min.x)
+			{
+				vLineEntity->intersectsBottomBBox = true;
+				if (!startOfLineCreated)
+				{
+					vLineEntity->startOfLine.x = xBottom;
+					vLineEntity->startOfLine.y = vMapEntity->mapSizeRect.min.y;
+				}
+				else if (!endOfLineCreated)
+				{
+					vLineEntity->endOfLine.x = xBottom;
+					vLineEntity->endOfLine.y = vMapEntity->mapSizeRect.min.y;
+				}
+				startOfLineCreated = true;
+			}
+
+		}
+		 
+		vLineEntity->lineFinalized = true;
+		// determine if line hits bbox and can stop
+		bool doesHitBBox = false;
+		while (doesHitBBox)
 		{
-			vLineEntity->intersectsBottomBBox = true;
-			if (!startOfLineCreated)
-			{
-				vLineEntity->startOfLine.x = xBottom;
-				vLineEntity->startOfLine.y = vMapEntity->mapSizeRect.min.y;
-			}
-			else
-			{
-				vLineEntity->endOfLine.x = xBottom;
-				vLineEntity->endOfLine.y = vMapEntity->mapSizeRect.min.y;
-			}
-			startOfLineCreated = true;
+
 		}
-
-
-
 	}
 }

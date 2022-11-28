@@ -111,7 +111,7 @@ void MyInit()
     VoronoiTest2();
     AddVoronoiPoint(V2(1, -6));
 
-    AddVoronoiPoint(V2(-6, -2));
+   AddVoronoiPoint(V2(-6, -2));
     
     // LoadModel();
     //meshes = MakeDynamicArray<Mesh>(&meshArena, 1000);
@@ -202,8 +202,8 @@ void MyGameUpdate()
     vec2 startLine2 = V2(vLineEntity2->startOfLine.x, vLineEntity2->startOfLine.y);
     vec2 endLine2 = V2(vLineEntity2->endOfLine.x, vLineEntity2->endOfLine.y);
     DrawLine(startLine2, endLine2, 0.25f, V4(1.0f, 0.4f, 0.4f, 1.0f));
-    vec2 intersectionPointTest = IntersectionFourPoints(startLine, endLine, startLine1, endLine1);
-    DrawSprite(intersectionPointTest, V2(1, 1), &Data->sprites.bld);
+    //vec2 intersectionPointTest = IntersectionFourPoints(startLine, endLine, startLine1, endLine1);
+    //DrawSprite(intersectionPointTest, V2(1, 1), &Data->sprites.bld);
 
     Camera* cam = &Game->camera;
     int32 cameraSpeed = 8;

@@ -550,8 +550,7 @@ void AddVoronoiPoint(vec2 newVPointPos)
 	vMapEntity->vLines[vMapEntity->vLineCount] = vLineEntity->handle;
 	vMapEntity->vLineCount++;
 
-	// find closest existing node to new node
-
+	// step 4 find closest existing node to new node
 	real32 closestDistance = 9999;
 	VoronoiNode* nearestNode = {};
 	for (int i = 0; i < vMapEntity->vNodeCount; i++)
@@ -569,17 +568,18 @@ void AddVoronoiPoint(vec2 newVPointPos)
 		
 		
 	}
-
+	// assign these nodes
 	vLineEntity->distPosA = vNodeEntity->position;
 	vLineEntity->distPosB = nearestNode->position;
-	// step 5 calculate midpoint bewteen closest node and new node
+
+	// step 5 calculate midpoint & new slope/perpSlope bewteen closest node and new node
 	CalcMidpointVoronoi(vLineEntity);
 	CalcSlopesVoronoi(vLineEntity);
 
+	// step 5.1 make sure the line isn't undefined/Verrtical
 	if (!vLineEntity->undefinedVerticalPerpSlope)
 	{
-
-		// step 6 determine if intersecting with any other vLines
+		// step 6 determine if perpSlope of the new vLine is intersecting with any other existing vLines
 		real32 vLineIntShortestDistance;
 		VoronoiLine* closestIntersectVLineEntity;
 		vec2 intersectionPointToChange;
@@ -590,19 +590,23 @@ void AddVoronoiPoint(vec2 newVPointPos)
 			{
 				
 			}*/
+			// start and end point of teseting vLine
 			vec3 vLineNearestPointA  = vLineNearestEntity->startOfLine;
 			vec2 vLineNearestPointA_ = vec3ToVec2(vLineNearestPointA);
 			vec3 vLineNearestPointB  = vLineNearestEntity->endOfLine;
 			vec2 vLineNearestPointB_ = vec3ToVec2(vLineNearestPointB);
-			vec3 vLineEntityPointA   = vLineEntity->startOfLine;
+
+			// start and end point of new line using midpoint and perpSlopeVector
+			vec3 vLineEntityPointA   = vLineEntity->midpoint;
 			vec2 vLineEntityPointA_  = vec3ToVec2(vLineEntityPointA);
-			vec3 vLineEntityPointB   = vLineEntity->endOfLine;
+			vec3 vLineEntityPointB   = vLineEntity->perpSlopeVector;
 			vec2 vLineEntityPointB_  = vec3ToVec2(vLineEntityPointB);
 
+			// location of intersecting point between test line and new line
 			vec2 intersectionPoint = IntersectionFourPoints(vLineNearestPointA_,vLineNearestPointB_,vLineEntityPointA_,vLineEntityPointB_);
 			// is it within the bbox
 			bool isWithinBox = IsWithinBBox(intersectionPoint, vMapEntity->mapSizeRect);
-			if (!isWithinBox)
+			if (isWithinBox)
 			{
 				// is it the nearest line tested so far?
 				// TODO: Potential for optimization ==> select only lines within radius

@@ -199,7 +199,7 @@ void MyGameUpdate()
     DrawLine(startLine1, endLine1, 0.25f, V4(1.0f, 0.4f, 0.4f, 1.0f));
 
     VoronoiLine* vLineEntity2 = (VoronoiLine*)GetEntity(&Data->em, vMapEntity->vLines[2]);
-    vec2 startLine2 = V2(vLineEntity2->startOfLine.x, vLineEntity2->startOfLine.y);
+       vec2 startLine2 = V2(vLineEntity2->startOfLine.x, vLineEntity2->startOfLine.y);
     vec2 endLine2 = V2(vLineEntity2->endOfLine.x, vLineEntity2->endOfLine.y);
     DrawLine(startLine2, endLine2, 0.25f, V4(1.0f, 0.4f, 0.4f, 1.0f));
 	

@@ -14,6 +14,8 @@ enum EntityType
 	VoronoiType_Map,
 	VoronoiType_Intersection,
 
+	Type_Lot,
+
 	EntityType_Count,
 };
 
@@ -160,6 +162,13 @@ struct Points
 	int32 pointCapacity;
 
 	vec3* points;
+};
+
+struct Type_Lot
+{
+	vec3 position;
+
+	vec3 lotOutline[4];
 };
 
 struct VoronoiEntity {

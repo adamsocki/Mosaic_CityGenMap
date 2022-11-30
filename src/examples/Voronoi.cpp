@@ -565,8 +565,6 @@ void AddVoronoiPoint(vec2 newVPointPos)
 				nearestNode = vNodeNearestEntity;
 			}
 		}
-		
-		
 	}
 	// assign these nodes
 	vLineEntity->distPosA = vNodeEntity->position;
@@ -593,7 +591,6 @@ void AddVoronoiPoint(vec2 newVPointPos)
 			}*/
 			if (vLineNearestEntity->lineFinalized)
 			{
-				
 				// start and end point of teseting vLine
 				vec3 vLineNearestPointA  = vLineNearestEntity->startOfLine;
 				vec2 vLineNearestPointA_ = vec3ToVec2(vLineNearestPointA);
@@ -624,8 +621,6 @@ void AddVoronoiPoint(vec2 newVPointPos)
 						closestIntersectVLineEntity = vLineNearestEntity;
 						intersectionPointToChange = intersectionPoint;
 						intersectionModChangeRequired = true;
-						
-						
 					}
 				}
 				else
@@ -643,6 +638,13 @@ void AddVoronoiPoint(vec2 newVPointPos)
 			vLineEntity->startOfLine.y = intersectionPointToChange.y;
 			startOfLineCreated = true;
 
+			closestIntersectVLineEntity->endOfLine.x = intersectionPointToChange.x;
+			closestIntersectVLineEntity->endOfLine.y = intersectionPointToChange.y;
+			
+			EntityHandle vIntersectionHandle = AddEntity(&Data->em, VoronoiType_Intersection);
+			VoronoiIntersection* mapEntity = (VoronoiIntersection*)GetEntity(&Data->em, vIntersectionHandle);
+
+			
 			//vLineEntity->startOfLine.
 			// check and see what side of the bbox
 			// TODO - this is only temporary because i know where the point is going. 
@@ -747,11 +749,206 @@ void AddVoronoiPoint(vec2 newVPointPos)
 		}
 		 
 		vLineEntity->lineFinalized = true;
-		// determine if line hits bbox and can stop
-		bool doesHitBBox = false;
-		while (doesHitBBox)
+		
+	}
+	// determine if line hits bbox and can stop
+	bool doesHitBBox = true;
+	while (doesHitBBox)
+	{
+		//create new vLine
+		EntityHandle vLineHandleNew = AddEntity(&Data->em, VoronoiType_Line);
+		VoronoiLine* vLineEntityNew = (VoronoiLine*)GetEntity(&Data->em, vLineHandle);
+		vLineEntityNew->handle = vLineHandleNew;
+	
+		// step 3.1 add vLine to map
+		vMapEntity->vLines[vMapEntity->vLineCount] = vLineEntityNew->handle;
+		vMapEntity->vLineCount++;
+		// find the midpoint between the new district node and the intersecting node
+		// assign these nodes
+		vLineEntityNew->distPosA.x = newVPointPos.x;
+		vLineEntityNew->distPosA.y = newVPointPos.y;				// new node point
+		vLineEntityNew->distPosB = vLineEntity->distPosA;			// previousNode
+	
+		// step 5 calculate midpoint & new slope/perpSlope bewteen closest node and new node
+		CalcMidpointVoronoi(vLineEntityNew);
+		// calculate the slopes
+		CalcSlopesVoronoi(vLineEntityNew);
+		
+		if (!vLineEntity->undefinedVerticalPerpSlope)
 		{
-
+			// step 6 determine if perpSlope of the new vLine is intersecting with any other existing vLines
+			real32 vLineIntShortestDistance = 9999;
+			VoronoiLine* closestIntersectVLineEntity;
+			vec2 intersectionPointToChange;
+			bool intersectionModChangeRequired = false;
+			for (int i = 0; i < vMapEntity->vLineCount; i++)
+			{
+				VoronoiLine* vLineNearestEntity = (VoronoiLine*)GetEntity(&Data->em, vMapEntity->vLines[i]);
+				/*if (vLineNearestEntity->handle != vLineEntity->handle)
+				{
+					
+				}*/
+				if (vLineNearestEntity->lineFinalized)
+				{
+					// start and end point of teseting vLine
+					vec3 vLineNearestPointA  = vLineNearestEntity->startOfLine;
+					vec2 vLineNearestPointA_ = vec3ToVec2(vLineNearestPointA);
+					vec3 vLineNearestPointB  = vLineNearestEntity->endOfLine;
+					vec2 vLineNearestPointB_ = vec3ToVec2(vLineNearestPointB);
+	
+					// start and end point of new line using midpoint and perpSlopeVector
+					vec3 vLineEntityPointA   = vLineEntityNew->midpoint;
+					vec2 vLineEntityPointA_  = vec3ToVec2(vLineEntityPointA);
+					vec3 vLineEntityPointB   = vLineEntityNew->perpSlopeVector;
+					vec2 vLineEntityPointB_  = vec3ToVec2(vLineEntityPointB);
+	
+					// location of intersecting point between test line and new line
+					vec2 intersectionPoint = IntersectionFourPoints(vLineNearestPointA_,vLineNearestPointB_,vLineEntityPointA_,vLineEntityPointB_);
+					// is it within the bbox
+					bool isWithinBox = IsWithinBBox(intersectionPoint, vMapEntity->mapSizeRect);
+					if (isWithinBox)
+					{
+						// is it the nearest line tested so far?
+						// TODO: Potential for optimization ==> select only lines within radius
+						
+						// distance between vLineMidpoint and intersection
+						// is ^^ this value the smallest value calculated?
+						real32 distance = Distance(intersectionPoint, vec3ToVec2(vLineEntityNew->midpoint));
+						if (vLineIntShortestDistance > distance)
+						{
+							vLineIntShortestDistance = distance;
+							closestIntersectVLineEntity = vLineNearestEntity;
+							intersectionPointToChange = intersectionPoint;
+							intersectionModChangeRequired = true;
+						}
+					}
+					else
+					{
+						
+					}
+				}
+				
+			}
+			bool startOfLineCreated = false;
+			bool endOfLineCreated = false;
+			if (intersectionModChangeRequired)
+			{
+				vLineEntityNew->startOfLine.x = intersectionPointToChange.x;
+				vLineEntityNew->startOfLine.y = intersectionPointToChange.y;
+				startOfLineCreated = true;
+	
+				closestIntersectVLineEntity->endOfLine.x = intersectionPointToChange.x;
+				closestIntersectVLineEntity->endOfLine.y = intersectionPointToChange.y;
+				
+				EntityHandle vIntersectionHandle = AddEntity(&Data->em, VoronoiType_Intersection);
+				VoronoiIntersection* mapEntity = (VoronoiIntersection*)GetEntity(&Data->em, vIntersectionHandle);
+	
+				
+				//vLineEntity->startOfLine.
+				// check and see what side of the bbox
+				// TODO - this is only temporary because i know where the point is going. 
+				// TODO - I NEED to change this to find the other side of the line
+				//if (intersectionPointToChange.x > vLineEntity->midPoint.x && intersectionPointToChange.x > vLineEntity->midPoint.x)
+	
+			}
+			
+			// if no...continue
+	
+			// if yes...calculate where the intersection is
+			//		find midpoint between other 
+	
+			if (true)
+			{
+				real32 y1 = vLineEntityNew->midpoint.y;
+				real32 x1 = vLineEntityNew->midpoint.x;
+				real32 m = vLineEntity->perpSlopeReal;
+				//rightSide
+				real32 x = vMapEntity->mapSizeRect.max.x;
+				real32 rightSideEquation = (m * x) - (m * x1);
+				real32 yRight = rightSideEquation + y1;
+				
+				if (yRight < vMapEntity->mapSizeRect.max.y && yRight > vMapEntity->mapSizeRect.min.y)
+				{
+					vLineEntityNew->intersectsRightBBox = true;
+					if (!startOfLineCreated)
+					{
+						vLineEntityNew->startOfLine.x = vMapEntity->mapSizeRect.max.x;
+						vLineEntityNew->startOfLine.y = yRight;
+					}
+					else if (!endOfLineCreated)
+					{
+						vLineEntityNew->endOfLine.x = vMapEntity->mapSizeRect.max.x;
+						vLineEntityNew->endOfLine.y = yRight;
+					}
+					startOfLineCreated = true;
+				}
+				//leftSide
+				x = vMapEntity->mapSizeRect.min.x;
+				rightSideEquation = (m * x) - (m * x1);
+				real32 yLeft = rightSideEquation + y1;
+				if (yLeft < vMapEntity->mapSizeRect.max.y && yLeft > vMapEntity->mapSizeRect.min.y)
+				{
+					vLineEntityNew->intersectsLeftBBox = true;
+					if (!startOfLineCreated)
+					{
+						vLineEntityNew->startOfLine.x = vMapEntity->mapSizeRect.min.x;
+						vLineEntityNew->startOfLine.y = yLeft;
+					}
+					else if (!endOfLineCreated)
+					{
+						vLineEntityNew->endOfLine.x = vMapEntity->mapSizeRect.min.x;
+						vLineEntityNew->endOfLine.y = yLeft;
+					}
+					startOfLineCreated = true;
+				}
+				//topSide
+				real32 y = vMapEntity->mapSizeRect.max.y;
+				real32 leftSideEquation = (y - y1);
+				//(m*x)-(m*x1)
+				real32 eqStep2 = leftSideEquation + (m * x1);
+				real32 xTop = eqStep2 / m;
+				if (xTop < vMapEntity->mapSizeRect.max.x && xTop > vMapEntity->mapSizeRect.min.x)
+				{
+					vLineEntityNew->intersectsTopBBox = true;
+					if (!startOfLineCreated)
+					{
+						vLineEntityNew->startOfLine.x = xTop;
+						vLineEntityNew->startOfLine.y = vMapEntity->mapSizeRect.max.y;
+					}
+					else if (!endOfLineCreated)
+					{
+						vLineEntityNew->endOfLine.x = xTop;
+						vLineEntityNew->endOfLine.y = vMapEntity->mapSizeRect.max.y;
+					}
+					startOfLineCreated = true;
+				}
+	
+				//bottomSide
+				y = vMapEntity->mapSizeRect.min.y;
+				leftSideEquation = (y - y1);
+				eqStep2 = leftSideEquation + (m * x1);
+				real32 xBottom = eqStep2 / m;
+				if (xBottom < vMapEntity->mapSizeRect.max.x && xBottom > vMapEntity->mapSizeRect.min.x)
+				{
+					vLineEntityNew->intersectsBottomBBox = true;
+					if (!startOfLineCreated)
+					{
+						vLineEntityNew->startOfLine.x = xBottom;
+						vLineEntityNew->startOfLine.y = vMapEntity->mapSizeRect.min.y;
+					}
+					else if (!endOfLineCreated)
+					{
+						vLineEntityNew->endOfLine.x = xBottom;
+						vLineEntityNew->endOfLine.y = vMapEntity->mapSizeRect.min.y;
+					}
+					startOfLineCreated = true;
+				}
+	
+			}
+			
+			vLineEntityNew->lineFinalized = true;
+			
 		}
+		doesHitBBox = false;
 	}
 }

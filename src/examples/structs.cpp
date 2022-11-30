@@ -12,7 +12,7 @@ enum EntityType
 	VoronoiType_Node,
 	VoronoiType_District,
 	VoronoiType_Map,
-
+	VoronoiType_Intersection,
 
 	EntityType_Count,
 };
@@ -166,6 +166,12 @@ struct VoronoiEntity {
 	EntityHandle handle;
 	vec3 position;
 };
+
+struct VoronoiIntersection : VoronoiEntity
+{
+	
+};
+
 
 struct VoronoiLine : VoronoiEntity
 {

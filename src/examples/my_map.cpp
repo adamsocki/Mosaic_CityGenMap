@@ -202,6 +202,11 @@ void MyGameUpdate()
     vec2 startLine2 = V2(vLineEntity2->startOfLine.x, vLineEntity2->startOfLine.y);
     vec2 endLine2 = V2(vLineEntity2->endOfLine.x, vLineEntity2->endOfLine.y);
     DrawLine(startLine2, endLine2, 0.25f, V4(1.0f, 0.4f, 0.4f, 1.0f));
+	
+	// VoronoiLine* vLineEntity3 = (VoronoiLine*)GetEntity(&Data->em, vMapEntity->vLines[3]);
+    // vec2 startLine3 = V2(vLineEntity3->startOfLine.x, vLineEntity3->startOfLine.y);
+    // vec2 endLine3 = V2(vLineEntity3->endOfLine.x, vLineEntity3->endOfLine.y);
+    // DrawLine(startLine3, endLine3, 0.25f, V4(1.0f, 0.4f, 0.4f, 1.0f));
     //vec2 intersectionPointTest = IntersectionFourPoints(startLine, endLine, startLine1, endLine1);
     //DrawSprite(intersectionPointTest, V2(1, 1), &Data->sprites.bld);
 

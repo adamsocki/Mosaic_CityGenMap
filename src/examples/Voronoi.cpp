@@ -1,4 +1,7 @@
 ﻿
+
+#define TWO_PI 6.2318530718
+
 vec2 vec3ToVec2 (vec3 vec)
 {
 	vec2 vecOut ={};
@@ -753,6 +756,8 @@ void AddVoronoiPoint(vec2 newVPointPos)
 	}
 	// determine if line hits bbox and can stop
 	bool doesHitBBox = true;
+	VoronoiLine* vLineIntersect = {};
+	vLineIntersect = vLineEntity;
 	while (doesHitBBox)
 	{
 		//create new vLine
@@ -765,9 +770,10 @@ void AddVoronoiPoint(vec2 newVPointPos)
 		vMapEntity->vLineCount++;
 		// find the midpoint between the new district node and the intersecting node
 		// assign these nodes
-		vLineEntityNew->distPosA.x = newVPointPos.x;
-		vLineEntityNew->distPosA.y = newVPointPos.y;				// new node point
-		vLineEntityNew->distPosB = vLineEntity->distPosA;			// previousNode
+
+		vLineEntityNew->distPosA.x = vLineIntersect->distPosB.x;
+		vLineEntityNew->distPosA.y = vLineIntersect->distPosB.y;				// going to be the node of the intersected line
+		vLineEntityNew->distPosB = vLineIntersect->distPosA;			// previousNode
 	
 		// step 5 calculate midpoint & new slope/perpSlope bewteen closest node and new node
 		CalcMidpointVoronoi(vLineEntityNew);
@@ -818,6 +824,7 @@ void AddVoronoiPoint(vec2 newVPointPos)
 						{
 							vLineIntShortestDistance = distance;
 							closestIntersectVLineEntity = vLineNearestEntity;
+							vLineIntersect = vLineNearestEntity;
 							intersectionPointToChange = intersectionPoint;
 							intersectionModChangeRequired = true;
 						}
@@ -861,7 +868,7 @@ void AddVoronoiPoint(vec2 newVPointPos)
 			{
 				real32 y1 = vLineEntityNew->midpoint.y;
 				real32 x1 = vLineEntityNew->midpoint.x;
-				real32 m = vLineEntity->perpSlopeReal;
+				real32 m = vLineIntersect->perpSlopeReal;
 				//rightSide
 				real32 x = vMapEntity->mapSizeRect.max.x;
 				real32 rightSideEquation = (m * x) - (m * x1);
@@ -951,4 +958,37 @@ void AddVoronoiPoint(vec2 newVPointPos)
 		}
 		doesHitBBox = false;
 	}
+}
+
+
+
+void Voronoi3()
+{
+
+	int count = 100;
+
+	for (int i = 0; i < count; i++)
+	{
+
+		real32 closestDistance = Length(V2(100));
+		int32 index = 0;
+		// step 1 create node and add node to buffer
+		EntityHandle vNodeHandle = AddEntity(&Data->em, VoronoiType_Node);
+		VoronoiNode* vNodeEntity = (VoronoiNode*)GetEntity(&Data->em, vNodeHandle);
+
+		vNodeEntity->handle = vNodeHandle;
+		vNodeEntity->position = V3(RandfRange(-50.0f, 50.0f), RandfRange(-50.0f, 50.0f), -10);
+
+		for (int j = 0; j < 100; j++)
+		{
+			for (int k = 0; k < 100; k++)
+			{
+
+			}
+		}
+
+
+	}
+
+
 }

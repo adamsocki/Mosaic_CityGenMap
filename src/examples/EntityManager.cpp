@@ -122,4 +122,20 @@ void InitializeEntityBuffers()
 	vIntersectionBuffer->count = 0;
 	vIntersectionBuffer->entities = (VoronoiIntersection*)malloc(vIntersectionBuffer->capacity * vIntersectionBuffer->sizeInBytes);
 	memset(vIntersectionBuffer->entities, 0, sizeof(VoronoiIntersection) * vIntersectionBuffer->capacity);	
+
+
+	EntityTypeBuffer* gameMapBuffer = &Data->em.buffers[GameMap_Type];
+	gameMapBuffer->capacity = 100;
+	gameMapBuffer->sizeInBytes = sizeof(GameMap);
+	gameMapBuffer->count = 0;
+	gameMapBuffer->entities = (GameMap*)malloc(gameMapBuffer->capacity * gameMapBuffer->sizeInBytes);
+	memset(gameMapBuffer->entities, 0, sizeof(GameMap) * gameMapBuffer->capacity);
+
+	EntityTypeBuffer* gameMapTileBuffer = &Data->em.buffers[GameMap_Tile];
+	gameMapTileBuffer->capacity = 100;
+	gameMapTileBuffer->sizeInBytes = sizeof(Tile);
+	gameMapTileBuffer->count = 0;
+	gameMapTileBuffer->entities = (Tile*)malloc(gameMapTileBuffer->capacity * gameMapTileBuffer->sizeInBytes);
+	memset(gameMapTileBuffer->entities, 0, sizeof(Tile) * gameMapTileBuffer->capacity);
+
 }

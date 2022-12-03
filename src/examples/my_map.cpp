@@ -36,6 +36,7 @@ MyData* Data = {};
 
 #include "ParseOBJ.cpp"
 #include "Voronoi.cpp"
+#include "City.cpp"
 
 #include <vector>
 #include <string>
@@ -88,22 +89,28 @@ void MyInit()
     LoadSprites();
 
     Camera* cam = &Game->camera;
+    cam->width = 128;
+    cam->height = 72;
     cam->type = CameraType_Perspective;
     cam->projection = Perspective(1, 16.0f / 9.0f, 0.1f, 1000.0f);
-    Game->cameraPosition = V3(0, 0, -10);
-    Game->cameraRotation = IdentityQuaternion();
-    //// gameMem->cameraRotation = AxisAngle(V3(0, 1, 0), gameMem->camAngle);
+    Game->cameraPosition = V3(0, 0, -100);
+   //Game->cameraPosition = V3(cam->width / 2, cam->height / 2, -10);
+    //Game->cameraRotation = AxisAngle(V3(0, 1, 0), 1.0);
+   // Game->cameraRotation = Quaternion(0.0f, 0.707f, 0.0f, 0.0f);
+    //gameMem->cameraRotation = AxisAngle(V3(0, 1, 0), gameMem->camAngle);
 
     mat4 camWorld = TRS(Game->cameraPosition, Game->cameraRotation, V3(0));
     cam->view = OrthogonalInverse(camWorld);
 
     cam->viewProjection = cam->projection * cam->view;
-
+    //cam->projection = Orthographic(cam->width * -0.5f * cam->size, cam->width * 0.5f * cam->size,
+      // cam->height * -0.5f * cam->size, cam->height * 0.5f * cam->size, 0.0, -100.0f);
+  //  UpdateCamera(cam, Game->cameraPosition, quaternion rotation)
     InitializeEntityManager();
     InitializeEntityBuffers();
     //ParseOSM();
 
-
+    
    
     LoadModelParse(&Data->model);
 
@@ -111,11 +118,13 @@ void MyInit()
     VoronoiTest2();
     AddVoronoiPoint(V2(1, -6));
 
-   AddVoronoiPoint(V2(-6, -2));
+    AddVoronoiPoint(V2(-6, -2)); 
     
     // LoadModel();
     //meshes = MakeDynamicArray<Mesh>(&meshArena, 1000);
-
+    Voronoi3();
+    CityMapInit();
+    CityMapTileInit(V2(10.0f, 10.0f), V2(1.0f, 1.0f));
 }
 
 
@@ -133,21 +142,21 @@ void MyGameUpdate()
 
     pos = V3(-10, -3, 1);
 
-    AllocateModelOBJMesh(&Game->modelMesh, &Data->model);
-    InitMesh(&Game->modelMesh);
-    //RenderOBJModel(&Game->modelMesh, pos, scale, color, (AxisAngle(V3(0, 0, 0), Game->time)));
+    //AllocateModelOBJMesh(&Game->modelMesh, &Data->model);
+    //InitMesh(&Game->modelMesh);
+    ////RenderOBJModel(&Game->modelMesh, pos, scale, color, (AxisAngle(V3(0, 0, 0), Game->time)));
 
-    for (int i = 0; i < 8; i++)
-    {
-        pos.z += (1 * i);
-        pos.x = -10;
+    //for (int i = 0; i < 8; i++)
+    //{
+    //    pos.z += (1 * i);
+    //    pos.x = -10;
 
-        for (int j = 0; j < 8; j++)
-        {
-            pos.x += j / 2;
-            RenderOBJModel(&Game->modelMesh, pos, scale, color, (AxisAngle(V3(0, 0, 0), Game->time)), &Data->sprites.bld);
-        }
-    }
+    //    for (int j = 0; j < 8; j++)
+    //    {
+    //        pos.x += j / 2;
+    //        RenderOBJModel(&Game->modelMesh, pos, scale, color, (AxisAngle(V3(0, 0, 0), Game->time)), &Data->sprites.bld);
+    //    }
+    //}
    /* pos.z = 1;
     for (int i = 0; i < 20; i++)
     {
@@ -159,56 +168,73 @@ void MyGameUpdate()
 
     }*/
 
-    EntityTypeBuffer* vMapBuffer = &Data->em.buffers[VoronoiType_Map];
-    EntityTypeBuffer* vNodeBuffer = &Data->em.buffers[VoronoiType_Node];
-    VoronoiMap* vMapEntitiesInBuffer = (VoronoiMap*)vMapBuffer->entities;
-    VoronoiNode* vNodeEntitiesInBuffer = (VoronoiNode*)vNodeBuffer->entities;
+  //  EntityTypeBuffer* vMapBuffer = &Data->em.buffers[VoronoiType_Map];
+  //  EntityTypeBuffer* vNodeBuffer = &Data->em.buffers[VoronoiType_Node];
+  //  VoronoiMap* vMapEntitiesInBuffer = (VoronoiMap*)vMapBuffer->entities;
+  //  VoronoiNode* vNodeEntitiesInBuffer = (VoronoiNode*)vNodeBuffer->entities;
 
-    //				GET MAP ENTITY FOR REFERENCE WITHIN FUNCTION	
-    VoronoiMap* vMapEntity = (VoronoiMap*)GetEntity(&Data->em, vMapEntitiesInBuffer[0].handle);
-    //				GET REFERENCE TO NODES FOR REFERENCE WITHIN FUNCTION
+  //  //				GET MAP ENTITY FOR REFERENCE WITHIN FUNCTION	
+  //  VoronoiMap* vMapEntity = (VoronoiMap*)GetEntity(&Data->em, vMapEntitiesInBuffer[0].handle);
+  //  //				GET REFERENCE TO NODES FOR REFERENCE WITHIN FUNCTION
+  //  for (int i = 0; i < vNodeBuffer->count; i++)
+  //  {
+  //      VoronoiNode* vNodeEntity = (VoronoiNode*)GetEntity(&Data->em, vNodeEntitiesInBuffer[i].handle);
+  //      DrawSprite(V2(vNodeEntity->position.x, vNodeEntity->position.y), V2(1, 1), &Data->sprites.bld);
 
-    real32 distanceBetweenPoints;
-    VoronoiNode* vNodes[2];
-    //vec3 pointB;
-    //				Get nodes 
-    for (int i = 0; i < vMapEntity->vNodeCount; i++)
-    {
-        VoronoiNode* vNodeEntity = (VoronoiNode*)GetEntity(&Data->em, vMapEntity->vNodes[i]);
-        vNodes[i] = vNodeEntity;
-        //vNodes[i] = vNodeEntity;
-    }
+  //  }
 
-    VoronoiLine* vLineEntity = (VoronoiLine*)GetEntity(&Data->em, vMapEntity->vLines[0]);
-    vec2 rectPos = V2(vMapEntity->position.x, vMapEntity->position.y);
-   // DrawRect(rectPos, V2(10, 10), 0, color);
-    vec2 startLine = V2(vLineEntity->startOfLine.x, vLineEntity->startOfLine.y);
-    vec2 endLine = V2(vLineEntity->endOfLine.x, vLineEntity->endOfLine.y);
-    DrawLine(startLine, endLine, 0.25f, V4(1.0f, 0.4f, 0.4f, 1.0f));
-   
-   
-    DrawSprite(V2(vNodes[0]->position.x, vNodes[0]->position.y), V2(1, 1), &Data->sprites.bld);
-    DrawSprite(V2(vNodes[1]->position.x, vNodes[1]->position.y), V2(1, 1), &Data->sprites.bld);
-    DrawSprite(V2(vNodes[2]->position.x, vNodes[2]->position.y), V2(1, 1), &Data->sprites.bld);
+  //  real32 distanceBetweenPoints;
+  //  VoronoiNode* vNodes[2];
+  //  //vec3 pointB;
+  //  //				Get nodes 
+  //  for (int i = 0; i < vMapEntity->vNodeCount; i++)
+  //  {
+  //      VoronoiNode* vNodeEntity = (VoronoiNode*)GetEntity(&Data->em, vMapEntity->vNodes[i]);
+  //      vNodes[i] = vNodeEntity;
+  //      //vNodes[i] = vNodeEntity;
+  //  }
 
-    DrawSprite(V2(vNodes[3]->position.x, vNodes[3]->position.y), V2(1, 1), &Data->sprites.bld);
+  //  VoronoiLine* vLineEntity = (VoronoiLine*)GetEntity(&Data->em, vMapEntity->vLines[0]);
+  //  vec2 rectPos = V2(vMapEntity->position.x, vMapEntity->position.y);
+  // // DrawRect(rectPos, V2(10, 10), 0, color);
+  //  vec2 startLine = V2(vLineEntity->startOfLine.x, vLineEntity->startOfLine.y);
+  //  vec2 endLine = V2(vLineEntity->endOfLine.x, vLineEntity->endOfLine.y);
+  //  DrawLine(startLine, endLine, 0.25f, V4(1.0f, 0.4f, 0.4f, 1.0f));
+  // 
+  // 
+  //  DrawSprite(V2(vNodes[0]->position.x, vNodes[0]->position.y), V2(1, 1), &Data->sprites.bld);
+  //  DrawSprite(V2(vNodes[1]->position.x, vNodes[1]->position.y), V2(1, 1), &Data->sprites.bld);
+  //  DrawSprite(V2(vNodes[2]->position.x, vNodes[2]->position.y), V2(1, 1), &Data->sprites.bld);
 
-    VoronoiLine* vLineEntity1 = (VoronoiLine*)GetEntity(&Data->em, vMapEntity->vLines[1]);
-    vec2 startLine1 = V2(vLineEntity1->startOfLine.x, vLineEntity1->startOfLine.y);
-    vec2 endLine1 = V2(vLineEntity1->endOfLine.x, vLineEntity1->endOfLine.y);
-    DrawLine(startLine1, endLine1, 0.25f, V4(1.0f, 0.4f, 0.4f, 1.0f));
+  //  DrawSprite(V2(vNodes[3]->position.x, vNodes[3]->position.y), V2(1, 1), &Data->sprites.bld);
 
-    VoronoiLine* vLineEntity2 = (VoronoiLine*)GetEntity(&Data->em, vMapEntity->vLines[2]);
-    vec2 startLine2 = V2(vLineEntity2->startOfLine.x, vLineEntity2->startOfLine.y);
-    vec2 endLine2 = V2(vLineEntity2->endOfLine.x, vLineEntity2->endOfLine.y);
-    DrawLine(startLine2, endLine2, 0.25f, V4(1.0f, 0.4f, 0.4f, 1.0f));
+  //  VoronoiLine* vLineEntity1 = (VoronoiLine*)GetEntity(&Data->em, vMapEntity->vLines[1]);
+  //  vec2 startLine1 = V2(vLineEntity1->startOfLine.x, vLineEntity1->startOfLine.y);
+  //  vec2 endLine1 = V2(vLineEntity1->endOfLine.x, vLineEntity1->endOfLine.y);
+  //  DrawLine(startLine1, endLine1, 0.25f, V4(1.0f, 0.4f, 0.4f, 1.0f));
+
+  //  VoronoiLine* vLineEntity2 = (VoronoiLine*)GetEntity(&Data->em, vMapEntity->vLines[2]);
+  //  vec2 startLine2 = V2(vLineEntity2->startOfLine.x, vLineEntity2->startOfLine.y);
+  //  vec2 endLine2 = V2(vLineEntity2->endOfLine.x, vLineEntity2->endOfLine.y);
+  //  DrawLine(startLine2, endLine2, 0.25f, V4(1.0f, 0.4f, 0.4f, 1.0f));
 	
-	// VoronoiLine* vLineEntity3 = (VoronoiLine*)GetEntity(&Data->em, vMapEntity->vLines[3]);
-    // vec2 startLine3 = V2(vLineEntity3->startOfLine.x, vLineEntity3->startOfLine.y);
-    // vec2 endLine3 = V2(vLineEntity3->endOfLine.x, vLineEntity3->endOfLine.y);
-    // DrawLine(startLine3, endLine3, 0.25f, V4(1.0f, 0.4f, 0.4f, 1.0f));
-    //vec2 intersectionPointTest = IntersectionFourPoints(startLine, endLine, startLine1, endLine1);
-    //DrawSprite(intersectionPointTest, V2(1, 1), &Data->sprites.bld);
+	 //VoronoiLine* vLineEntity3 = (VoronoiLine*)GetEntity(&Data->em, vMapEntity->vLines[3]);
+  //   vec2 startLine3 = V2(vLineEntity3->startOfLine.x, vLineEntity3->startOfLine.y);
+  //   vec2 endLine3 = V2(vLineEntity3->endOfLine.x, vLineEntity3->endOfLine.y);
+  //   DrawLine(startLine3, endLine3, 0.25f, V4(1.0f, 0.4f, 0.4f, 1.0f));
+  //  vec2 intersectionPointTest = IntersectionFourPoints(startLine, endLine, startLine1, endLine1);
+  //  DrawSprite(intersectionPointTest, V2(1, 1), &Data->sprites.bld);
+
+  //  VoronoiLine* vLineEntity4 = (VoronoiLine*)GetEntity(&Data->em, vMapEntity->vLines[4]);
+  //   vec2 startLine4 = V2(vLineEntity4->startOfLine.x, vLineEntity4->startOfLine.y);
+  //   vec2 endLine4 = V2(vLineEntity4->endOfLine.x, vLineEntity4->endOfLine.y);
+  //   DrawLine(startLine4, endLine4, 0.25f, V4(1.0f, 0.4f, 0.4f, 1.0f));
+ //   vec2 intersectionPointTest = IntersectionFourPoints(startLine, endLine, startLine1, endLine1);
+   // DrawSprite(intersectionPointTest, V2(1, 1), &Data->sprites.bld);
+    // VoronoiLine* vLineEntity5 = (VoronoiLine*)GetEntity(&Data->em, vMapEntity->vLines[5]);
+    //  vec2 startLine5 = V2(vLineEntity5->startOfLine.x, vLineEntity5->startOfLine.y);
+    //  vec2 endLine5 = V2(vLineEntity5->endOfLine.x, vLineEntity5->endOfLine.y);
+    //  DrawLine(startLine5, endLine5, 0.25f, V4(1.0f, 0.4f, 0.4f, 1.0f));
 
     Camera* cam = &Game->camera;
     int32 cameraSpeed = 8;
@@ -236,8 +262,39 @@ void MyGameUpdate()
     {
         Game->cameraPosition.z -= cameraSpeed * Game->deltaTime;
     }
+
+    if (InputHeld(Keyboard, Input_G))
+    {
+        Game->cameraRotation.x = 1.5f * Game->deltaTime;
+    }
+    if (InputHeld(Keyboard, Input_H))
+    {
+        Game->cameraRotation.y = 1.5f * Game->deltaTime;
+    }
+    if (InputHeld(Keyboard, Input_I))
+    {
+        Game->cameraRotation.z = 1.5f * Game->deltaTime;
+    }
+    if (InputHeld(Keyboard, Input_J))
+    {
+        Game->cameraRotation.w = 1.5f * Game->deltaTime;
+    }
+    
     
 
+    CityMapLogic();
+
+    CityMapRender();
+    /*Mesh* meshModel = {};
+    int32 indexCount = Data->model.facesCount;  
+
+    for (int i = 0; i < indexCount; i++)
+    {
+        DisplayOBJModel(&Data->model, &Game->modelMesh, i);
+    *///}
+
+
+    
   //  DrawLine(V2(1, 1), V2(0, 0), 3, color);
     
     //Mesh* meshModel = {};

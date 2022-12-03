@@ -48,7 +48,7 @@ void LoadModelParse(OBJModel* model)
 
     char* path[] = 
     {
-        "data/untitled1.obj"
+        "data/tile.obj"
     };
 
     if (OpenFileForRead(path[0], & file, &Game->frameMem))
@@ -444,6 +444,8 @@ void RenderOBJModel(Mesh* mesh, vec3 pos, vec3 scale, vec4 color, quaternion rot
 
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glEnable(GL_DEPTH_TEST);
+    glDepthFunc(GL_LESS);
 
     mat4 model = TRS(pos, rotation, scale);
 
@@ -478,6 +480,8 @@ void RenderOBJModel(Mesh* mesh, vec3 pos, vec3 scale, vec4 color, quaternion rot
     glDisableVertexAttribArray(vert);
     glDisableVertexAttribArray(normals);
     glDisableVertexAttribArray(texcoord);
+
+    //glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
 

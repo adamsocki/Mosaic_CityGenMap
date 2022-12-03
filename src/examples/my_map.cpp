@@ -136,7 +136,7 @@ void MyGameUpdate()
 
     for (int i = 0; i < 8; i++)
     {
-        pos.z += (1 * i);
+        pos.z -= (1 * i);
         pos.x = -20;
 
         for (int j = 0; j < 8; j++)

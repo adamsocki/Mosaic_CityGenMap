@@ -1,0 +1,9 @@
+
+void GenerateLotOnLine(VoronoiLine* vLine)
+{
+
+
+    
+
+
+}

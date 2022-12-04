@@ -1,6 +1,9 @@
 
 
 
+
+
+
 enum EntityType
 {
 	OSMType_Way,
@@ -14,7 +17,8 @@ enum EntityType
 	VoronoiType_Map,
 	VoronoiType_Intersection,
 
-	Type_Lot,
+	GameMap_Type,
+	GameMap_Tile,
 
 	EntityType_Count,
 };
@@ -182,6 +186,91 @@ struct TypeLot
 struct VoronoiEntity {
 	EntityHandle handle;
 	vec3 position;
+};
+
+
+enum CityGenState_Type
+{
+	CityGenState_Sequential,
+
+	CityGenState_TypeCount,
+
+};
+
+enum TileType
+{
+	TileType_Grass,
+	TileType_Land,
+	TileType_Water,
+
+	TileType_Count,
+};
+
+
+struct Tile
+{
+	EntityHandle handle;
+
+	vec2 position;
+	vec2 size;
+
+	//int32 height;
+};
+
+enum LandUse_Type
+{
+
+};
+
+struct MapEntity
+{
+	vec3 position;
+};
+
+struct Building : MapEntity 
+{
+	LandUse_Type landUseType;
+
+
+};
+
+struct Road : MapEntity
+{
+
+};
+
+struct Person : MapEntity
+{
+
+};
+
+
+
+struct GameMap
+{
+	EntityHandle handle;
+
+	vec2 size;
+
+	CityGenState_Type cityGenState;
+
+	EntityHandle* tiles;
+	int32 tileCount;
+	int32 tileCapacity;
+	int32 tileSizeInBytes;
+
+	/*Building* buildings;
+	int32 buildingCount;
+	int32 buildingCapacity;
+	int32 buildingSizeInBytes;
+	Road* roads;
+	int32 roadCount;
+	int32 roadCapacity;
+	int32 roadSizeInBytes;
+	Person* persons;
+	int32 personCount;
+	int32 personCapacity;
+	int32 personSizeInBytes;*/
 };
 
 struct VoronoiIntersection : VoronoiEntity

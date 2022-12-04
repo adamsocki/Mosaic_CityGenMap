@@ -48,7 +48,7 @@ void LoadModelParse(OBJModel* model)
 
     char* path[] = 
     {
-        "data/untitled1.obj"
+        "data/tile.obj"
     };
 
     if (OpenFileForRead(path[0], & file, &Game->frameMem))

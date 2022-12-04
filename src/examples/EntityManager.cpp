@@ -122,12 +122,4 @@ void InitializeEntityBuffers()
 	vIntersectionBuffer->count = 0;
 	vIntersectionBuffer->entities = (VoronoiIntersection*)malloc(vIntersectionBuffer->capacity * vIntersectionBuffer->sizeInBytes);
 	memset(vIntersectionBuffer->entities, 0, sizeof(VoronoiIntersection) * vIntersectionBuffer->capacity);	
-
-	EntityTypeBuffer* lotBuffer = &Data->em.buffers[Type_Lot];
-	lotBuffer->capacity = 4000;
-	lotBuffer->sizeInBytes = sizeof(TypeLot);
-	lotBuffer->count = 0;
-	lotBuffer->entities = (TypeLot*)malloc(lotBuffer->capacity * lotBuffer->sizeInBytes);
-	memset(lotBuffer->entities, 0, sizeof(Type_Lot) * lotBuffer->capacity);	
-
 }

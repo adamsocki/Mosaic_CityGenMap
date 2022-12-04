@@ -36,6 +36,7 @@ MyData* Data = {};
 
 #include "ParseOBJ.cpp"
 #include "Voronoi.cpp"
+#include "LotGen.cpp"
 
 #include <vector>
 #include <string>
@@ -112,6 +113,8 @@ void MyInit()
     AddVoronoiPoint(V2(1, -6));
 
    AddVoronoiPoint(V2(-6, -2));
+   
+   GenerateLotOnLine();
     
     // LoadModel();
     //meshes = MakeDynamicArray<Mesh>(&meshArena, 1000);
@@ -161,8 +164,12 @@ void MyGameUpdate()
 
     EntityTypeBuffer* vMapBuffer = &Data->em.buffers[VoronoiType_Map];
     EntityTypeBuffer* vNodeBuffer = &Data->em.buffers[VoronoiType_Node];
+    EntityTypeBuffer* lotBuffer = &Data->em.buffers[Type_Lot];
+	
     VoronoiMap* vMapEntitiesInBuffer = (VoronoiMap*)vMapBuffer->entities;
     VoronoiNode* vNodeEntitiesInBuffer = (VoronoiNode*)vNodeBuffer->entities;
+	
+    TypeLot* lotEntitiesInBuffer = (TypeLot*)lotBuffer->entities;
 
     //				GET MAP ENTITY FOR REFERENCE WITHIN FUNCTION	
     VoronoiMap* vMapEntity = (VoronoiMap*)GetEntity(&Data->em, vMapEntitiesInBuffer[0].handle);
@@ -202,6 +209,12 @@ void MyGameUpdate()
        vec2 startLine2 = V2(vLineEntity2->startOfLine.x, vLineEntity2->startOfLine.y);
     vec2 endLine2 = V2(vLineEntity2->endOfLine.x, vLineEntity2->endOfLine.y);
     DrawLine(startLine2, endLine2, 0.25f, V4(1.0f, 0.4f, 0.4f, 1.0f));
+	
+	
+	
+	TypeLot* lotEntity = (TypeLot*)GetEntity(&Data->em, lotEntitiesInBuffer[0].handle);
+   DrawRect(V2(0,1),V2(1,1), 0, V4(0.6f, 0.4f, 0.4f, 1.0f) );
+	
 	
 	// VoronoiLine* vLineEntity3 = (VoronoiLine*)GetEntity(&Data->em, vMapEntity->vLines[3]);
     // vec2 startLine3 = V2(vLineEntity3->startOfLine.x, vLineEntity3->startOfLine.y);

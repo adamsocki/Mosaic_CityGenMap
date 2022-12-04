@@ -164,11 +164,19 @@ struct Points
 	vec3* points;
 };
 
-struct Type_Lot
+struct TypeLot
 {
 	vec3 position;
 
 	vec3 lotOutline[4];
+	vec2 lotSize[4];
+
+	real32 vLineReferenceLength;
+	int32 vLineIndex;
+	
+	real32 lotOffsetFromStreet;
+	
+	EntityHandle handle;
 };
 
 struct VoronoiEntity {

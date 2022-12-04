@@ -36,6 +36,9 @@ MyData* Data = {};
 
 #include "ParseOBJ.cpp"
 #include "Voronoi.cpp"
+#include "city.cpp"
+#include "camera.cpp"
+#include "Mouse.cpp"
 
 #include <vector>
 #include <string>
@@ -46,11 +49,6 @@ MyData* Data = {};
 
 //#include "OSMParse.cpp"
 
-
-
-
-
-
 int32 counter = 0;
 
 //#include "ModelRender.cpp"
@@ -58,10 +56,6 @@ int32 counter = 0;
 
 void MyInit()
 {
-
-    
-    
-
    /* AllocateMemoryArena(&nodeArena, Megabytes(50));
     AllocateMemoryArena(&boundArena, Megabytes(1));
     
@@ -80,7 +74,7 @@ void MyInit()
 
     Data = (MyData*)Game->myData;
 
-    Data->meshManager.meshCapacity = 10000;
+    Data->meshManager.meshCapacity = 100000;
     Data->meshManager.meshes = (Mesh*)malloc(sizeof(Mesh) * Data->meshManager.meshCapacity);
     memset(Data->meshManager.meshes, 0, sizeof(Mesh) * Data->meshManager.meshCapacity);
     Data->meshManager.meshCount = 0;
@@ -103,8 +97,6 @@ void MyInit()
     InitializeEntityBuffers();
     //ParseOSM();
 
-
-   
     LoadModelParse(&Data->model);
 
     InitializeVoronoiMap();
@@ -113,15 +105,19 @@ void MyInit()
     // LoadModel();
     //meshes = MakeDynamicArray<Mesh>(&meshArena, 1000);
 
+    CityMapInit();
+    
+    CityMapTileInit(V2(10, 10), V2(1, 1));
+
+    SetCameraToMap();
+    MouseInit();
 }
-
-
 
 void MyGameUpdate()
 {
     vec2 mousePos = Input->mousePosNormSigned;
-    mousePos.x = mousePos.x * 8;
-    mousePos.y = mousePos.y * 4.5f;
+    //mousePos.x = mousePos.x * 8;
+    //mousePos.y = mousePos.y * 4.5f;
 
     vec3 pos = V3(mousePos.x, mousePos.y, -1.0f);
     vec3 scale = V3(1.0f, 1.0f, 1.0f);
@@ -134,7 +130,7 @@ void MyGameUpdate()
     InitMesh(&Game->modelMesh);
     //RenderOBJModel(&Game->modelMesh, pos, scale, color, (AxisAngle(V3(0, 0, 0), Game->time)));
 
-    for (int i = 0; i < 8; i++)
+    /*for (int i = 0; i < 8; i++)
     {
         pos.z -= (1 * i);
         pos.x = -20;
@@ -144,16 +140,13 @@ void MyGameUpdate()
             pos.x += j / 2;
             RenderOBJModel(&Game->modelMesh, pos, scale, color, (AxisAngle(V3(0, 0, 0), Game->time)), &Data->sprites.bld);
         }
-    }
+    }*/
    /* pos.z = 1;
     for (int i = 0; i < 20; i++)
     {
-
         pos.z += (5 * i);
 
         RenderOBJModel(&Game->modelMesh, pos, scale, color, (AxisAngle(V3(0, 0, 0), Game->time)));
-
-
     }*/
 
     DrawSprite(V2(0), V2(1, 1), &Data->sprites.bld);
@@ -184,7 +177,28 @@ void MyGameUpdate()
     {
         Game->cameraPosition.z -= cameraSpeed * Game->deltaTime;
     }
-    
+    if (InputHeld(Keyboard, Input_G))
+    {
+        Game->cameraRotation.x += 1.5f * Game->deltaTime;
+    }
+    if (InputHeld(Keyboard, Input_H))
+    {
+        Game->cameraRotation.x -= 1.5f * Game->deltaTime;
+
+    }
+    /*if (InputHeld(Keyboard, Input_I))
+    {
+        Game->cameraRotation.z += 1.5f * Game->deltaTime;
+    }*/
+    if (InputHeld(Keyboard, Input_J))
+    {
+      //  Game->cameraRotation.w += 1.5f * Game->deltaTime;
+    }
+
+    CityMapLogic();
+    CityMapRender();
+    MouseRender();
+}
 
   //  DrawLine(V2(1, 1), V2(0, 0), 3, color);
     
@@ -208,8 +222,6 @@ void MyGameUpdate()
    
     //DrawLine(V2(0.3f, 0.3f), V2(1.0f, 1.0f), 1, V4(1.0f, 0.4f, 0.4f, 1.0f));
     //DrawModel();
-}
-
 
     // Step 1
     

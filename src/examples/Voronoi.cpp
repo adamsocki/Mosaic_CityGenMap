@@ -287,8 +287,6 @@ void InitializeVoronoiMap()
 
 void VoronoiTest2()
 {
-
-
 	//				*********************
 	//				*********************
 	//						LOGIC
@@ -321,7 +319,6 @@ void VoronoiTest2()
 	EntityHandle vLineHandle = AddEntity(&Data->em, VoronoiType_Line);
 	VoronoiLine* vLineEntity = (VoronoiLine*)GetEntity(&Data->em, vLineHandle);
 	
-	
 	vLineEntity->distPosA = vNodes[0]->position;
 	vLineEntity->distPosB = vNodes[1]->position;
 
@@ -333,12 +330,10 @@ void VoronoiTest2()
 	CalcMidpointVoronoi(vLineEntity);
 	CalcSlopesVoronoi(vLineEntity);
 	
-
 	// detect edge of vLine with bbox
 	// y - y1 = m(x - x1)
 	if (!vLineEntity->undefinedVerticalPerpSlope)
 	{
-
 		real32 y1 = vLineEntity->midpoint.y;
 		real32 x1 = vLineEntity->midpoint.x;
 		real32 m = vLineEntity->perpSlopeReal;
@@ -388,11 +383,5 @@ void VoronoiTest2()
 		//bottomSide
 		y = vMapEntity->mapSizeRect.min.y;
 		leftSideEquation = (y - y1);
-
-
-
 	}
-	
-
-
 }

@@ -1,6 +1,9 @@
 
 
 
+
+
+
 enum EntityType
 {
 	OSMType_Way,
@@ -12,7 +15,12 @@ enum EntityType
 	VoronoiType_Node,
 	VoronoiType_District,
 	VoronoiType_Map,
+	VoronoiType_Intersection,
 
+	GameMap_Type,
+	GameMap_Tile,
+
+	Entity_Mouse,
 
 	EntityType_Count,
 };
@@ -69,7 +77,7 @@ struct OBJModel
 	vec2* textureCoords;
 	int32 facesCount;
 	OBJFaceArray* faces;
-	
+
 	int32 indexCount;
 };
 
@@ -83,7 +91,7 @@ struct EntityHandle {
 struct EntityInfo {
 	int32 generation;
 	int32 indexInBuffer;
-	
+
 	EntityType type;
 };
 
@@ -98,7 +106,7 @@ struct EntityTypeBuffer {
 
 struct EntityManager {
 	EntityTypeBuffer buffers[EntityType_Count];
-	EntityInfo *entities;
+	EntityInfo* entities;
 	int32 entityCapacity;
 
 	int32 nextID;
@@ -107,7 +115,7 @@ struct EntityManager {
 
 struct MeshManager
 {
-	
+
 	Mesh* meshes;
 	int32 meshCount;
 	int32 meshCapacity;
@@ -118,6 +126,8 @@ struct MeshManager
 
 struct EntitySprites {
 	Sprite bld;
+
+	Sprite tile3;
 };
 
 struct MyData
@@ -162,17 +172,129 @@ struct Points
 	vec3* points;
 };
 
+struct Type_Lot
+{
+	vec3 position;
+
+	vec3 lotOutline[4];
+};
+
 struct VoronoiEntity {
 	EntityHandle handle;
 	vec3 position;
 };
 
+
+enum CityGenState_Type
+{
+	CityGenState_Sequential,
+
+	CityGenState_TypeCount,
+
+};
+
+enum TileType
+{
+	TileType_Grass,
+	TileType_Land,
+	TileType_Water,
+
+	TileType_Count,
+};
+
+struct Mouse
+{
+	EntityHandle handle;
+	vec3 position;
+
+};
+
+struct Tile
+{
+	EntityHandle handle;
+
+	quaternion rotation;
+	real32 angle_x;
+	real32 angle_z;
+
+	vec3 position;
+	vec2 size;
+
+	//int32 height;
+};
+
+enum LandUse_Type
+{
+
+};
+
+struct MapEntity
+{
+	vec3 position;
+};
+
+struct Building : MapEntity
+{
+	LandUse_Type landUseType;
+
+
+};
+
+struct Road : MapEntity
+{
+
+};
+
+struct Person : MapEntity
+{
+
+};
+
+
+
+struct GameMap
+{
+	EntityHandle handle;
+
+	vec2 size;
+
+	CityGenState_Type cityGenState;
+
+	EntityHandle* tiles;
+	int32 tileCount;
+	int32 tileCapacity;
+	int32 tileSizeInBytes;
+
+	/*Building* buildings;
+	int32 buildingCount;
+	int32 buildingCapacity;
+	int32 buildingSizeInBytes;
+	Road* roads;
+	int32 roadCount;
+	int32 roadCapacity;
+	int32 roadSizeInBytes;
+	Person* persons;
+	int32 personCount;
+	int32 personCapacity;
+	int32 personSizeInBytes;*/
+};
+
+struct VoronoiIntersection : VoronoiEntity
+{
+
+};
+
+
 struct VoronoiLine : VoronoiEntity
 {
 
 
+	bool lineFinalized;
+
 	vec3 distPosA;
+	EntityHandle distHandleA;
 	vec3 distPosB;
+	EntityHandle distHandleB;
 
 	vec3 startOfLine;
 	vec3 endOfLine;
@@ -193,7 +315,7 @@ struct VoronoiLine : VoronoiEntity
 	bool intersectsRightBBox;
 	bool intersectsTopBBox;
 	bool intersectsLeftBBox;
-	
+
 	bool undefinedVerticalSlope;
 	bool undefinedVerticalPerpSlope;
 	vec3 slopePointFromMidpoint;
@@ -204,7 +326,7 @@ struct VoronoiLine : VoronoiEntity
 struct VoronoiNode : VoronoiEntity
 {
 	int32 districtID;
-	
+
 	//vec3 position;
 };
 
@@ -216,9 +338,10 @@ struct VoronoiMap : VoronoiEntity
 	int32 vNodeCapacity;
 	int32 vNodeSizeInBytes;
 
-	VoronoiLine* vLines;
+	EntityHandle* vLines;
 	int32 vLineCount;
 	int32 vLineCapacity;
+	int32 vLineSizeInBytes;
 
 	Rect mapSizeRect;
 };
@@ -237,7 +360,7 @@ struct Tag : Entity
 
 struct Node : Entity
 {
-	
+
 	bool visible;
 	int32 version;
 	int32 uid;
@@ -247,7 +370,7 @@ struct Node : Entity
 	int32 renderTestID;
 
 	DynamicArray<Tag> tagList;
-	
+
 };
 
 
@@ -280,7 +403,7 @@ struct OSMXml
 	Way* wayList;
 	Node* nodeList;
 	Tag* tagList;
-	Relation* relationList;	
+	Relation* relationList;
 };
 
 enum TokenTypeForLevel
@@ -314,5 +437,4 @@ struct TokenVal
 	char* start;
 	int32 length;
 };
-
 

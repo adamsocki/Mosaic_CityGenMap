@@ -1,10 +1,8 @@
-
-
 int32 freeList[10000];
 int32 freeListCount = 0;
 
-
-void* GetEntity(EntityManager* em, EntityHandle handle) {
+void* GetEntity(EntityManager* em, EntityHandle handle) 
+{
 	if (handle.indexInInfo >= em->entityCapacity) {
 		return NULL;
 	}
@@ -23,9 +21,8 @@ void* GetEntity(EntityManager* em, EntityHandle handle) {
 	return ((u8*)buffer->entities + (buffer->sizeInBytes * info->indexInBuffer));
 }
 
-void DeleteEntity(EntityManager* em, EntityHandle handle) {
-	
-	
+void DeleteEntity(EntityManager* em, EntityHandle handle) 
+{
 	freeList[freeListCount] = handle.indexInInfo;
 	freeListCount++;
 
@@ -36,9 +33,10 @@ void DeleteEntity(EntityManager* em, EntityHandle handle) {
 	buffer->count--;
 }
 
-EntityHandle AddEntity(EntityManager *em, EntityType type) {
+EntityHandle AddEntity(EntityManager* em, EntityType type) 
+{
 	int32 nextFreeIdInIndex = em->nextID;
-	
+
 	if (freeListCount > 0) {
 		nextFreeIdInIndex = freeList[freeListCount - 1];
 		freeListCount--;
@@ -46,7 +44,7 @@ EntityHandle AddEntity(EntityManager *em, EntityType type) {
 	else {
 		em->nextID++;
 	}
-	
+
 	EntityInfo* info = &em->entities[nextFreeIdInIndex];
 	info->type = type;
 	info->generation++;
@@ -63,13 +61,12 @@ EntityHandle AddEntity(EntityManager *em, EntityType type) {
 	return handle;
 }
 
-void InitializeEntityManager() {
-	// Entity Manager
-	Data->em.entityCapacity = 100000;
+void InitializeEntityManager() 
+{	// Entity Manager
+	Data->em.entityCapacity = 600000;
 	Data->em.entities = (EntityInfo*)malloc(sizeof(EntityInfo) * Data->em.entityCapacity);
 	memset(Data->em.entities, 0, sizeof(EntityInfo) * Data->em.entityCapacity);
 	Data->em.nextID = 0;
-	
 }
 
 void InitializeEntityBuffers()
@@ -115,4 +112,27 @@ void InitializeEntityBuffers()
 	vLineBuffer->count = 0;
 	vLineBuffer->entities = (VoronoiLine*)malloc(vLineBuffer->capacity * vLineBuffer->sizeInBytes);
 	memset(vLineBuffer->entities, 0, sizeof(VoronoiLine) * vLineBuffer->capacity);
+
+	EntityTypeBuffer* vIntersectionBuffer = &Data->em.buffers[VoronoiType_Intersection];
+	vIntersectionBuffer->capacity = 4000;
+	vIntersectionBuffer->sizeInBytes = sizeof(VoronoiIntersection);
+	vIntersectionBuffer->count = 0;
+	vIntersectionBuffer->entities = (VoronoiIntersection*)malloc(vIntersectionBuffer->capacity * vIntersectionBuffer->sizeInBytes);
+	memset(vIntersectionBuffer->entities, 0, sizeof(VoronoiIntersection) * vIntersectionBuffer->capacity);
+
+	EntityTypeBuffer* gameMapBuffer = &Data->em.buffers[GameMap_Type];
+	gameMapBuffer->capacity = 100;
+	gameMapBuffer->sizeInBytes = sizeof(GameMap);
+	gameMapBuffer->count = 0;
+	gameMapBuffer->entities = (GameMap*)malloc(gameMapBuffer->capacity * gameMapBuffer->sizeInBytes);
+	memset(gameMapBuffer->entities, 0, sizeof(GameMap) * gameMapBuffer->capacity);
+
+	EntityTypeBuffer* gameMapTileBuffer = &Data->em.buffers[GameMap_Tile];
+	gameMapTileBuffer->capacity = 100;
+	gameMapTileBuffer->sizeInBytes = sizeof(Tile);
+	gameMapTileBuffer->count = 0;
+	gameMapTileBuffer->entities = (Tile*)malloc(gameMapTileBuffer->capacity * gameMapTileBuffer->sizeInBytes);
+	memset(gameMapTileBuffer->entities, 0, sizeof(Tile) * gameMapTileBuffer->capacity);
+
+	
 }

@@ -89,8 +89,8 @@ void MyInit()
     LoadSprites();
 
     Camera* cam = &Game->camera;
-    cam->width = 128;
-    cam->height = 72;
+    //cam->width = 128;
+    //cam->height = 72;
     cam->type = CameraType_Perspective;
     cam->projection = Perspective(1, 16.0f / 9.0f, 0.1f, 1000.0f);
     Game->cameraPosition = V3(0, 0, -100);
@@ -98,11 +98,12 @@ void MyInit()
     //Game->cameraRotation = AxisAngle(V3(0, 1, 0), 1.0);
    // Game->cameraRotation = Quaternion(0.0f, 0.707f, 0.0f, 0.0f);
     //gameMem->cameraRotation = AxisAngle(V3(0, 1, 0), gameMem->camAngle);
-
+    Game->cameraRotation = IdentityQuaternion();
     mat4 camWorld = TRS(Game->cameraPosition, Game->cameraRotation, V3(0));
     cam->view = OrthogonalInverse(camWorld);
 
     cam->viewProjection = cam->projection * cam->view;
+
     //cam->projection = Orthographic(cam->width * -0.5f * cam->size, cam->width * 0.5f * cam->size,
       // cam->height * -0.5f * cam->size, cam->height * 0.5f * cam->size, 0.0, -100.0f);
   //  UpdateCamera(cam, Game->cameraPosition, quaternion rotation)
@@ -142,21 +143,21 @@ void MyGameUpdate()
 
     pos = V3(-10, -3, 1);
 
-    //AllocateModelOBJMesh(&Game->modelMesh, &Data->model);
-    //InitMesh(&Game->modelMesh);
+    AllocateModelOBJMesh(&Game->modelMesh, &Data->model);
+    InitMesh(&Game->modelMesh);
     ////RenderOBJModel(&Game->modelMesh, pos, scale, color, (AxisAngle(V3(0, 0, 0), Game->time)));
 
-    //for (int i = 0; i < 8; i++)
-    //{
-    //    pos.z += (1 * i);
-    //    pos.x = -10;
+    for (int i = 0; i < 8; i++)
+    {
+        pos.z -= (1 * i);
+        pos.x = -20;
 
-    //    for (int j = 0; j < 8; j++)
-    //    {
-    //        pos.x += j / 2;
-    //        RenderOBJModel(&Game->modelMesh, pos, scale, color, (AxisAngle(V3(0, 0, 0), Game->time)), &Data->sprites.bld);
-    //    }
-    //}
+        for (int j = 0; j < 8; j++)
+        {
+            pos.x += j / 2;
+            RenderOBJModel(&Game->modelMesh, pos, scale, color, (AxisAngle(V3(0, 0, 0), Game->time)), &Data->sprites.bld);
+        }
+    }
    /* pos.z = 1;
     for (int i = 0; i < 20; i++)
     {
@@ -284,7 +285,7 @@ void MyGameUpdate()
 
     CityMapLogic();
 
-    CityMapRender();
+//    CityMapRender();
     /*Mesh* meshModel = {};
     int32 indexCount = Data->model.facesCount;  
 

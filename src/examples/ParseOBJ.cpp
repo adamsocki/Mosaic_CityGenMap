@@ -48,10 +48,14 @@ void LoadModelParse(OBJModel* model)
 
     char* path[] = 
     {
-        "data/tile4.obj"
+        "data/tile4.obj",
+        "data/untitled1.obj",
+        "data/untitled2.obj"
     };
 
-    if (OpenFileForRead(path[0], & file, &Game->frameMem))
+
+
+    if (OpenFileForRead(path[model->pathNumber], &file, &Game->frameMem))
     {
         //      STEP 1 - TOKENIZE .OBJ CONTENTS
         TokenVal t = {};

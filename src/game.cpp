@@ -202,6 +202,7 @@ void GameInit(GameMemory *gameMem) {
     AllocateMemoryArena(&Game->permanentArena, Megabytes(256));
     AllocateMemoryArena(&Game->frameMem, Megabytes(100));
 
+    AllocateMemoryArena(&Game->frameMem2, Megabytes(100));
     Game->log.head = (DebugLogNode *)malloc(sizeof(DebugLogNode));
     AllocateDebugLogNode(Game->log.head, LOG_BUFFER_CAPACITY);
     Game->log.current = Game->log.head;
@@ -378,6 +379,7 @@ void GameUpdateAndRender(GameMemory *gameMem) {
 
     gameMem->frame++;
     ClearMemoryArena(&Game->frameMem);
+    ClearMemoryArena(&Game->frameMem2);
 
     ClearInputManager(input);
 }

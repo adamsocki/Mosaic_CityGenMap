@@ -20,7 +20,12 @@ enum EntityType
 	GameMap_Type,
 	GameMap_Tile,
 
-	Entity_Mouse,
+	Mouse_Type,
+	Keyboard_Type,
+	TileArrow_Type,
+
+	Road_Type,
+	Person_Type,
 
 	EntityType_Count,
 };
@@ -53,7 +58,6 @@ struct OBJFaceVec
 
 	vec3* faceValue;
 
-	//<DyanmicArray> <
 };
 
 
@@ -79,6 +83,8 @@ struct OBJModel
 	OBJFaceArray* faces;
 
 	int32 indexCount;
+
+	int32 pathNumber;
 };
 
 struct EntityHandle {
@@ -128,6 +134,9 @@ struct EntitySprites {
 	Sprite bld;
 
 	Sprite tile3;
+	Sprite tile3_mouse;
+	Sprite road_uv;
+	Sprite bld2;
 };
 
 struct MyData
@@ -140,6 +149,7 @@ struct MyData
 	//eshManager meshManager;
 
 	OBJModel model;
+	OBJModel modelBld;
 
 };
 
@@ -199,15 +209,12 @@ enum TileType
 	TileType_Land,
 	TileType_Water,
 
+	TileType_Road,
+	TileType_Commercial,
+
 	TileType_Count,
 };
 
-struct Mouse
-{
-	EntityHandle handle;
-	vec3 position;
-
-};
 
 struct Tile
 {
@@ -220,18 +227,47 @@ struct Tile
 	vec3 position;
 	vec2 size;
 
+	int32 row;
+	int32 column;
+
+	bool mouseOver;
+
+	TileType tileType;
 	//int32 height;
 };
 
 enum LandUse_Type
 {
+	road,
+
 
 };
+
+struct MouseEntity
+{
+	EntityHandle handle;
+
+	vec3 position;
+
+};
+struct TileArrow
+{
+	EntityHandle handle;
+	vec3 position;
+	int32 row;
+	int32 column;
+	int32 tileIndex;
+	quaternion rotation;
+	EntityHandle tileHandle;
+};
+
 
 struct MapEntity
 {
 	vec3 position;
 };
+
+
 
 struct Building : MapEntity
 {
@@ -272,11 +308,11 @@ struct GameMap
 	Road* roads;
 	int32 roadCount;
 	int32 roadCapacity;
-	int32 roadSizeInBytes;
-	Person* persons;
+	int32 roadSizeInBytes;*/
+	EntityHandle* persons;
 	int32 personCount;
 	int32 personCapacity;
-	int32 personSizeInBytes;*/
+	int32 personSizeInBytes;
 };
 
 struct VoronoiIntersection : VoronoiEntity

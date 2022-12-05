@@ -73,6 +73,7 @@ struct GameMemory {
 
     DebugLog log;
     MemoryArena frameMem;
+    MemoryArena frameMem2;
 
     NetworkInfo networkInfo;
 
@@ -114,6 +115,8 @@ struct GameMemory {
     Mesh quadBottomLeft;
 
     Mesh modelMesh;
+
+    Mesh bldMesh;
 
     InputManager inputManager;
     InputDevice *keyboard;

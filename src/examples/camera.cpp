@@ -1,11 +1,9 @@
 void SetCameraToMap()
 {
-
    // EntityTypeBuffer* gameMapBuffer = &Data->em.buffers[GameMap_Type];
 	//GameMap* gameMapEntitiesInBuffer = (GameMap*)gameMapBuffer->entities;
 
 	//GameMap* gameMapEntity = &gameMapEntitiesInBuffer[0];
-
 
     Camera* cam = &Game->camera;
 
@@ -23,6 +21,5 @@ void SetCameraToMap()
     Game->cameraRotation.x += 0.3f;
 
     Game->cameraPosition = posToStartCamera;
-
 
 }

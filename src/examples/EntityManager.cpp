@@ -127,6 +127,13 @@ void InitializeEntityBuffers()
 	gameMapBuffer->entities = (GameMap*)malloc(gameMapBuffer->capacity * gameMapBuffer->sizeInBytes);
 	memset(gameMapBuffer->entities, 0, sizeof(GameMap) * gameMapBuffer->capacity);
 
+	EntityTypeBuffer* mouseBuffer = &Data->em.buffers[Mouse_Type];
+	mouseBuffer->capacity = 10;
+	mouseBuffer->sizeInBytes = sizeof(MouseEntity);
+	mouseBuffer->count = 0;
+	mouseBuffer->entities = (MouseEntity*)malloc(mouseBuffer->capacity * mouseBuffer->sizeInBytes);
+	memset(mouseBuffer->entities, 0, sizeof(MouseEntity) * mouseBuffer->capacity);
+
 	EntityTypeBuffer* gameMapTileBuffer = &Data->em.buffers[GameMap_Tile];
 	gameMapTileBuffer->capacity = 100;
 	gameMapTileBuffer->sizeInBytes = sizeof(Tile);
@@ -134,5 +141,25 @@ void InitializeEntityBuffers()
 	gameMapTileBuffer->entities = (Tile*)malloc(gameMapTileBuffer->capacity * gameMapTileBuffer->sizeInBytes);
 	memset(gameMapTileBuffer->entities, 0, sizeof(Tile) * gameMapTileBuffer->capacity);
 
-	
+	EntityTypeBuffer* tileArrowBuffer = &Data->em.buffers[TileArrow_Type];
+	tileArrowBuffer->capacity = 100;
+	tileArrowBuffer->sizeInBytes = sizeof(TileArrow);
+	tileArrowBuffer->count = 0;
+	tileArrowBuffer->entities = (TileArrow*)malloc(tileArrowBuffer->capacity * tileArrowBuffer->sizeInBytes);
+	memset(tileArrowBuffer->entities, 0, sizeof(TileArrow) * tileArrowBuffer->capacity);
+
+	EntityTypeBuffer* roadBuffer = &Data->em.buffers[Road_Type];
+	roadBuffer->capacity = 100;
+	roadBuffer->sizeInBytes = sizeof(Road);
+	roadBuffer->count = 0;
+	roadBuffer->entities = (Road*)malloc(roadBuffer->capacity * roadBuffer->sizeInBytes);
+	memset(roadBuffer->entities, 0, sizeof(Road) * roadBuffer->capacity);
+
+	EntityTypeBuffer* personBuffer = &Data->em.buffers[Person_Type];
+	personBuffer->capacity = 8000;
+	personBuffer->sizeInBytes = sizeof(Person);
+	personBuffer->count = 0;
+	personBuffer->entities = (Person*)malloc(personBuffer->capacity * personBuffer->sizeInBytes);
+	memset(personBuffer->entities, 0, sizeof(Person) * personBuffer->capacity);
+
 }

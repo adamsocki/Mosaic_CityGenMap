@@ -818,7 +818,7 @@ void DrawText_(FontTable *font, vec2 pos, real32 size, vec4 color, bool screen, 
 
     buffer->model = TRS(V3(pos.x, pos.y, 0), IdentityQuaternion(), V3(1));
 
-    vec2 *positions = PushArray(&Game->frameMem, vec2, len);
+    vec2 *positions = PushArray(&Game->frameMem2, vec2, len);
     LayoutGlyphs(buffer->font, str, len, size, positions, width, center);
 
     buffer->count += len;

@@ -38,7 +38,9 @@ MyData* Data = {};
 #include "Voronoi.cpp"
 #include "city.cpp"
 #include "camera.cpp"
-#include "Mouse.cpp"
+#include "MouseLogicRender.cpp"
+#include "KeyboardLogicRender.cpp"
+#include "CityStateLogic.cpp"
 
 #include <vector>
 #include <string>
@@ -97,7 +99,11 @@ void MyInit()
     InitializeEntityBuffers();
     //ParseOSM();
 
+    Data->model.pathNumber = 0;
     LoadModelParse(&Data->model);
+
+    Data->modelBld.pathNumber = 2;
+    LoadModelParse(&Data->modelBld);
 
     InitializeVoronoiMap();
     VoronoiTest2();
@@ -111,6 +117,7 @@ void MyInit()
 
     SetCameraToMap();
     MouseInit();
+    TileArrowInit();
 }
 
 void MyGameUpdate()
@@ -128,6 +135,9 @@ void MyGameUpdate()
 
     AllocateModelOBJMesh(&Game->modelMesh, &Data->model);
     InitMesh(&Game->modelMesh);
+
+    AllocateModelOBJMesh(&Game->bldMesh, &Data->modelBld);
+    InitMesh(&Game->bldMesh);
     //RenderOBJModel(&Game->modelMesh, pos, scale, color, (AxisAngle(V3(0, 0, 0), Game->time)));
 
     /*for (int i = 0; i < 8; i++)
@@ -153,7 +163,7 @@ void MyGameUpdate()
 
     Camera* cam = &Game->camera;
     int32 cameraSpeed = 8;
-    if (InputHeld(Keyboard, Input_Q))
+   /* if (InputHeld(Keyboard, Input_Q))
     {
         Game->cameraPosition.y += cameraSpeed * Game->deltaTime;
     }
@@ -164,11 +174,11 @@ void MyGameUpdate()
     if (InputHeld(Keyboard, Input_Z))
     {
         Game->cameraPosition.x += cameraSpeed * Game->deltaTime;
-    }
-    if (InputHeld(Keyboard, Input_C))
+    }*/
+   /* if (InputHeld(Keyboard, Input_C))
     {
         Game->cameraPosition.x -= cameraSpeed * Game->deltaTime;
-    }
+    }*/
     if (InputHeld(Keyboard, Input_W))
     {
         Game->cameraPosition.z += cameraSpeed * Game->deltaTime;
@@ -177,11 +187,11 @@ void MyGameUpdate()
     {
         Game->cameraPosition.z -= cameraSpeed * Game->deltaTime;
     }
-    if (InputHeld(Keyboard, Input_G))
+    if (InputHeld(Keyboard, Input_A))
     {
         Game->cameraRotation.x += 1.5f * Game->deltaTime;
     }
-    if (InputHeld(Keyboard, Input_H))
+    if (InputHeld(Keyboard, Input_D))
     {
         Game->cameraRotation.x -= 1.5f * Game->deltaTime;
 
@@ -196,8 +206,13 @@ void MyGameUpdate()
     }
 
     CityMapLogic();
+    MouseLogic();
+    TileArrowLogic();
     CityMapRender();
+    TileArrowRender();
     MouseRender();
+
+
 }
 
   //  DrawLine(V2(1, 1), V2(0, 0), 3, color);

@@ -272,7 +272,6 @@ void InitializeVoronoiMap()
 	}
 
 	//				Add node handles to map
-
 	EntityTypeBuffer* vNodeBuffer = &Data->em.buffers[VoronoiType_Node];
 	VoronoiNode* vNodeEntitiesInBuffer = (VoronoiNode*)vNodeBuffer->entities;
 
@@ -282,7 +281,6 @@ void InitializeVoronoiMap()
 		mapEntity->vNodes[mapEntity->vNodeCount] = vNodeHandle;
 		mapEntity->vNodeCount++;
 	}
-	
 }
 
 void VoronoiTest2()

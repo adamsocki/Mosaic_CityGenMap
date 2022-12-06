@@ -1120,6 +1120,13 @@ void DrawGlyphs(GlyphBuffer *buffers) {
 
         glDrawElementsInstanced(GL_TRIANGLES, mesh->indexCount, GL_UNSIGNED_INT, (GLvoid *)0, buffer->count);
         
+        glVertexAttribDivisor(0, 0);
+        glVertexAttribDivisor(1, 0);
+        glVertexAttribDivisor(2, 0);
+        glVertexAttribDivisor(3, 0);
+        glVertexAttribDivisor(4, 0);
+        glVertexAttribDivisor(5, 0);
+
         glDisableVertexAttribArray(0);
         glDisableVertexAttribArray(1);
         glDisableVertexAttribArray(2);

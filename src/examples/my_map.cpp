@@ -218,10 +218,13 @@ void MyGameUpdate()
     CityMapLogic();
     MouseLogic();
     TileArrowLogic();
+	
+	CityStateLogic();
+	
     CityMapRender();
     TileArrowRender();
     MouseRender();
-
+	
     CityStateRender();
 
 }

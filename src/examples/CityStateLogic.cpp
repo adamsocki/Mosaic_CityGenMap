@@ -20,12 +20,31 @@ void CityStateInit()
 
 void CityStateLogic()
 {
+	// GET MAP
+	EntityTypeBuffer* gameMapBuffer = &Data->em.buffers[GameMap_Type];
+	GameMap* gameMapEntitiesInBuffer = (GameMap*)gameMapBuffer->entities;
+
+	GameMap* gameMapEntity = &gameMapEntitiesInBuffer[0];
 
 	// get tiles
 
 
 	// determine if 
-
+	
+	
+	// calculate person commercial capacity
+	int32 commercialBuildingPersonCapacity = {};
+	for (int i = 0; i < gameMapEntity->buildingCount; i++)
+	{
+		Building* buildingEntity = (Building*)GetEntity(&Data->em, gameMapEntity->buildings[i]);
+		commercialBuildingPersonCapacity += buildingEntity->personCapacity;
+	}
+	
+	DrawTextScreenPixel(&Game->monoFont, V2(60,140), 10.0f, RGB(1.0f, 1.0f, 1.0f), "Commerical total cap: %d", commercialBuildingPersonCapacity);
+	
+	
+	
+	
 
 
 

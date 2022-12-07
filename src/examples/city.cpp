@@ -74,6 +74,7 @@ void CityMapTileInit(vec2 tileGridSize, vec2 tileSize)
 
 			tileEntity->handle = tileHandle;
 			tileEntity->size = tileSize;
+			tileEntity->tileType = TileType_Grass; 
 			tileEntity->row = j;
 			tileEntity->column = i;
 			tileEntity->position.x = i * 2;
@@ -141,6 +142,8 @@ void CityMapLogic()
 
 		gameMapEntity->buildings[gameMapEntity->buildingCount] = buildingHandle;
 		gameMapEntity->buildingCount++;
+		
+		BuildingInit(buildingEntity);
 
 		TileArrow* arrowEntity = &tileArrowEntity[0];
 

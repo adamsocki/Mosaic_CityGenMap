@@ -63,7 +63,7 @@ EntityHandle AddEntity(EntityManager* em, EntityType type)
 
 void InitializeEntityManager() 
 {	// Entity Manager
-	Data->em.entityCapacity = 600000;
+	Data->em.entityCapacity = 6000;
 	Data->em.entities = (EntityInfo*)malloc(sizeof(EntityInfo) * Data->em.entityCapacity);
 	memset(Data->em.entities, 0, sizeof(EntityInfo) * Data->em.entityCapacity);
 	Data->em.nextID = 0;

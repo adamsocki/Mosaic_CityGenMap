@@ -479,7 +479,7 @@ void RenderOBJModel(Mesh* mesh, vec3 pos, vec3 scale, vec4 color, quaternion rot
     int texcoord = glGetAttribLocation(shader->programID, "in_texcoord");
     glEnableVertexAttribArray(texcoord);
     glVertexAttribPointer(texcoord, 2, GL_FLOAT, GL_FALSE, 0, (void*)(((sizeof(vec3) + sizeof(vec3)) * mesh->vertCount)));
-
+    stbi_set_flip_vertically_on_load(true);
     glDrawElements(GL_TRIANGLES, mesh->indexCount, GL_UNSIGNED_INT, (GLvoid*)0);
 
     glDisableVertexAttribArray(vert);

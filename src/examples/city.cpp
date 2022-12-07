@@ -19,6 +19,24 @@ void CityMapInit()
 	gameMapEntity->persons = (EntityHandle*)malloc(gameMapEntity->personCapacity * gameMapEntity->personSizeInBytes);
 	memset(gameMapEntity->persons, 0, sizeof(EntityHandle) * gameMapEntity->personCapacity);
 	
+	// INIT ROADS
+	gameMapEntity->roadCapacity = 8000;
+	gameMapEntity->roadCount = 0;
+	gameMapEntity->roadSizeInBytes = sizeof(EntityHandle);
+	gameMapEntity->roads = (EntityHandle*)malloc(gameMapEntity->roadCapacity * gameMapEntity->roadSizeInBytes);
+	memset(gameMapEntity->roads, 0, sizeof(EntityHandle) * gameMapEntity->roadCapacity);
+	
+
+	// INIT BUILDINGS
+	gameMapEntity->buildingCapacity = 8000;
+	gameMapEntity->buildingCount = 0;
+	gameMapEntity->buildingSizeInBytes = sizeof(EntityHandle);
+	gameMapEntity->buildings = (EntityHandle*)malloc(gameMapEntity->buildingCapacity * gameMapEntity->buildingSizeInBytes);
+	memset(gameMapEntity->buildings, 0, sizeof(EntityHandle) * gameMapEntity->buildingCapacity);
+
+
+
+	
 	/*gameMapEntity->handle = gameMapHandle;
 	gameMapEntity->buildingCapacity = 1000;
 	gameMapEntity->buildingCount = 0;
@@ -76,6 +94,10 @@ void CityMapTileInit(vec2 tileGridSize, vec2 tileSize)
 void CityMapLogic()
 {
 
+	EntityTypeBuffer* gameMapBuffer = &Data->em.buffers[GameMap_Type];
+	GameMap* gameMapEntitiesInBuffer = (GameMap*)gameMapBuffer->entities;
+
+	GameMap* gameMapEntity = &gameMapEntitiesInBuffer[0];
 
 
 
@@ -94,6 +116,10 @@ void CityMapLogic()
 		EntityTypeBuffer* tileArrowBuffer = &Data->em.buffers[TileArrow_Type];
 		TileArrow* tileArrowEntity = (TileArrow*)tileArrowBuffer->entities;
 
+		
+
+		// add to map
+
 		TileArrow* arrowEntity = &tileArrowEntity[0];
 
 		Tile* tileEntity = (Tile*)GetEntity(&Data->em, arrowEntity->tileHandle);
@@ -106,12 +132,21 @@ void CityMapLogic()
 	{	// get current tile arrow
 		EntityTypeBuffer* tileArrowBuffer = &Data->em.buffers[TileArrow_Type];
 		TileArrow* tileArrowEntity = (TileArrow*)tileArrowBuffer->entities;
+   		
+		EntityHandle buildingHandle = AddEntity(&Data->em, Building_Type);
+		Building* buildingEntity = (Building*)GetEntity(&Data->em, buildingHandle);
+		buildingEntity->handle = buildingHandle;
+		buildingEntity->tileHandle = tileArrowEntity->handle;
+		buildingEntity->buildingType = BuildingType_Commercial;
+
+		gameMapEntity->buildings[gameMapEntity->buildingCount] = buildingHandle;
+		gameMapEntity->buildingCount++;
 
 		TileArrow* arrowEntity = &tileArrowEntity[0];
 
 		Tile* tileEntity = (Tile*)GetEntity(&Data->em, arrowEntity->tileHandle);
-
-		tileEntity->tileType = TileType_Commercial;
+		tileEntity->entityOnTileHandle = buildingHandle;
+		tileEntity->tileType = TileType_CommercialBuilding;
 
 	}
 	if (InputPressed(Keyboard, Input_P))
@@ -171,6 +206,7 @@ void CityMapRender()
 		Tile* tileEntity = (Tile*)GetEntity(&Data->em, gameMapEntity->tiles[i]);
 		//vec3 position = V3(tileEntity->position.x, tileEntity->position.y, tileEntity->position.z -10.0f);
 
+
 		//tileEntity->angle_x += angle_xMod;
 
 		//tileEntity->rotation = AxisAngle(V3(1, 0, 0), tileEntity->angle_x);
@@ -183,7 +219,7 @@ void CityMapRender()
 				RenderOBJModel(&Game->modelMesh, tileEntity->position, V3(1.0f, 1.0f, 1.0f), color, tileEntity->rotation, &Data->sprites.road_uv);
 				break;
 			}
-			case TileType_Commercial:
+			case TileType_CommercialBuilding:
 			{
 				RenderOBJModel(&Game->bldMesh, tileEntity->position, V3(1.0f, 1.0f, 1.0f), color, tileEntity->rotation, &Data->sprites.bld2);
 				break;

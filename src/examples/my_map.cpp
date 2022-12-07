@@ -33,6 +33,7 @@ MyData* Data = {};
 #include "geoTools.cpp"
 #include "EntityManager.cpp"
 #include "LoadSprites.cpp"
+#include "BuildingLogicRender.cpp"
 
 #include "ParseOBJ.cpp"
 #include "Voronoi.cpp"

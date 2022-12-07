@@ -25,6 +25,7 @@ enum EntityType
 	TileArrow_Type,
 
 	Road_Type,
+	Building_Type,
 	Person_Type,
 
 	EntityType_Count,
@@ -205,6 +206,8 @@ enum CityGenState_Type
 
 };
 
+
+
 enum TileType
 {
 	TileType_Grass,
@@ -212,7 +215,7 @@ enum TileType
 	TileType_Water,
 
 	TileType_Road,
-	TileType_Commercial,
+	TileType_CommercialBuilding,
 	TileType_Test,
 
 	TileType_Count,
@@ -222,6 +225,7 @@ enum TileType
 struct Tile
 {
 	EntityHandle handle;
+	EntityHandle entityOnTileHandle;
 
 	quaternion rotation;
 	real32 angle_x;
@@ -270,13 +274,24 @@ struct MapEntity
 	vec3 position;
 };
 
+enum BuildingType
+{
+	BuildingType_Commercial,
+};
 
 
 struct Building : MapEntity
 {
+	EntityHandle handle;
 	LandUse_Type landUseType;
 
+	EntityHandle tileHandle;
+	BuildingType buildingType;
 
+	EntityHandle *persons;
+	int32 personCount;
+	int32 personCapacity;
+	int32 personSizeInBytes;
 };
 
 struct Road : MapEntity
@@ -304,14 +319,14 @@ struct GameMap
 	int32 tileCapacity;
 	int32 tileSizeInBytes;
 
-	/*Building* buildings;
+	EntityHandle* buildings;
 	int32 buildingCount;
 	int32 buildingCapacity;
 	int32 buildingSizeInBytes;
-	Road* roads;
+	EntityHandle* roads;
 	int32 roadCount;
 	int32 roadCapacity;
-	int32 roadSizeInBytes;*/
+	int32 roadSizeInBytes;
 	EntityHandle* persons;
 	int32 personCount;
 	int32 personCapacity;

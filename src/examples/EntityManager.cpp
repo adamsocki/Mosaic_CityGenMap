@@ -162,4 +162,10 @@ void InitializeEntityBuffers()
 	personBuffer->entities = (Person*)malloc(personBuffer->capacity * personBuffer->sizeInBytes);
 	memset(personBuffer->entities, 0, sizeof(Person) * personBuffer->capacity);
 
+	EntityTypeBuffer* buildingBuffer = &Data->em.buffers[Building_Type];
+	buildingBuffer->capacity = 8000;
+	buildingBuffer->sizeInBytes = sizeof(Building);
+	buildingBuffer->count = 0;
+	buildingBuffer->entities = (Building*)malloc(buildingBuffer->capacity * buildingBuffer->sizeInBytes);
+	memset(buildingBuffer->entities, 0, sizeof(Building) * buildingBuffer->capacity);
 }

@@ -50,7 +50,8 @@ void LoadModelParse(OBJModel* model)
     {
         "data/tile4.obj",
         "data/untitled1.obj",
-        "data/untitled2.obj"
+        "data/untitled2.obj",
+        "data/block_Test2.obj"
     };
 
 

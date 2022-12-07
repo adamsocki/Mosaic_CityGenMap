@@ -328,7 +328,49 @@ void DrawLinearQuad(vec2 positionStart, vec2 positionEnd, vec2 size, real32 angl
 }
 
 
-
+void DrawSpriteBottomLeft(vec2 position, vec2 scale, real32 angle, Sprite* texture) 
+{
+    Shader* shader = &Game->texturedQuadShader;
+    SetShader(shader);
+    
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    
+    Mesh* mesh = &Game->quadBottomLeft;
+    
+    //mat4 model = TRS(V3(position.x - radius * 0.5f, position.y + radius * 0.5f, 0), IdentityQuaternion(), V3(radius));
+    mat4 model = TRS(V3(position.x, position.y, 0), AxisAngle(V3(0, 0, 1), angle), V3(scale.x, scale.y, 1.0f));
+    
+    //mat4 model = TRS(V3(position.x, position.y, 0), IdentityQuaternion(), V3(scale.x, scale.y, 1));
+    
+    //vec4 topLeft = mvp * V4(gameMem->quad.verts[0], 1.0f);
+    glUniformMatrix4fv(shader->uniforms[0].id, 1, GL_FALSE, model.data);
+    glUniformMatrix4fv(shader->uniforms[1].id, 1, GL_FALSE, Game->camera.viewProjection.data);
+    
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, texture->textureID);
+    glUniform1i(shader->uniforms[2].id, 0);
+    
+    glUniform1fv(shader->uniforms[3].id, 1, &Game->time);
+    
+    glBindBuffer(GL_ARRAY_BUFFER, mesh->vertBufferID);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->indexBufferID);
+    
+    // 1st attribute buffer : vertices
+    int vert = glGetAttribLocation(shader->programID, "vertexPosition_modelspace");
+    glEnableVertexAttribArray(vert);
+    glVertexAttribPointer(vert, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+    
+    // 2nd attribute buffer : texcoords
+    int texcoord = glGetAttribLocation(shader->programID, "in_texcoord");
+    glEnableVertexAttribArray(texcoord);
+    glVertexAttribPointer(texcoord, 2, GL_FLOAT, GL_FALSE, 0, (void*)((sizeof(vec3)* mesh->vertCount)));
+    
+    glDrawElements(GL_TRIANGLES, mesh->indexCount, GL_UNSIGNED_INT, (GLvoid*)0);
+    
+    glDisableVertexAttribArray(vert);
+    glDisableVertexAttribArray(texcoord);
+}
 void DrawSprite(vec2 position, vec2 scale, real32 angle, Sprite *texture) {
     Shader *shader = &Game->texturedQuadShader;
     SetShader(shader);
@@ -451,6 +493,48 @@ void DrawCoolRect(vec2 pos, vec2 scale, real32 angle, vec4 color) {
 
 // @NOTE: origin of rect and screen are both top left
 // @GACK: this is pretty weird cause it's not how DrawRect or DrawSprite work!
+void DrawSpriteScreen(vec2 pos, vec2 scale, real32 angle, Sprite* texture) {
+    Shader* shader = &Game->texturedQuadShader;
+    SetShader(shader);
+
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+    Mesh* mesh = &Game->quad;
+   // pos = V2();
+
+
+    mat4 model = TRS(V3(pos.x * Game->screenWidth, (1 - pos.y) * Game->screenHeight, -1), AxisAngle(V3(0, 0, 1), angle), V3(scale.x, scale.y, 1.0f));
+
+    mat4 projMat = Orthographic(0, Game->screenWidth, Game->screenHeight, 0, -1, 1);
+
+    glUniformMatrix4fv(shader->uniforms[0].id, 1, GL_FALSE, model.data);
+    glUniformMatrix4fv(shader->uniforms[1].id, 1, GL_FALSE, projMat.data);
+
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, texture->textureID);
+    glUniform1i(shader->uniforms[2].id, 0);
+
+    glUniform1fv(shader->uniforms[3].id, 1, &Game->time);
+
+    glBindBuffer(GL_ARRAY_BUFFER, mesh->vertBufferID);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->indexBufferID);
+
+    // 1st attribute buffer : vertices
+    int vert = glGetAttribLocation(shader->programID, "vertexPosition_modelspace");
+    glEnableVertexAttribArray(vert);
+    glVertexAttribPointer(vert, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+
+    // 2nd attribute buffer : texcoords
+    int texcoord = glGetAttribLocation(shader->programID, "in_texcoord");
+    glEnableVertexAttribArray(texcoord);
+    glVertexAttribPointer(texcoord, 2, GL_FLOAT, GL_FALSE, 0, (void*)((sizeof(vec3) * mesh->vertCount)));
+
+    glDrawElements(GL_TRIANGLES, mesh->indexCount, GL_UNSIGNED_INT, (GLvoid*)0);
+
+    glDisableVertexAttribArray(vert);
+    glDisableVertexAttribArray(texcoord);
+}
 void DrawRectScreen(vec2 pos, vec2 scale, vec4 color) {
     Shader *shader = &Game->shader;
     SetShader(shader);

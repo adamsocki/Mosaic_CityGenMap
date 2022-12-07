@@ -76,7 +76,7 @@ void MyInit()
 
     Data = (MyData*)Game->myData;
 
-    Data->meshManager.meshCapacity = 100000;
+    Data->meshManager.meshCapacity = 900000;
     Data->meshManager.meshes = (Mesh*)malloc(sizeof(Mesh) * Data->meshManager.meshCapacity);
     memset(Data->meshManager.meshes, 0, sizeof(Mesh) * Data->meshManager.meshCapacity);
     Data->meshManager.meshCount = 0;
@@ -104,6 +104,9 @@ void MyInit()
 
     Data->modelBld.pathNumber = 2;
     LoadModelParse(&Data->modelBld);
+    
+    Data->modelTest.pathNumber = 3;
+    LoadModelParse(&Data->modelTest);
 
     InitializeVoronoiMap();
     VoronoiTest2();
@@ -118,6 +121,16 @@ void MyInit()
     SetCameraToMap();
     MouseInit();
     TileArrowInit();
+
+    AllocateModelOBJMesh(&Game->modelMesh, &Data->model);
+    InitMesh(&Game->modelMesh);
+
+    AllocateModelOBJMesh(&Game->bldMesh, &Data->modelBld);
+    InitMesh(&Game->bldMesh);
+
+    AllocateModelOBJMesh(&Game->testMesh, &Data->modelTest);
+    InitMesh(&Game->testMesh);
+
 }
 
 void MyGameUpdate()
@@ -133,11 +146,7 @@ void MyGameUpdate()
 
     pos = V3(-10, -3, 1);
 
-    AllocateModelOBJMesh(&Game->modelMesh, &Data->model);
-    InitMesh(&Game->modelMesh);
-
-    AllocateModelOBJMesh(&Game->bldMesh, &Data->modelBld);
-    InitMesh(&Game->bldMesh);
+    
     //RenderOBJModel(&Game->modelMesh, pos, scale, color, (AxisAngle(V3(0, 0, 0), Game->time)));
 
     /*for (int i = 0; i < 8; i++)
@@ -212,6 +221,7 @@ void MyGameUpdate()
     TileArrowRender();
     MouseRender();
 
+    CityStateRender();
 
 }
 

@@ -114,6 +114,19 @@ void CityMapLogic()
 		tileEntity->tileType = TileType_Commercial;
 
 	}
+	if (InputPressed(Keyboard, Input_P))
+	{	// get current tile arrow
+		EntityTypeBuffer* tileArrowBuffer = &Data->em.buffers[TileArrow_Type];
+		TileArrow* tileArrowEntity = (TileArrow*)tileArrowBuffer->entities;
+
+		TileArrow* arrowEntity = &tileArrowEntity[0];
+
+		Tile* tileEntity = (Tile*)GetEntity(&Data->em, arrowEntity->tileHandle);
+
+		tileEntity->tileType = TileType_Test;
+
+	}
+
 
 
 
@@ -173,6 +186,11 @@ void CityMapRender()
 			case TileType_Commercial:
 			{
 				RenderOBJModel(&Game->bldMesh, tileEntity->position, V3(1.0f, 1.0f, 1.0f), color, tileEntity->rotation, &Data->sprites.bld2);
+				break;
+			}
+			case TileType_Test:
+			{
+				RenderOBJModel(&Game->testMesh, tileEntity->position, V3(1.0f, 1.0f, 1.0f), color, tileEntity->rotation, &Data->sprites.tile3);
 				break;
 			}
 			default:

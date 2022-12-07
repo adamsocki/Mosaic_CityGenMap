@@ -137,6 +137,7 @@ struct EntitySprites {
 	Sprite tile3_mouse;
 	Sprite road_uv;
 	Sprite bld2;
+	Sprite pop_sprite;
 };
 
 struct MyData
@@ -150,6 +151,7 @@ struct MyData
 
 	OBJModel model;
 	OBJModel modelBld;
+	OBJModel modelTest;
 
 };
 
@@ -211,6 +213,7 @@ enum TileType
 
 	TileType_Road,
 	TileType_Commercial,
+	TileType_Test,
 
 	TileType_Count,
 };

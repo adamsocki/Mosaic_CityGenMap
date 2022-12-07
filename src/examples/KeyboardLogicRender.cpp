@@ -63,7 +63,7 @@ void TileArrowRender()
 	EntityTypeBuffer* tileArrowBuffer = &Data->em.buffers[TileArrow_Type];
 	TileArrow* tileArrowEntity = (TileArrow*)tileArrowBuffer->entities;
 	TileArrow* arrowEntity = &tileArrowEntity[0];
-	DrawTextScreenPixel(&Game->monoFont, V2(60, 60), 10.0f, RGB(1.0f, 1.0f, 1.0f), "o.x: %.10f", arrowEntity->position.x);
+	//DrawTextScreenPixel(&Game->monoFont, V2(60, 60), 10.0f, RGB(1.0f, 1.0f, 1.0f), "o.x: %.10f", arrowEntity->position.x);
 
 	RenderOBJModel(&Game->modelMesh, arrowEntity->position, V3(1.0f, 1.0f, 1.0f), V4(0), arrowEntity->rotation, &Data->sprites.tile3_mouse);
 

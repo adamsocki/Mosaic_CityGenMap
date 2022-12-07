@@ -28,7 +28,7 @@ Ray MousePositionToWorldRay(Camera *camera, vec2 mousePos) {
             result.origin = rayEye.xyz;
             result.direction = rayWorld;
 
-            result.origin = Game->cameraPosition;
+           // result.origin = Game->cameraPosition;
         } break;
 
          case CameraType_Orthographic: {

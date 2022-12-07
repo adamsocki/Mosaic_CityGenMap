@@ -115,6 +115,7 @@ struct GameMemory {
     Mesh quadBottomLeft;
 
     Mesh modelMesh;
+    Mesh testMesh;
 
     Mesh bldMesh;
 

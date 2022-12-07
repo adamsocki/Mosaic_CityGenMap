@@ -77,7 +77,7 @@ void MyInit()
 
     Data = (MyData*)Game->myData;
 
-    Data->meshManager.meshCapacity = 900000;
+    Data->meshManager.meshCapacity = 1000;
     Data->meshManager.meshes = (Mesh*)malloc(sizeof(Mesh) * Data->meshManager.meshCapacity);
     memset(Data->meshManager.meshes, 0, sizeof(Mesh) * Data->meshManager.meshCapacity);
     Data->meshManager.meshCount = 0;

@@ -37,7 +37,7 @@ bool isNewLine(char c)
 void LoadModelParse(OBJModel* model)
 {
     
-    DynamicArray<TokenVal> tokens   = MakeDynamicArray<TokenVal>(&tokenArena, 10000);
+    DynamicArray<TokenVal> tokens   = MakeDynamicArray<TokenVal>(&tokenArena, 1000);
     /*DynamicArray<OBJFaceVec> faces = MakeDynamicArray<OBJFaceVec>(&facesArena, 10000);
     DynamicArray<vec3> vertices = MakeDynamicArray<vec3>(&vertexArena, 10000);
     DynamicArray<OBJvNormals> normals = MakeDynamicArray<OBJvNormals>(&normalArena, 10000);

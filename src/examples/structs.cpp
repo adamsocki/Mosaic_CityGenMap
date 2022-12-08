@@ -4,6 +4,7 @@
 
 
 
+
 enum EntityType
 {
 	OSMType_Way,
@@ -241,6 +242,11 @@ struct Tile
 
 	TileType tileType;
 	//int32 height;
+	
+	bool developed;
+	
+	DynamicArray<EntityHandle> previousDevelopments;
+	int32 generationsDeveloped;
 };
 
 enum LandUse_Type

@@ -68,8 +68,4 @@ void TileArrowRender()
 	RenderOBJModel(&Game->modelMesh, arrowEntity->position, V3(1.0f, 1.0f, 1.0f), V4(0), arrowEntity->rotation, &Data->sprites.tile3_mouse);
 
 	
-
-	
-
-
 }

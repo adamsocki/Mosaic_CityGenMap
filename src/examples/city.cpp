@@ -117,8 +117,6 @@ void CityMapLogic()
 		EntityTypeBuffer* tileArrowBuffer = &Data->em.buffers[TileArrow_Type];
 		TileArrow* tileArrowEntity = (TileArrow*)tileArrowBuffer->entities;
 
-		
-
 		// add to map
 
 		TileArrow* arrowEntity = &tileArrowEntity[0];
@@ -133,7 +131,15 @@ void CityMapLogic()
 	{	// get current tile arrow
 		EntityTypeBuffer* tileArrowBuffer = &Data->em.buffers[TileArrow_Type];
 		TileArrow* tileArrowEntity = (TileArrow*)tileArrowBuffer->entities;
-   		
+		
+		TileArrow* arrowEntity = &tileArrowEntity[0];
+
+		// if (arrowEntity->developed)
+		// {
+		
+		// }
+		
+		
 		EntityHandle buildingHandle = AddEntity(&Data->em, Building_Type);
 		Building* buildingEntity = (Building*)GetEntity(&Data->em, buildingHandle);
 		buildingEntity->handle = buildingHandle;
@@ -145,8 +151,7 @@ void CityMapLogic()
 		
 		BuildingInit(buildingEntity);
 
-		TileArrow* arrowEntity = &tileArrowEntity[0];
-
+		
 		Tile* tileEntity = (Tile*)GetEntity(&Data->em, arrowEntity->tileHandle);
 		tileEntity->entityOnTileHandle = buildingHandle;
 		tileEntity->tileType = TileType_CommercialBuilding;

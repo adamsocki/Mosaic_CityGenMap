@@ -6,7 +6,6 @@ MemoryArena tokenArena = {};
 
 MyData* Data = {};
 
-
 #include "renderCode.cpp"
 #include "cameraController.cpp"
 #include "geoTools.cpp"

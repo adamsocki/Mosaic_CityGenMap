@@ -55,9 +55,7 @@ void TileArrowLogic()
 			arrowEntity->rotation = tileEntity->rotation;
 		}
 	}
-
 }
-
 
 void TileArrowRender()
 {

@@ -20,9 +20,37 @@ void PersonsLogic()
 {
 
 	// check to see if there are buildings
+	EntityTypeBuffer* gameMapBuffer = &Data->em.buffers[GameMap_Type];
+	GameMap* gameMapEntitiesInBuffer = (GameMap*)gameMapBuffer->entities;
 
+	GameMap* gameMapEntity = &gameMapEntitiesInBuffer[0];
+	// check capacity and occupancy of residential buildings
+	MapData mapData = {};
 
-	// check capacity of buildings
+	for (int i = 0; i < gameMapEntity->buildingCount; i++)
+	{
+		Building* buildingEntity = (Tile*)GetEntity(&Data->em, gameMapEntity->buildings[i]);
+		switch (buildingEntity->buildingType):
+		{
+			case BuildingType_Residential_Type1:
+			{
+				mapData.residentialOccupancy += buildingEntity->personCount;
+				mapData.residentialCapacity  += buildingEntity->personCapacity; 
+				break;
+			}
+			case BuildType_Commercial:
+			{
+				break;
+			}
+			default:
+			{
+				break;
+			}
+		} 
+	}
+
+	// check number and location of ports of entry
+
 	
 
 
@@ -31,6 +59,5 @@ void PersonsLogic()
 
 
 	// add person to specific building
-
 
 }

@@ -126,7 +126,7 @@ void CityMapLogic()
 		tileEntity->tileType = TileType_Road;
 
 	}
-
+	
 	if (InputPressed(Keyboard, Input_C))
 	{	// get current tile arrow
 		EntityTypeBuffer* tileArrowBuffer = &Data->em.buffers[TileArrow_Type];
@@ -160,7 +160,42 @@ void CityMapLogic()
 		
 		Tile* tileEntity = (Tile*)GetEntity(&Data->em, arrowEntity->tileHandle);
 		tileEntity->entityOnTileHandle = buildingHandle;
-		tileEntity->tileType = TileType_CommercialBuilding;
+		tileEntity->tileType = TileType_ResidentialBuilding;
+
+	}
+
+	if (InputPressed(Keyboard, Input_H))
+	{	// get current tile arrow
+		EntityTypeBuffer* tileArrowBuffer = &Data->em.buffers[TileArrow_Type];
+		TileArrow* tileArrowEntity = (TileArrow*)tileArrowBuffer->entities;
+		
+		TileArrow* arrowEntity = &tileArrowEntity[0];
+		
+		if (arrowEntity->developed)
+		{
+			// create UI Event asking about what to do here
+
+		}
+		else 
+		{
+			//BuildingCreate(BuildingType_Commercial);
+		}
+
+		EntityHandle buildingHandle = AddEntity(&Data->em, Building_Type);
+		Building* buildingEntity = (Building*)GetEntity(&Data->em, buildingHandle);
+		buildingEntity->handle = buildingHandle;
+		buildingEntity->tileHandle = tileArrowEntity->handle;
+		buildingEntity->buildingType = BuildingType_Residential_Type1;
+
+		gameMapEntity->buildings[gameMapEntity->buildingCount] = buildingHandle;
+		gameMapEntity->buildingCount++;
+		
+		BuildingInit(buildingEntity);
+
+		
+		Tile* tileEntity = (Tile*)GetEntity(&Data->em, arrowEntity->tileHandle);
+		tileEntity->entityOnTileHandle = buildingHandle;
+		tileEntity->tileType = TileType_ResidentialBuilding;
 
 	}
 	if (InputPressed(Keyboard, Input_P))
@@ -243,6 +278,7 @@ void CityMapRender()
 				RenderOBJModel(&Game->testMesh, tileEntity->position, V3(1.0f, 1.0f, 1.0f), color, tileEntity->rotation, &Data->sprites.tile3);
 				break;
 			}
+			case TileType_ResidentialBuilding:
 			default:
 			{
 				RenderOBJModel(&Game->modelMesh, tileEntity->position, V3(1.0f, 1.0f, 1.0f), color, tileEntity->rotation, &Data->sprites.tile3);

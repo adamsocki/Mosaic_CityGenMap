@@ -171,6 +171,14 @@ void InitializeEntityBuffers()
 	buildingBuffer->entities = (Building*)malloc(buildingBuffer->capacity * buildingBuffer->sizeInBytes);
 	memset(buildingBuffer->entities, 0, sizeof(Building) * buildingBuffer->capacity);
 
+	EntityTypeBuffer* entryPortBuffer = &Data->em.buffers[EntryPort_Type];
+	entryPortBuffer->capacity = 8000;
+	entryPortBuffer->sizeInBytes = sizeof(EntryPort);
+	entryPortBuffer->count = 0;
+	entryPortBuffer->entities = (EntryPort*)malloc(entryPortBuffer->capacity * entryPortBuffer->sizeInBytes);
+	memset(entryPortBuffer->entities, 0, sizeof(EntryPort) * entryPortBuffer->capacity);
+	
+
 	//  UI ENTITIES
 	EntityTypeBuffer* uiEventBuffer = &Data->em.buffers[UIEvent_Type];
 	uiEventBuffer->capacity = 100;
@@ -179,4 +187,7 @@ void InitializeEntityBuffers()
 	uiEventBuffer->entities = (UIEvent*)malloc(uiEventBuffer->capacity * uiEventBuffer->sizeInBytes);
 	memset(uiEventBuffer->entities, 0, sizeof(UIEvent) * uiEventBuffer->capacity);
 	
+
+
+
 }

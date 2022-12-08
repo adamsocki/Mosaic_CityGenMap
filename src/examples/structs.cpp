@@ -1,10 +1,5 @@
 
 
-
-
-
-
-
 enum EntityType
 {
 	OSMType_Way,
@@ -28,6 +23,8 @@ enum EntityType
 	Road_Type,
 	Building_Type,
 	Person_Type,
+
+	EntryPort_Type,
 
 
 	UIEvent_Type,
@@ -221,7 +218,14 @@ enum CityGenState_Type
 
 };
 
+struct MapData
+{
+	int32 residentialOccupancy;
+	int32 residentialCapacity;
 
+	int32 commercialOccupancy;
+	int32 commercialCapacity;
+};
 
 enum TileType
 {
@@ -291,7 +295,6 @@ struct TileArrow
 	bool developed;
 };
 
-
 struct MapEntity
 {
 	vec3 position;
@@ -300,6 +303,7 @@ struct MapEntity
 enum BuildingType
 {
 	BuildingType_Commercial,
+	BuildingType_Residential_Type1,
 };
 
 
@@ -322,12 +326,38 @@ struct Road : MapEntity
 
 };
 
-struct Person : MapEntity
+
+enum Race
+{
+	White,
+	Black,
+	Asian,
+};
+
+enum Income
 {
 
 };
 
 
+
+struct Person : MapEntity
+{
+	Race race;
+	int32 age;
+
+	Income incomeGroup;
+
+	EntityHandle employmentLocation;
+
+	EntityHandle residentialLocation;
+
+};
+
+struct EntryPort : MapEntity
+{
+	EntityHandle handle;
+};
 
 struct GameMap
 {

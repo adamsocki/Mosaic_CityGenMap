@@ -49,6 +49,7 @@ void TileArrowLogic()
 			arrowEntity->tileHandle = tileEntity->handle;
 			
 			arrowEntity->position = tileEntity->position;
+			arrowEntity->developed = true;
 
 			arrowEntity->position.y += 0.1f;
 			arrowEntity->rotation = tileEntity->rotation;

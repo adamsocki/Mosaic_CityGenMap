@@ -29,6 +29,9 @@ enum EntityType
 	Building_Type,
 	Person_Type,
 
+
+	UIEvent_Type,
+
 	EntityType_Count,
 };
 
@@ -142,14 +145,16 @@ struct EntitySprites {
 	Sprite pop_sprite;
 };
 
+
+
 struct MyData
 {
 	EntitySprites sprites;
 	EntityManager em;
+
 	int32 currentLevel;
 
 	MeshManager meshManager;
-	//eshManager meshManager;
 
 	OBJModel model;
 	OBJModel modelBld;
@@ -177,6 +182,15 @@ struct BBox
 	real32 lengthRight;
 };
 
+
+
+
+// UI STRUCTS
+
+struct UIEvent
+{
+	EntityHandle handle;
+};
 
 struct Points
 {
@@ -217,6 +231,7 @@ enum TileType
 
 	TileType_Road,
 	TileType_CommercialBuilding,
+	TileType_ResidentialBuilding,
 	TileType_Test,
 
 	TileType_Count,
@@ -272,6 +287,8 @@ struct TileArrow
 	int32 tileIndex;
 	quaternion rotation;
 	EntityHandle tileHandle;
+
+	bool developed;
 };
 
 
@@ -497,4 +514,8 @@ struct TokenVal
 	char* start;
 	int32 length;
 };
+
+
+
+
 

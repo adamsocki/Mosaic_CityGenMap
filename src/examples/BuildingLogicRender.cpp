@@ -13,3 +13,5 @@ void BuildingInit(Building* buildingEntity)
 	memset(buildingEntity->persons, 0, sizeof(EntityHandle) * buildingEntity->personCapacity);
 	
 }
+
+

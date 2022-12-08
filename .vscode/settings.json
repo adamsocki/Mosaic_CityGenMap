@@ -2,7 +2,10 @@
     "files.associations": {
         "__locale": "cpp",
         "__string": "cpp",
-        "__node_handle": "cpp"
+        "__node_handle": "cpp",
+        "vector": "cpp",
+        "xhash": "cpp",
+        "xstring": "cpp"
     },
     "C_Cpp.errorSquiggles": "Disabled"
 }

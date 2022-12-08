@@ -134,12 +134,18 @@ void CityMapLogic()
 		
 		TileArrow* arrowEntity = &tileArrowEntity[0];
 
-		// if (arrowEntity->developed)
-		// {
-		
-		// }
-		
-		
+
+
+		if (arrowEntity->developed)
+		{
+			// create UI Event asking about what to do here
+
+		}
+		else 
+		{
+			//BuildingCreate(BuildingType_Commercial);
+		}
+
 		EntityHandle buildingHandle = AddEntity(&Data->em, Building_Type);
 		Building* buildingEntity = (Building*)GetEntity(&Data->em, buildingHandle);
 		buildingEntity->handle = buildingHandle;

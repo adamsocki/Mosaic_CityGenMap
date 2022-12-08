@@ -134,6 +134,8 @@ void InitializeEntityBuffers()
 	mouseBuffer->entities = (MouseEntity*)malloc(mouseBuffer->capacity * mouseBuffer->sizeInBytes);
 	memset(mouseBuffer->entities, 0, sizeof(MouseEntity) * mouseBuffer->capacity);
 
+
+	//  MAP ENTITIES
 	EntityTypeBuffer* gameMapTileBuffer = &Data->em.buffers[GameMap_Tile];
 	gameMapTileBuffer->capacity = 100;
 	gameMapTileBuffer->sizeInBytes = sizeof(Tile);
@@ -168,4 +170,13 @@ void InitializeEntityBuffers()
 	buildingBuffer->count = 0;
 	buildingBuffer->entities = (Building*)malloc(buildingBuffer->capacity * buildingBuffer->sizeInBytes);
 	memset(buildingBuffer->entities, 0, sizeof(Building) * buildingBuffer->capacity);
+
+	//  UI ENTITIES
+	EntityTypeBuffer* uiEventBuffer = &Data->em.buffers[UIEvent_Type];
+	uiEventBuffer->capacity = 100;
+	uiEventBuffer->sizeInBytes = sizeof(UIEvent);
+	uiEventBuffer->count = 0;
+	uiEventBuffer->entities = (UIEvent*)malloc(uiEventBuffer->capacity * uiEventBuffer->sizeInBytes);
+	memset(uiEventBuffer->entities, 0, sizeof(UIEvent) * uiEventBuffer->capacity);
+	
 }

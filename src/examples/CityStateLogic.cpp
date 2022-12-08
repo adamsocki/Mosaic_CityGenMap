@@ -4,10 +4,6 @@ void CityStateInit()
 {
 	// init persons in city
 
-
-
-
-
 	// init buildings int city
 
 	// init roads in city
@@ -42,12 +38,6 @@ void CityStateLogic()
 	
 	DrawTextScreenPixel(&Game->monoFont, V2(60,140), 10.0f, RGB(1.0f, 1.0f, 1.0f), "Commerical total cap: %d", commercialBuildingPersonCapacity);
 	
-	
-	
-	
-
-
-
 }
 
 

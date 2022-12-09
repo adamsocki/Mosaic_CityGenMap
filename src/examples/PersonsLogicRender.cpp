@@ -18,25 +18,15 @@ void GeneratePerson(Person* personEntity, int32 buildingCount)
 void PersonsInit()
 {
 
-	// INIT PERSONS IN BUILDING
-	EntityTypeBuffer* gameMapBuffer = &Data->em.buffers[GameMap_Type];
-	GameMap* gameMapEntitiesInBuffer = (GameMap*)gameMapBuffer->entities;
 
-	GameMap* gameMapEntity = &gameMapEntitiesInBuffer[0];
-
-	for (int i = 0; i < gameMapEntity->buildingCount; i++)
-	{
-		Building* tileEntity = (Tile*)GetEntity(&Data->em, tileHandle);
-
-	}
 }
 
 MapData PersonCapacityOccupancyCalc(GameMap* gameMapEntity)
 {
 	for (int i = 0; i < gameMapEntity->buildingCount; i++)
 	{
-		Building* buildingEntity = (Tile*)GetEntity(&Data->em, gameMapEntity->buildings[i]);
-		switch (buildingEntity->buildingType):
+		Building* buildingEntity = (Building*)GetEntity(&Data->em, gameMapEntity->buildings[i]);
+		switch (buildingEntity->buildingType)
 		{
 			case BuildingType_Residential_Type1:
 			{
@@ -44,7 +34,7 @@ MapData PersonCapacityOccupancyCalc(GameMap* gameMapEntity)
 				gameMapEntity->mapData.residentialCapacity  += buildingEntity->personCapacity; 
 				break;
 			}
-			case BuildType_Commercial:
+			case BuildingType_Commercial:
 			{
 				gameMapEntity->mapData.commercialOccupancy += buildingEntity->personCount;
 				gameMapEntity->mapData.commercialCapacity += buildingEntity->personCapacity;
@@ -57,8 +47,8 @@ MapData PersonCapacityOccupancyCalc(GameMap* gameMapEntity)
 		} 
 	}
 	// calculate pop delta
-	gameMapEntity->mapData.residentialDelta = gameMapEntity->mapData.residentialCapacity - gameMapEntity->mapData.residnetialCapacity;
-	gameMapEntity->mapData.commercialDelta = gameMapEntity->mapData.commercialCapacity - gameMapEntity->mapData.commercialCapacity;
+	gameMapEntity->mapData.residentialDelta = gameMapEntity->mapData.residentialCapacity - gameMapEntity->mapData.residentialOccupancy;
+	gameMapEntity->mapData.commercialDelta = gameMapEntity->mapData.commercialCapacity - gameMapEntity->mapData.commercialOccupancy;
 	
 	return gameMapEntity->mapData;
 }
@@ -75,58 +65,70 @@ void PersonsLogic()
 	GameMap* gameMapEntitiesInBuffer = (GameMap*)gameMapBuffer->entities;
 	GameMap* gameMapEntity = &gameMapEntitiesInBuffer[0];
 
-
+	DrawTextScreenPixel(&Game->monoFont, V2(60,200), 10.0f, RGB(1.0f, 1.0f, 1.0f), "ResDelta: %d", 	gameMapEntity->mapData.residentialDelta);
+    
 	// check capacity and occupancy of residential buildings
-	MapData mapData = PersonCapacityOccupancyCalc(gameMapEntity);
 	bool canGeneratePerson = false;
 	
 	// check number and location of ports of entry
 
 	// CHECK GENERATOR TIMER
-	int32 timeSinceLastPlayerGenerated = &Data->timerManager.playerGenerationTimer;
-	if (timeSinceLastPlayerGenerated == 2.0f)
+	real32 timeSinceLastPlayerGenerated = Data->timerManager.playerGenerationTimer;
+	if (timeSinceLastPlayerGenerated > 2.0f )
 	{
 		canGeneratePerson = true;
 		// if capacity is reached, still generate person ? to allow for overcrowding 
-	}
+	} 
 	
 	// if above conditions->add personEntity
 	if (canGeneratePerson)
 	{
-		EntityHandle* personHandle = AddEntity(&Data->em, Person_Type);
-		Person* personEntity = (Person*)GetEntity(&Data->em, personHandle);
-		personEntity->handle = personHandle;
-
-		// CREATE PERSON
-		GeneratePerson(personEntity, gameMapEntity->buildingCount);
-
-		// assign person to specific building
-			// person to building assignment logic	
+		MapData mapData = PersonCapacityOccupancyCalc(gameMapEntity);
+		Data->timerManager.playerGenerationTimer = 0;
 		
-		Building* buildingEntity = (Building*)GetEntity(&Data->em, gameMapEntity->buildings[personEntity->residentialAssignment]);
-		buildingEntity->persons[buildingEntity->personCount] = personEntity; 
-		buildingEntity->personCount++;
-
-		gameMapEntity->persons[gameMapEntity->personCount] = personEntity;
-		gameMapEntity->personCount++;
-		
-		for (int i = 0; i < gameMapEntity->buildingCount; i++)
+		if (mapData.residentialDelta <= 0)
 		{
-			switch (personEntity->residentialAssignment)
-			{
-				case 1:
-				{	
-					break;
-				}
-				default: 
-				{
-					break;
-				}
-			}
-			// income bracket choice
-			// transport choice
-			Data->timerManager.playerGenerationTimer = 0;
+			int32 value = {};
 		}
+		else 
+		{
+			EntityHandle personHandle = AddEntity(&Data->em, Person_Type);
+			Person* personEntity = (Person*)GetEntity(&Data->em, personHandle);
+			personEntity->handle = personHandle;
+
+			// CREATE PERSON
+			GeneratePerson(personEntity, gameMapEntity->buildingCount);
+
+			// assign person to specific building
+				// person to building assignment logic	
+
+			Building* buildingEntity = (Building*)GetEntity(&Data->em, gameMapEntity->buildings[personEntity->residentialAssignment]);
+			buildingEntity->persons[buildingEntity->personCount] = personHandle;
+			buildingEntity->personCount++;
+
+			gameMapEntity->persons[gameMapEntity->personCount] = personHandle;
+			gameMapEntity->personCount++;
+
+			for (int i = 0; i < gameMapEntity->buildingCount; i++)
+			{
+				switch (personEntity->residentialAssignment)
+				{
+					case 1:
+					{
+						break;
+					}
+					default:
+					{
+						break;
+					}
+				}
+				// income bracket choice
+				// transport choice
+				
+			}
+		}
+
+		
 	}
 	
 }

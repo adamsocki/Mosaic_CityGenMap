@@ -155,7 +155,7 @@ void MyGameUpdate()
 	PersonsLogic();
     CityMapRender();
     TileArrowRender();
-    MouseRender();
+   // MouseRender();
 	
     CityStateRender();
 

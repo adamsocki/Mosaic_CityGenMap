@@ -15,7 +15,7 @@ void BuildingInit(Building* buildingEntity)
 		}
 		case (BuildingType_Residential_Type1):
 		{
-			buildingEntity->personCapacity = 25;
+			buildingEntity->personCapacity = 2;
 			break;
 		}
 		default:

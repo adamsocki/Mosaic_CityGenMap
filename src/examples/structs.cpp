@@ -350,6 +350,7 @@ enum Income
 
 struct Person : MapEntity
 {
+	EntityHandle handle;
 	Race race;
 	int32 age;
 

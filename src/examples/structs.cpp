@@ -357,8 +357,8 @@ struct Person : MapEntity
 
 	EntityHandle employmentLocation;
 
+	int32 residentialAssignment;
 	EntityHandle residentialLocation;
-
 };
 
 struct EntryPort : MapEntity

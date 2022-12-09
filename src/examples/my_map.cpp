@@ -13,6 +13,7 @@ MyData* Data = {};
 #include "LoadSprites.cpp"
 #include "BuildingLogicRender.cpp"
 #include "UIEventLogicRender.cpp"
+#include "PersonsLogicRender.cpp"
 
 #include "ParseOBJ.cpp"
 #include "Voronoi.cpp"
@@ -27,7 +28,6 @@ int32 counter = 0;
 
 void MyInit()
 {
-
     AllocateMemoryArena(&tokenArena, Megabytes(90));
     Game->myData = malloc(sizeof(MyData));
     memset(Game->myData, 0, sizeof(MyData));
@@ -55,7 +55,6 @@ void MyInit()
 
     InitializeEntityManager();
     InitializeEntityBuffers();
-    //ParseOSM();
 
     Data->model.pathNumber = 0;
     LoadModelParse(&Data->model);
@@ -77,6 +76,7 @@ void MyInit()
     SetCameraToMap();
     MouseInit();
     TileArrowInit();
+    PersonsInit();
 
     AllocateModelOBJMesh(&Game->modelMesh, &Data->model);
     InitMesh(&Game->modelMesh);
@@ -152,7 +152,7 @@ void MyGameUpdate()
     TileArrowLogic();
 	
 	CityStateLogic();
-	
+	PersonsLogic();
     CityMapRender();
     TileArrowRender();
     MouseRender();

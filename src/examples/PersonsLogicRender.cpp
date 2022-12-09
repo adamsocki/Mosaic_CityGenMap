@@ -1,4 +1,4 @@
-void GeneratePerson(Person* personEntity)
+void GeneratePerson(Person* personEntity, int32 buildingCount)
 {
 
 	// examine world conditions to find propensity of immigrant type
@@ -8,6 +8,11 @@ void GeneratePerson(Person* personEntity)
 	//personEntity->incomeBracketType = 
 	//personEntity->educationType = 
 	//personEntity->commerical
+
+
+	// calculate residential assignment
+	bool buildingAssigned = false;
+	personEntity->residentialAssignment = RandiRange(0, buildingCount);
 }
 
 void PersonsInit()
@@ -60,12 +65,16 @@ MapData PersonCapacityOccupancyCalc(GameMap* gameMapEntity)
 
 void PersonsLogic()
 {
+	//EntityTypeBuffer* buildingBuffer = &Data->em.buffers[Building_Type];
+    //Building* buildingEntitiesInBuffer = (Building*)roomBuffer->entities;
+
 	// GENERATION OF PERSONS
 
 	// check to see if there are buildings in the current map
 	EntityTypeBuffer* gameMapBuffer = &Data->em.buffers[GameMap_Type];
 	GameMap* gameMapEntitiesInBuffer = (GameMap*)gameMapBuffer->entities;
 	GameMap* gameMapEntity = &gameMapEntitiesInBuffer[0];
+
 
 	// check capacity and occupancy of residential buildings
 	MapData mapData = PersonCapacityOccupancyCalc(gameMapEntity);
@@ -75,10 +84,9 @@ void PersonsLogic()
 
 	// CHECK GENERATOR TIMER
 	int32 timeSinceLastPlayerGenerated = &Data->timerManager.playerGenerationTimer;
-	if (timeSinceLastPlayerGenerated = 2.0f)
+	if (timeSinceLastPlayerGenerated == 2.0f)
 	{
 		canGeneratePerson = true;
-	
 		// if capacity is reached, still generate person ? to allow for overcrowding 
 	}
 	
@@ -90,19 +98,35 @@ void PersonsLogic()
 		personEntity->handle = personHandle;
 
 		// CREATE PERSON
-		GeneratePerson(personEntity);
+		GeneratePerson(personEntity, gameMapEntity->buildingCount);
 
 		// assign person to specific building
-			// person to building assignment logic
+			// person to building assignment logic	
+		
+		Building* buildingEntity = (Building*)GetEntity(&Data->em, gameMapEntity->buildings[personEntity->residentialAssignment]);
+		buildingEntity->persons[buildingEntity->personCount] = personEntity; 
+		buildingEntity->personCount++;
+
+		gameMapEntity->persons[gameMapEntity->personCount] = personEntity;
+		gameMapEntity->personCount++;
+		
 		for (int i = 0; i < gameMapEntity->buildingCount; i++)
 		{
-				
+			switch (personEntity->residentialAssignment)
+			{
+				case 1:
+				{	
+					break;
+				}
+				default: 
+				{
+					break;
+				}
+			}
+			// income bracket choice
+			// transport choice
+			Data->timerManager.playerGenerationTimer = 0;
 		}
-		// income bracket choice
-		// transport choice
-		
-		Data->timerManager.playerGenerationTimer = 0;
 	}
-
 	
 }

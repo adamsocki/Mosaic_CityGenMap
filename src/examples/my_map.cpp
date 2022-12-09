@@ -21,6 +21,7 @@ MyData* Data = {};
 #include "MouseLogicRender.cpp"
 #include "KeyboardLogicRender.cpp"
 #include "CityStateLogic.cpp"
+#include "TimerManager.cpp"
 
 int32 counter = 0;
 
@@ -72,6 +73,7 @@ void MyInit()
     
     CityMapTileInit(V2(10, 10), V2(1, 1));
 
+    TimerInit();
     SetCameraToMap();
     MouseInit();
     TileArrowInit();
@@ -84,11 +86,11 @@ void MyInit()
 
     AllocateModelOBJMesh(&Game->testMesh, &Data->modelTest);
     InitMesh(&Game->testMesh);
-
 }
 
 void MyGameUpdate()
 {
+    TimerAdvance();
     vec2 mousePos = Input->mousePosNormSigned;
 
     vec3 pos = V3(mousePos.x, mousePos.y, -1.0f);

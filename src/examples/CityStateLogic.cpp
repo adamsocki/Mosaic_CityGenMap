@@ -8,8 +8,6 @@ void CityStateInit()
 
 	// init roads in city
 
-	//
-
 }
 
 void CityStateLogic()
@@ -22,9 +20,7 @@ void CityStateLogic()
 
 	// get tiles
 
-
 	// determine if 
-	
 	
 	// calculate person commercial capacity
 	int32 commercialBuildingPersonCapacity = {};

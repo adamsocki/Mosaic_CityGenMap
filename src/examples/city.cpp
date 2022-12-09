@@ -94,13 +94,10 @@ void CityMapTileInit(vec2 tileGridSize, vec2 tileSize)
 
 void CityMapLogic()
 {
-
 	EntityTypeBuffer* gameMapBuffer = &Data->em.buffers[GameMap_Type];
 	GameMap* gameMapEntitiesInBuffer = (GameMap*)gameMapBuffer->entities;
 
 	GameMap* gameMapEntity = &gameMapEntitiesInBuffer[0];
-
-
 
 	// check to see if a person can be added
 		// check for a building
@@ -109,32 +106,13 @@ void CityMapLogic()
 	// create a building 
 		// check to see if location is along road
 
-
 	// create a road
-		
-	if (InputPressed(Keyboard, Input_R))
-	{	// get current tile arrow
-		EntityTypeBuffer* tileArrowBuffer = &Data->em.buffers[TileArrow_Type];
-		TileArrow* tileArrowEntity = (TileArrow*)tileArrowBuffer->entities;
-
-		// add to map
-
-		TileArrow* arrowEntity = &tileArrowEntity[0];
-
-		Tile* tileEntity = (Tile*)GetEntity(&Data->em, arrowEntity->tileHandle);
-
-		tileEntity->tileType = TileType_Road;
-
-	}
-	
 	if (InputPressed(Keyboard, Input_C))
 	{	// get current tile arrow
 		EntityTypeBuffer* tileArrowBuffer = &Data->em.buffers[TileArrow_Type];
 		TileArrow* tileArrowEntity = (TileArrow*)tileArrowBuffer->entities;
 		
 		TileArrow* arrowEntity = &tileArrowEntity[0];
-
-
 
 		if (arrowEntity->developed)
 		{
@@ -160,17 +138,18 @@ void CityMapLogic()
 		
 		Tile* tileEntity = (Tile*)GetEntity(&Data->em, arrowEntity->tileHandle);
 		tileEntity->entityOnTileHandle = buildingHandle;
-		tileEntity->tileType = TileType_ResidentialBuilding;
+		tileEntity->tileType = TileType_CommercialBuilding;
 
 	}
-
 	if (InputPressed(Keyboard, Input_H))
-	{	// get current tile arrow
+	{	
+		// GET TILE ARROW - THERE IS ONLY ONE AS IT IS THE POINTER/CURSOR
+		// THIS ARROW CONTAINS tileENTITY THAT IT IS OVER
 		EntityTypeBuffer* tileArrowBuffer = &Data->em.buffers[TileArrow_Type];
 		TileArrow* tileArrowEntity = (TileArrow*)tileArrowBuffer->entities;
-		
 		TileArrow* arrowEntity = &tileArrowEntity[0];
 		
+		// TODO: CREATE MECHANISM THAT DETECTS EXISTING BUILDING / ENTITY ON THE TILE AND WARNS AGAINST DELETION (OR PREVENTS IT)
 		if (arrowEntity->developed)
 		{
 			// create UI Event asking about what to do here
@@ -180,38 +159,52 @@ void CityMapLogic()
 		{
 			//BuildingCreate(BuildingType_Commercial);
 		}
-
+		// CREATE THE BUILDING ENTITY 
 		EntityHandle buildingHandle = AddEntity(&Data->em, Building_Type);
 		Building* buildingEntity = (Building*)GetEntity(&Data->em, buildingHandle);
 		buildingEntity->handle = buildingHandle;
 		buildingEntity->tileHandle = tileArrowEntity->handle;
 		buildingEntity->buildingType = BuildingType_Residential_Type1;
+		// INITIALIZE COMPONENTS SPECIFIC TO BUILDING TYPE **BuildingLogicRender.cpp**
+		BuildingInit(buildingEntity);
 
+		// ADD BUILDING ENTITY HANDLE TO GAMEMAP ENTITY
 		gameMapEntity->buildings[gameMapEntity->buildingCount] = buildingHandle;
 		gameMapEntity->buildingCount++;
 		
-		BuildingInit(buildingEntity);
-
-		
+		// ADD BUILDING ENTITY HANDLE TO tileEntity
 		Tile* tileEntity = (Tile*)GetEntity(&Data->em, arrowEntity->tileHandle);
 		tileEntity->entityOnTileHandle = buildingHandle;
-		tileEntity->tileType = TileType_ResidentialBuilding;
-
+		// SET THE tileENTITY TO THE NEW TILE TYPE THAT IS BEING CREATED
+		tileEntity->tileType = TileType_ResidentialBuilding_Type1;
 	}
 	if (InputPressed(Keyboard, Input_P))
+	{
+		// GET TILE ARROW - THERE IS ONLY ONE AS IT IS THE POINTER/CURSOR
+		// THIS ARROW CONTAINS tileENTITY THAT IT IS OVER
+		EntityTypeBuffer* tileArrowBuffer = &Data->em.buffers[TileArrow_Type];
+		TileArrow* tileArrowEntity = (TileArrow*)tileArrowBuffer->entities;
+		TileArrow* arrowEntity = &tileArrowEntity[0];
+
+		Tile* tileEntity = (Tile*)GetEntity(&Data->em, arrowEntity->tileHandle);
+
+		// SET THE tileENTITY TO THE NEW TILE TYPE THAT IS CREATED.
+		tileEntity->tileType = TileType_Test;
+	}
+	if (InputPressed(Keyboard, Input_R))
 	{	// get current tile arrow
 		EntityTypeBuffer* tileArrowBuffer = &Data->em.buffers[TileArrow_Type];
 		TileArrow* tileArrowEntity = (TileArrow*)tileArrowBuffer->entities;
+
+		// add to map
 
 		TileArrow* arrowEntity = &tileArrowEntity[0];
 
 		Tile* tileEntity = (Tile*)GetEntity(&Data->em, arrowEntity->tileHandle);
 
-		tileEntity->tileType = TileType_Test;
+		tileEntity->tileType = TileType_Road;
 
 	}
-
-
 
 
 
@@ -255,12 +248,10 @@ void CityMapRender()
 		Tile* tileEntity = (Tile*)GetEntity(&Data->em, gameMapEntity->tiles[i]);
 		//vec3 position = V3(tileEntity->position.x, tileEntity->position.y, tileEntity->position.z -10.0f);
 
-
 		//tileEntity->angle_x += angle_xMod;
 
 		//tileEntity->rotation = AxisAngle(V3(1, 0, 0), tileEntity->angle_x);
-
-
+		
 		switch (tileEntity->tileType)
 		{
 			case TileType_Road:
@@ -278,14 +269,12 @@ void CityMapRender()
 				RenderOBJModel(&Game->testMesh, tileEntity->position, V3(1.0f, 1.0f, 1.0f), color, tileEntity->rotation, &Data->sprites.tile3);
 				break;
 			}
-			case TileType_ResidentialBuilding:
+			case TileType_ResidentialBuilding_Type1:
 			default:
 			{
 				RenderOBJModel(&Game->modelMesh, tileEntity->position, V3(1.0f, 1.0f, 1.0f), color, tileEntity->rotation, &Data->sprites.tile3);
-
 				break;
 			}
-
 		}
 
 

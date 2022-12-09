@@ -142,7 +142,12 @@ struct EntitySprites {
 	Sprite pop_sprite;
 };
 
-
+struct TimerManager
+{
+	real32 playerGenerationTimer;
+	real32 timer2;
+	real32 timer3;
+};
 
 struct MyData
 {
@@ -157,8 +162,9 @@ struct MyData
 	OBJModel modelBld;
 	OBJModel modelTest;
 
-};
+	TimerManager timerManager;
 
+};
 
 
 struct BBox
@@ -222,9 +228,11 @@ struct MapData
 {
 	int32 residentialOccupancy;
 	int32 residentialCapacity;
+	int32 residentialDelta;
 
 	int32 commercialOccupancy;
 	int32 commercialCapacity;
+	int32 commercialDelta;
 };
 
 enum TileType
@@ -235,7 +243,7 @@ enum TileType
 
 	TileType_Road,
 	TileType_CommercialBuilding,
-	TileType_ResidentialBuilding,
+	TileType_ResidentialBuilding_Type1,
 	TileType_Test,
 
 	TileType_Count,
@@ -306,7 +314,6 @@ enum BuildingType
 	BuildingType_Residential_Type1,
 };
 
-
 struct Building : MapEntity
 {
 	EntityHandle handle;
@@ -366,6 +373,8 @@ struct GameMap
 	vec2 size;
 
 	CityGenState_Type cityGenState;
+
+	MapData mapData;
 
 	EntityHandle* tiles;
 	int32 tileCount;

@@ -23,6 +23,7 @@ void PersonsInit()
 
 MapData PersonCapacityOccupancyCalc(GameMap* gameMapEntity)
 {
+	MapData returnMapData = {};
 	for (int i = 0; i < gameMapEntity->buildingCount; i++)
 	{
 		Building* buildingEntity = (Building*)GetEntity(&Data->em, gameMapEntity->buildings[i]);
@@ -30,14 +31,14 @@ MapData PersonCapacityOccupancyCalc(GameMap* gameMapEntity)
 		{
 			case BuildingType_Residential_Type1:
 			{
-				gameMapEntity->mapData.residentialOccupancy += buildingEntity->personCount;
-				gameMapEntity->mapData.residentialCapacity  += buildingEntity->personCapacity; 
+				returnMapData.residentialOccupancy += buildingEntity->personCount;
+				returnMapData.residentialCapacity  += buildingEntity->personCapacity; 
 				break;
 			}
 			case BuildingType_Commercial:
 			{
-				gameMapEntity->mapData.commercialOccupancy += buildingEntity->personCount;
-				gameMapEntity->mapData.commercialCapacity += buildingEntity->personCapacity;
+				returnMapData.commercialOccupancy += buildingEntity->personCount;
+				returnMapData.commercialCapacity += buildingEntity->personCapacity;
 				break;
 			}
 			default:
@@ -47,10 +48,12 @@ MapData PersonCapacityOccupancyCalc(GameMap* gameMapEntity)
 		} 
 	}
 	// calculate pop delta
-	gameMapEntity->mapData.residentialDelta = gameMapEntity->mapData.residentialCapacity - gameMapEntity->mapData.residentialOccupancy;
-	gameMapEntity->mapData.commercialDelta = gameMapEntity->mapData.commercialCapacity - gameMapEntity->mapData.commercialOccupancy;
+	returnMapData.residentialDelta = returnMapData.residentialCapacity - returnMapData.residentialOccupancy;
+	returnMapData.commercialDelta  = returnMapData.commercialCapacity  - returnMapData.commercialOccupancy;
+
+	gameMapEntity->mapData = returnMapData;
 	
-	return gameMapEntity->mapData;
+	return returnMapData;
 }
 
 void PersonsLogic()

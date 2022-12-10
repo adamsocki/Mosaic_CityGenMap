@@ -270,6 +270,10 @@ void CityMapRender()
 				break;
 			}
 			case TileType_ResidentialBuilding_Type1:
+			{
+				RenderOBJModel(&Game->testMesh, tileEntity->position, V3(1.0f, 1.0f, 1.0f), color, tileEntity->rotation, &Data->sprites.tile3);
+				break;
+			}
 			default:
 			{
 				RenderOBJModel(&Game->modelMesh, tileEntity->position, V3(1.0f, 1.0f, 1.0f), color, tileEntity->rotation, &Data->sprites.tile3);

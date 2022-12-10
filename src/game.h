@@ -49,6 +49,7 @@
 //        more memory.
 #define GlyphBufferCount 32
 #define GlyphBufferCapacity 256
+#define OBJBufferCount 32
 
 struct GameMemory {
     bool running;
@@ -74,11 +75,18 @@ struct GameMemory {
     DebugLog log;
     MemoryArena frameMem;
     MemoryArena frameMem2;
+    MemoryArena frameMem3;
+
 
     NetworkInfo networkInfo;
 
     int32 currentGlyphBufferIndex;
     GlyphBuffer glyphBuffers[GlyphBufferCount];
+
+    int32 currengOBJBufferIndex;
+    OBJBuffer objBuffers[OBJBufferCount];
+
+
 
     FontTable monoFont;
     FontTable serifFont;

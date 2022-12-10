@@ -489,6 +489,71 @@ void RenderOBJModel(Mesh* mesh, vec3 pos, vec3 scale, vec4 color, quaternion rot
     //glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
+void RenderOBJModelBuffer(vec2 pos, real32 size, vec4 color, int32 num)
+{
+
+    OBJBuffer* objBuffer = &Game->objBuffers[Game->currengOBJBufferIndex];
+
+    objBuffer->model = TRS(pos, rotation, scale);
+}
+
+void RenderOBJModelInstance(int32 num, Mesh* mesh, vec3 pos, vec3 scale, vec4 color, quaternion rotation, Sprite* texture)
+{
+
+    
+
+    Shader* shader = &Game->objShader;
+    SetShader(shader);
+
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glEnable(GL_DEPTH_TEST);
+    glDepthFunc(GL_LESS);
+
+    mat4 model = TRS(pos, rotation, scale);
+
+    glUniformMatrix4fv(shader->uniforms[0].id, 1, GL_FALSE, model.data);
+    glUniformMatrix4fv(shader->uniforms[1].id, 1, GL_FALSE, Game->camera.viewProjection.data);
+    glUniform4fv(shader->uniforms[2].id, 1, color.data);
+
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, texture->textureID);
+    glUniform1i(shader->uniforms[3].id, 0);
+
+
+    glBindBuffer(GL_ARRAY_BUFFER, mesh->vertBufferID);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->indexBufferID);
+
+    // 1st attribute buffer : vertices
+    int vert = glGetAttribLocation(shader->programID, "vertexPosition_modelspace");
+    glEnableVertexAttribArray(vert);
+    glVertexAttribPointer(vert, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+
+    int normals = glGetAttribLocation(shader->programID, "normals");
+    //glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
+    glEnableVertexAttribArray(normals);
+    glVertexAttribPointer(normals, 3, GL_FLOAT, GL_FALSE, 0, (void*)(sizeof(vec3) * mesh->vertCount));
+
+    int texcoord = glGetAttribLocation(shader->programID, "in_texcoord");
+    glEnableVertexAttribArray(texcoord);
+    glVertexAttribPointer(texcoord, 2, GL_FLOAT, GL_FALSE, 0, (void*)(((sizeof(vec3) + sizeof(vec3)) * mesh->vertCount)));
+    stbi_set_flip_vertically_on_load(true);
+
+
+
+
+
+    glDrawElements(GL_TRIANGLES, mesh->indexCount, GL_UNSIGNED_INT, (GLvoid*)0);
+
+
+
+    glDisableVertexAttribArray(vert);
+    glDisableVertexAttribArray(normals);
+    glDisableVertexAttribArray(texcoord);
+
+    //glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+}
+
 
 void DisplayOBJModel(OBJModel* model, Mesh* meshModel, int32 faceNum)
 {

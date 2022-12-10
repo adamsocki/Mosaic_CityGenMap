@@ -131,6 +131,25 @@ struct FontTable {
 };
 
 
+struct OBJData {
+    //int32 codepoint;
+    vec2 position;
+
+   // vec2 dimensions;
+    vec4 color;
+};
+
+
+struct OBJBuffer
+{
+    int32 capacity;
+    int32 count;
+
+    OBJData* data;
+
+    mat4 model;
+};
+
 struct GlyphBuffer {
     int32 capacity;
     int32 size;

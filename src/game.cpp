@@ -203,6 +203,9 @@ void GameInit(GameMemory *gameMem) {
     AllocateMemoryArena(&Game->frameMem, Megabytes(100));
 
     AllocateMemoryArena(&Game->frameMem2, Megabytes(100));
+
+    AllocateMemoryArena(&Game->frameMem3, Megabytes(100));
+
     Game->log.head = (DebugLogNode *)malloc(sizeof(DebugLogNode));
     AllocateDebugLogNode(Game->log.head, LOG_BUFFER_CAPACITY);
     Game->log.current = Game->log.head;
@@ -355,6 +358,7 @@ void GameUpdateAndRender(GameMemory *gameMem) {
     }
 
     Game->currentGlyphBufferIndex = 0;
+    Game->currengOBJBufferIndex = 0;
 
     // @TODO: pick a key to step frame and then check if that's pressed
     // We want to do this before the update obviously

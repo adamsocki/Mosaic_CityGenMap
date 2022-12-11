@@ -25,6 +25,22 @@ MyData* Data = {};
 #include "TimerManager.cpp"
 
 int32 counter = 0;
+vec3* positions = {};
+
+void OBJBufferInit()
+{
+    int32 num = 10;
+
+    positions = PushArray(&Game->frameMem3, vec3, num);
+
+    for (int i = 0; i < num; i++)
+    {
+        positions[i].x = i + 4.0f;
+        positions[i].y = 4.0f;
+        positions[i].z = -10.0f;
+    }
+
+}
 
 void MyInit()
 {
@@ -86,6 +102,20 @@ void MyInit()
 
     AllocateModelOBJMesh(&Game->testMesh, &Data->modelTest);
     InitMesh(&Game->testMesh);
+
+
+    OBJBufferInit();
+}
+
+
+
+void TestOBJBufferRender()
+{
+    vec4 color = V4(1.0f, 0.1f, 1.0f, 1.0f);
+    int32 num = 10;
+    RenderOBJModelBuffer(num, V3(0,0,-10), V3(1,1,1), IdentityQuaternion(), positions, &Data->sprites.tile3);
+
+
 }
 
 void MyGameUpdate()
@@ -160,4 +190,7 @@ void MyGameUpdate()
     CityStateRender();
 
     UIEventRender();
+
+
+    TestOBJBufferRender();
 }

@@ -489,19 +489,96 @@ void RenderOBJModel(Mesh* mesh, vec3 pos, vec3 scale, vec4 color, quaternion rot
     //glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
-void RenderOBJModelBuffer(vec2 pos, real32 size, vec4 color, int32 num)
+void RenderOBJModelBuffer(int32 num, vec3 posStart, vec3 scale, quaternion rotation,  vec3 *positionArray, Sprite* texture)
 {
-
     OBJBuffer* objBuffer = &Game->objBuffers[Game->currengOBJBufferIndex];
 
-    objBuffer->model = TRS(pos, rotation, scale);
+    objBuffer->count += num;
+
+    objBuffer->model = TRS(posStart, rotation, scale);
+    objBuffer->texture = texture;
+
+    //vec3* positions = PushArray(&Game->frameMem3, vec3, num);
+
+    for (int i = 0; i < num; i++)
+    {
+        objBuffer->data[i].position = positionArray[i];
+    }
+
+    Game->currengOBJBufferIndex++;
+}
+
+void RenderOBJBuffer(OBJBuffer* buffers, Mesh* mesh)
+{
+    Shader* shader = &Game->objBufferShader;
+    SetShader(shader);
+
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glEnable(GL_DEPTH_TEST);
+    glDepthFunc(GL_LESS);
+
+    for (int i = 0; i < OBJBufferCount; i++)
+    {
+        OBJBuffer* buffer = &buffers[i];
+        
+        if (buffer->count == 0)
+        {
+            continue;
+        }
+
+        mat4 model = buffer->model;
+
+        glUniformMatrix4fv(shader->uniforms[0].id, 1, GL_FALSE, model.data);
+        glUniformMatrix4fv(shader->uniforms[1].id, 1, GL_FALSE, Game->camera.viewProjection.data);
+
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, buffer->texture->textureID);
+        glUniform1i(shader->uniforms[3].id, 0);
+
+
+        glBindBuffer(GL_ARRAY_BUFFER, mesh->vertBufferID);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->indexBufferID);
+
+        // 1st attribute buffer : vertices
+        int vert = glGetAttribLocation(shader->programID, "vertexPosition_modelspace");
+        glEnableVertexAttribArray(vert);
+        glVertexAttribPointer(vert, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+
+        int normals = glGetAttribLocation(shader->programID, "normals");
+        //glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
+        glEnableVertexAttribArray(normals);
+        glVertexAttribPointer(normals, 3, GL_FLOAT, GL_FALSE, 0, (void*)(sizeof(vec3) * mesh->vertCount));
+
+        int texcoord = glGetAttribLocation(shader->programID, "in_texcoord");
+        glEnableVertexAttribArray(texcoord);
+        glVertexAttribPointer(texcoord, 2, GL_FLOAT, GL_FALSE, 0, (void*)(((sizeof(vec3) + sizeof(vec3)) * mesh->vertCount)));
+
+        // BUFFER DATA AND DRAW IT
+        glBindBuffer(GL_ARRAY_BUFFER, buffer->bufferID);
+        glBufferData(GL_ARRAY_BUFFER, buffer->size, buffer->data, GL_STATIC_DRAW);
+
+        int positions = glGetAttribLocation(shader->programID, "pOffset");
+        glEnableVertexAttribArray(positions);
+        glVertexAttribIPointer(positions, 3, GL_FLOAT, sizeof(OBJData), (void*)FIELD_OFFSET(OBJData, position));
+        glVertexAttribDivisor(positions, 1);
+
+        glDrawElementsInstanced(GL_TRIANGLES, mesh->indexCount, GL_UNSIGNED_INT, (GLvoid*)0, buffer->count);
+
+        glVertexAttribDivisor(positions, 0);
+
+        glDisableVertexAttribArray(vert);
+        glDisableVertexAttribArray(normals);
+        glDisableVertexAttribArray(texcoord);
+        glDisableVertexAttribArray(positions);
+
+        buffer->count = 0;
+
+    }
 }
 
 void RenderOBJModelInstance(int32 num, Mesh* mesh, vec3 pos, vec3 scale, vec4 color, quaternion rotation, Sprite* texture)
 {
-
-    
-
     Shader* shader = &Game->objShader;
     SetShader(shader);
 
@@ -537,6 +614,8 @@ void RenderOBJModelInstance(int32 num, Mesh* mesh, vec3 pos, vec3 scale, vec4 co
     int texcoord = glGetAttribLocation(shader->programID, "in_texcoord");
     glEnableVertexAttribArray(texcoord);
     glVertexAttribPointer(texcoord, 2, GL_FLOAT, GL_FALSE, 0, (void*)(((sizeof(vec3) + sizeof(vec3)) * mesh->vertCount)));
+    
+    
     stbi_set_flip_vertically_on_load(true);
 
 

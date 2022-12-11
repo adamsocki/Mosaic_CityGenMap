@@ -318,6 +318,21 @@ void InitGlyphBuffers(int32 count) {
         glBufferData(GL_ARRAY_BUFFER, buffer->size, buffer->data, GL_STATIC_DRAW);
     }
 }
+void InitOBJBuffers(int32 count) {
+    for (int i = 0; i < count; i++) {
+        OBJBuffer* buffer = &Game->objBuffers[i];
+
+        buffer->capacity = OBJBufferCapacity;
+        buffer->size = buffer->capacity * sizeof(OBJData);
+        buffer->data = (OBJData*)malloc(buffer->size);
+        memset(buffer->data, 0, buffer->size);
+
+        glGenBuffers(1, (GLuint*)&buffer->bufferID);
+        glBindBuffer(GL_ARRAY_BUFFER, buffer->bufferID);
+        glBufferData(GL_ARRAY_BUFFER, buffer->size, buffer->data, GL_STATIC_DRAW);
+    }
+}
+
 
 void DrawLinearQuad(vec2 positionStart, vec2 positionEnd, vec2 size, real32 angle, Sprite* texture)
 {

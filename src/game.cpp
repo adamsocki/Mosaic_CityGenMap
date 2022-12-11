@@ -251,8 +251,19 @@ void GameInit(GameMemory *gameMem) {
     InitFont(&gameMem->serifFont, "data/LiberationSerif-Regular.ttf");
 
     InitGlyphBuffers(GlyphBufferCount);
+    InitOBJBuffers(OBJBufferCount);
 
 #if WINDOWS
+    {
+        LoadShader("shaders/objBufferMesh.vert", "shaders/objBufferMesh.frag", &gameMem->objBufferShader);
+        const char* uniforms[] = {
+            "model",
+            "viewProjection",
+            "color",
+            "pOffset",
+        };
+        CompileShader(&gameMem->objBufferShader, 4, uniforms);
+    }
     {
         LoadShader("shaders/modelMesh.vert", "shaders/modelMesh.frag", &gameMem->modelShader);
         const char* uniforms[] = {
@@ -375,7 +386,8 @@ void GameUpdateAndRender(GameMemory *gameMem) {
     RenderRectBuffer(&Game->rectBuffer);
     Game->rectBuffer.count = 0;
     
-    DrawGlyphs(gameMem->glyphBuffers);
+    DrawGlyphs(gameMem->glyphBuffers); 
+    RenderOBJBuffer(gameMem->objBuffers, &Game->testMesh);
     
     //DeleteEntities(&Game->entityDB);
     
@@ -384,6 +396,7 @@ void GameUpdateAndRender(GameMemory *gameMem) {
     gameMem->frame++;
     ClearMemoryArena(&Game->frameMem);
     ClearMemoryArena(&Game->frameMem2);
+    ClearMemoryArena(&Game->frameMem3);
 
     ClearInputManager(input);
 }

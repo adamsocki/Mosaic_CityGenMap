@@ -50,6 +50,7 @@
 #define GlyphBufferCount 32
 #define GlyphBufferCapacity 256
 #define OBJBufferCount 32
+#define OBJBufferCapacity 256
 
 struct GameMemory {
     bool running;
@@ -114,6 +115,8 @@ struct GameMemory {
 
     Shader objShader;
 
+
+    Shader objBufferShader;
 
     Mesh tri;
     Mesh quad;

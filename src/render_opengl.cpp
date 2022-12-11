@@ -238,7 +238,7 @@ void InitMesh(Mesh *mesh) {
 
     GLuint indexBuffer;
     glGenBuffers(1, &indexBuffer);
-    // The following commands will talk about our 'vertexbuffer' buffer
+    // The following commands will talk about our 'indexbuffer' buffer
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBuffer);
     // Give our vertices to OpenGL.
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, mesh->indexCount * sizeof(uint32), mesh->indices, GL_STATIC_DRAW);

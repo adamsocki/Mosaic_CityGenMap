@@ -35,8 +35,8 @@ void OBJBufferInit()
 
     for (int i = 0; i < num; i++)
     {
-        positions[i].x = (i * 2.0f) + 4.0f;
-        //positions[i].y = (i * 2.0f) + 4.0f;
+        positions[i].x = (i * 4.0f) + 4.0f;
+        positions[i].y = (i*3) + 4.0f;
        // positions[i].z = 0.0f;
     }
 

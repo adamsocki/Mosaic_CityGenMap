@@ -1,14 +1,35 @@
 
 
-
-enum OSMType
+enum EntityType
 {
 	OSMType_Way,
 	OSMType_Relation,
 	OSMType_Node,
 	OSMType_Bound,
 
-	OSMType_Count,
+	VoronoiType_Line,
+	VoronoiType_Node,
+	VoronoiType_District,
+	VoronoiType_Map,
+	VoronoiType_Intersection,
+
+	GameMap_Type,
+	GameMap_Tile,
+
+	Mouse_Type,
+	Keyboard_Type,
+	TileArrow_Type,
+
+	Road_Type,
+	Building_Type,
+	Person_Type,
+
+	EntryPort_Type,
+
+
+	UIEvent_Type,
+
+	EntityType_Count,
 };
 
 
@@ -39,7 +60,6 @@ struct OBJFaceVec
 
 	vec3* faceValue;
 
-	//<DyanmicArray> <
 };
 
 
@@ -63,22 +83,24 @@ struct OBJModel
 	vec2* textureCoords;
 	int32 facesCount;
 	OBJFaceArray* faces;
-	
+
 	int32 indexCount;
+
+	int32 pathNumber;
 };
 
 struct EntityHandle {
 	int32 generation;
 	int32 indexInInfo;
-	OSMType type;
+	EntityType type;
 };
 
 
 struct EntityInfo {
 	int32 generation;
 	int32 indexInBuffer;
-	
-	OSMType type;
+
+	EntityType type;
 };
 
 struct EntityTypeBuffer {
@@ -91,8 +113,8 @@ struct EntityTypeBuffer {
 
 
 struct EntityManager {
-	EntityTypeBuffer buffers[OSMType_Count];
-	EntityInfo *entities;
+	EntityTypeBuffer buffers[EntityType_Count];
+	EntityInfo* entities;
 	int32 entityCapacity;
 
 	int32 nextID;
@@ -101,7 +123,7 @@ struct EntityManager {
 
 struct MeshManager
 {
-	
+
 	Mesh* meshes;
 	int32 meshCount;
 	int32 meshCapacity;
@@ -112,21 +134,37 @@ struct MeshManager
 
 struct EntitySprites {
 	Sprite bld;
+
+	Sprite tile3;
+	Sprite tile3_mouse;
+	Sprite road_uv;
+	Sprite bld2;
+	Sprite pop_sprite;
+};
+
+struct TimerManager
+{
+	real32 playerGenerationTimer;
+	real32 timer2;
+	real32 timer3;
 };
 
 struct MyData
 {
 	EntitySprites sprites;
 	EntityManager em;
+
 	int32 currentLevel;
 
 	MeshManager meshManager;
-	//eshManager meshManager;
 
 	OBJModel model;
+	OBJModel modelBld;
+	OBJModel modelTest;
+
+	TimerManager timerManager;
 
 };
-
 
 
 struct BBox
@@ -148,6 +186,15 @@ struct BBox
 };
 
 
+
+
+// UI STRUCTS
+
+struct UIEvent
+{
+	EntityHandle handle;
+};
+
 struct Points
 {
 	int32 pointCount;
@@ -156,18 +203,265 @@ struct Points
 	vec3* points;
 };
 
-struct VoronoiLine
+struct Type_Lot
 {
+	vec3 position;
+
+	vec3 lotOutline[4];
+};
+
+struct VoronoiEntity {
+	EntityHandle handle;
+	vec3 position;
+};
+
+
+enum CityGenState_Type
+{
+	CityGenState_Sequential,
+
+	CityGenState_TypeCount,
+
+};
+
+struct MapData
+{
+	int32 residentialOccupancy;
+	int32 residentialCapacity;
+	int32 residentialDelta;
+
+	int32 commercialOccupancy;
+	int32 commercialCapacity;
+	int32 commercialDelta;
+};
+
+enum TileType
+{
+	TileType_Grass,
+	TileType_Land,
+	TileType_Water,
+
+	TileType_Road,
+	TileType_CommercialBuilding,
+	TileType_ResidentialBuilding_Type1,
+	TileType_Test,
+
+	TileType_Count,
+};
+
+
+struct Tile
+{
+	EntityHandle handle;
+	EntityHandle entityOnTileHandle;
+
+	quaternion rotation;
+	real32 angle_x;
+	real32 angle_z;
+
+	vec3 position;
+	vec2 size;
+
+	int32 row;
+	int32 column;
+
+	bool mouseOver;
+
+	TileType tileType;
+	//int32 height;
+	
+	bool developed;
+	
+	DynamicArray<EntityHandle> previousDevelopments;
+	int32 generationsDeveloped;
+};
+
+enum LandUse_Type
+{
+	road,
+
+
+};
+
+struct MouseEntity
+{
+	EntityHandle handle;
+
+	vec3 position;
+
+};
+struct TileArrow
+{
+	EntityHandle handle;
+	vec3 position;
+	int32 row;
+	int32 column;
+	int32 tileIndex;
+	quaternion rotation;
+	EntityHandle tileHandle;
+
+	bool developed;
+};
+
+struct MapEntity
+{
+	vec3 position;
+};
+
+enum BuildingType
+{
+	BuildingType_Commercial,
+	BuildingType_Residential_Type1,
+};
+
+struct Building : MapEntity
+{
+	EntityHandle handle;
+	LandUse_Type landUseType;
+
+	EntityHandle tileHandle;
+	BuildingType buildingType;
+
+	EntityHandle *persons;
+	int32 personCount;
+	int32 personCapacity;
+	int32 personSizeInBytes;
+};
+
+struct Road : MapEntity
+{
+
+};
+
+
+enum Race
+{
+	White,
+	Black,
+	Asian,
+};
+
+enum Income
+{
+
+};
+
+
+
+struct Person : MapEntity
+{
+	EntityHandle handle;
+	Race race;
+	int32 age;
+
+	Income incomeGroup;
+
+	EntityHandle employmentLocation;
+
+	int32 residentialAssignment;
+	EntityHandle residentialLocation;
+};
+
+struct EntryPort : MapEntity
+{
+	EntityHandle handle;
+};
+
+struct GameMap
+{
+	EntityHandle handle;
+
+	vec2 size;
+
+	CityGenState_Type cityGenState;
+
+	MapData mapData;
+
+	EntityHandle* tiles;
+	int32 tileCount;
+	int32 tileCapacity;
+	int32 tileSizeInBytes;
+
+	EntityHandle* buildings;
+	int32 buildingCount;
+	int32 buildingCapacity;
+	int32 buildingSizeInBytes;
+	EntityHandle* roads;
+	int32 roadCount;
+	int32 roadCapacity;
+	int32 roadSizeInBytes;
+	EntityHandle* persons;
+	int32 personCount;
+	int32 personCapacity;
+	int32 personSizeInBytes;
+};
+
+struct VoronoiIntersection : VoronoiEntity
+{
+
+};
+
+
+struct VoronoiLine : VoronoiEntity
+{
+
+
+	bool lineFinalized;
+
+	vec3 distPosA;
+	EntityHandle distHandleA;
+	vec3 distPosB;
+	EntityHandle distHandleB;
 
 	vec3 startOfLine;
 	vec3 endOfLine;
 
-	vec3 calcMidpoint;
+	real32 length;
 
-	real32 slopeOfLine;
+	vec3 midpoint;
 
+	int32 district1;
+	int32 district2;
+
+	vec3 slopeVector;
+	vec3 perpSlopeVector;
+	real32 slopeReal;
+	real32 perpSlopeReal;
+
+	bool intersectsBottomBBox;
+	bool intersectsRightBBox;
+	bool intersectsTopBBox;
+	bool intersectsLeftBBox;
+
+	bool undefinedVerticalSlope;
+	bool undefinedVerticalPerpSlope;
+	vec3 slopePointFromMidpoint;
+
+	vec3 yIntercept;
 };
 
+struct VoronoiNode : VoronoiEntity
+{
+	int32 districtID;
+
+	//vec3 position;
+};
+
+
+struct VoronoiMap : VoronoiEntity
+{
+	EntityHandle* vNodes;
+	int32 vNodeCount;
+	int32 vNodeCapacity;
+	int32 vNodeSizeInBytes;
+
+	EntityHandle* vLines;
+	int32 vLineCount;
+	int32 vLineCapacity;
+	int32 vLineSizeInBytes;
+
+	Rect mapSizeRect;
+};
 
 struct Entity
 {
@@ -183,7 +477,7 @@ struct Tag : Entity
 
 struct Node : Entity
 {
-	
+
 	bool visible;
 	int32 version;
 	int32 uid;
@@ -193,7 +487,7 @@ struct Node : Entity
 	int32 renderTestID;
 
 	DynamicArray<Tag> tagList;
-	
+
 };
 
 
@@ -226,7 +520,7 @@ struct OSMXml
 	Way* wayList;
 	Node* nodeList;
 	Tag* tagList;
-	Relation* relationList;	
+	Relation* relationList;
 };
 
 enum TokenTypeForLevel
@@ -260,5 +554,8 @@ struct TokenVal
 	char* start;
 	int32 length;
 };
+
+
+
 
 

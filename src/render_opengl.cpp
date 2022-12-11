@@ -238,7 +238,7 @@ void InitMesh(Mesh *mesh) {
 
     GLuint indexBuffer;
     glGenBuffers(1, &indexBuffer);
-    // The following commands will talk about our 'vertexbuffer' buffer
+    // The following commands will talk about our 'indexbuffer' buffer
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBuffer);
     // Give our vertices to OpenGL.
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, mesh->indexCount * sizeof(uint32), mesh->indices, GL_STATIC_DRAW);
@@ -318,6 +318,21 @@ void InitGlyphBuffers(int32 count) {
         glBufferData(GL_ARRAY_BUFFER, buffer->size, buffer->data, GL_STATIC_DRAW);
     }
 }
+void InitOBJBuffers(int32 count) {
+    for (int i = 0; i < count; i++) {
+        OBJBuffer* buffer = &Game->objBuffers[i];
+
+        buffer->capacity = OBJBufferCapacity;
+        buffer->size = buffer->capacity * sizeof(OBJData);
+        buffer->data = (OBJData*)malloc(buffer->size);
+        memset(buffer->data, 0, buffer->size);
+
+        glGenBuffers(1, (GLuint*)&buffer->bufferID);
+        glBindBuffer(GL_ARRAY_BUFFER, buffer->bufferID);
+        glBufferData(GL_ARRAY_BUFFER, buffer->size, buffer->data, GL_STATIC_DRAW);
+    }
+}
+
 
 void DrawLinearQuad(vec2 positionStart, vec2 positionEnd, vec2 size, real32 angle, Sprite* texture)
 {
@@ -328,7 +343,49 @@ void DrawLinearQuad(vec2 positionStart, vec2 positionEnd, vec2 size, real32 angl
 }
 
 
-
+void DrawSpriteBottomLeft(vec2 position, vec2 scale, real32 angle, Sprite* texture) 
+{
+    Shader* shader = &Game->texturedQuadShader;
+    SetShader(shader);
+    
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    
+    Mesh* mesh = &Game->quadBottomLeft;
+    
+    //mat4 model = TRS(V3(position.x - radius * 0.5f, position.y + radius * 0.5f, 0), IdentityQuaternion(), V3(radius));
+    mat4 model = TRS(V3(position.x, position.y, 0), AxisAngle(V3(0, 0, 1), angle), V3(scale.x, scale.y, 1.0f));
+    
+    //mat4 model = TRS(V3(position.x, position.y, 0), IdentityQuaternion(), V3(scale.x, scale.y, 1));
+    
+    //vec4 topLeft = mvp * V4(gameMem->quad.verts[0], 1.0f);
+    glUniformMatrix4fv(shader->uniforms[0].id, 1, GL_FALSE, model.data);
+    glUniformMatrix4fv(shader->uniforms[1].id, 1, GL_FALSE, Game->camera.viewProjection.data);
+    
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, texture->textureID);
+    glUniform1i(shader->uniforms[2].id, 0);
+    
+    glUniform1fv(shader->uniforms[3].id, 1, &Game->time);
+    
+    glBindBuffer(GL_ARRAY_BUFFER, mesh->vertBufferID);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->indexBufferID);
+    
+    // 1st attribute buffer : vertices
+    int vert = glGetAttribLocation(shader->programID, "vertexPosition_modelspace");
+    glEnableVertexAttribArray(vert);
+    glVertexAttribPointer(vert, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+    
+    // 2nd attribute buffer : texcoords
+    int texcoord = glGetAttribLocation(shader->programID, "in_texcoord");
+    glEnableVertexAttribArray(texcoord);
+    glVertexAttribPointer(texcoord, 2, GL_FLOAT, GL_FALSE, 0, (void*)((sizeof(vec3)* mesh->vertCount)));
+    
+    glDrawElements(GL_TRIANGLES, mesh->indexCount, GL_UNSIGNED_INT, (GLvoid*)0);
+    
+    glDisableVertexAttribArray(vert);
+    glDisableVertexAttribArray(texcoord);
+}
 void DrawSprite(vec2 position, vec2 scale, real32 angle, Sprite *texture) {
     Shader *shader = &Game->texturedQuadShader;
     SetShader(shader);
@@ -451,6 +508,48 @@ void DrawCoolRect(vec2 pos, vec2 scale, real32 angle, vec4 color) {
 
 // @NOTE: origin of rect and screen are both top left
 // @GACK: this is pretty weird cause it's not how DrawRect or DrawSprite work!
+void DrawSpriteScreen(vec2 pos, vec2 scale, real32 angle, Sprite* texture) {
+    Shader* shader = &Game->texturedQuadShader;
+    SetShader(shader);
+
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+    Mesh* mesh = &Game->quad;
+   // pos = V2();
+
+
+    mat4 model = TRS(V3(pos.x * Game->screenWidth, (1 - pos.y) * Game->screenHeight, -1), AxisAngle(V3(0, 0, 1), angle), V3(scale.x, scale.y, 1.0f));
+
+    mat4 projMat = Orthographic(0, Game->screenWidth, Game->screenHeight, 0, -1, 1);
+
+    glUniformMatrix4fv(shader->uniforms[0].id, 1, GL_FALSE, model.data);
+    glUniformMatrix4fv(shader->uniforms[1].id, 1, GL_FALSE, projMat.data);
+
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, texture->textureID);
+    glUniform1i(shader->uniforms[2].id, 0);
+
+    glUniform1fv(shader->uniforms[3].id, 1, &Game->time);
+
+    glBindBuffer(GL_ARRAY_BUFFER, mesh->vertBufferID);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->indexBufferID);
+
+    // 1st attribute buffer : vertices
+    int vert = glGetAttribLocation(shader->programID, "vertexPosition_modelspace");
+    glEnableVertexAttribArray(vert);
+    glVertexAttribPointer(vert, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+
+    // 2nd attribute buffer : texcoords
+    int texcoord = glGetAttribLocation(shader->programID, "in_texcoord");
+    glEnableVertexAttribArray(texcoord);
+    glVertexAttribPointer(texcoord, 2, GL_FLOAT, GL_FALSE, 0, (void*)((sizeof(vec3) * mesh->vertCount)));
+
+    glDrawElements(GL_TRIANGLES, mesh->indexCount, GL_UNSIGNED_INT, (GLvoid*)0);
+
+    glDisableVertexAttribArray(vert);
+    glDisableVertexAttribArray(texcoord);
+}
 void DrawRectScreen(vec2 pos, vec2 scale, vec4 color) {
     Shader *shader = &Game->shader;
     SetShader(shader);
@@ -818,7 +917,7 @@ void DrawText_(FontTable *font, vec2 pos, real32 size, vec4 color, bool screen, 
 
     buffer->model = TRS(V3(pos.x, pos.y, 0), IdentityQuaternion(), V3(1));
 
-    vec2 *positions = PushArray(&Game->frameMem, vec2, len);
+    vec2 *positions = PushArray(&Game->frameMem2, vec2, len);
     LayoutGlyphs(buffer->font, str, len, size, positions, width, center);
 
     buffer->count += len;
@@ -1120,6 +1219,13 @@ void DrawGlyphs(GlyphBuffer *buffers) {
 
         glDrawElementsInstanced(GL_TRIANGLES, mesh->indexCount, GL_UNSIGNED_INT, (GLvoid *)0, buffer->count);
         
+        glVertexAttribDivisor(0, 0);
+        glVertexAttribDivisor(1, 0);
+        glVertexAttribDivisor(2, 0);
+        glVertexAttribDivisor(3, 0);
+        glVertexAttribDivisor(4, 0);
+        glVertexAttribDivisor(5, 0);
+
         glDisableVertexAttribArray(0);
         glDisableVertexAttribArray(1);
         glDisableVertexAttribArray(2);

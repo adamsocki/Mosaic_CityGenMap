@@ -202,6 +202,10 @@ void GameInit(GameMemory *gameMem) {
     AllocateMemoryArena(&Game->permanentArena, Megabytes(256));
     AllocateMemoryArena(&Game->frameMem, Megabytes(100));
 
+    AllocateMemoryArena(&Game->frameMem2, Megabytes(100));
+
+    AllocateMemoryArena(&Game->frameMem3, Megabytes(100));
+
     Game->log.head = (DebugLogNode *)malloc(sizeof(DebugLogNode));
     AllocateDebugLogNode(Game->log.head, LOG_BUFFER_CAPACITY);
     Game->log.current = Game->log.head;
@@ -247,8 +251,19 @@ void GameInit(GameMemory *gameMem) {
     InitFont(&gameMem->serifFont, "data/LiberationSerif-Regular.ttf");
 
     InitGlyphBuffers(GlyphBufferCount);
+    InitOBJBuffers(OBJBufferCount);
 
 #if WINDOWS
+    {
+        LoadShader("shaders/objBufferMesh.vert", "shaders/objBufferMesh.frag", &gameMem->objBufferShader);
+        const char* uniforms[] = {
+            "model",
+            "viewProjection",
+            "color",
+            "pOffset",
+        };
+        CompileShader(&gameMem->objBufferShader, 4, uniforms);
+    }
     {
         LoadShader("shaders/modelMesh.vert", "shaders/modelMesh.frag", &gameMem->modelShader);
         const char* uniforms[] = {
@@ -354,12 +369,13 @@ void GameUpdateAndRender(GameMemory *gameMem) {
     }
 
     Game->currentGlyphBufferIndex = 0;
+    Game->currengOBJBufferIndex = 0;
 
     // @TODO: pick a key to step frame and then check if that's pressed
     // We want to do this before the update obviously
 
     if (!Game->paused || Game->steppingFrame) {
-        MyGameUpdate();
+        MyGameUpdate(gameMem);
     }
 
     Camera *cam = &gameMem->camera;
@@ -370,7 +386,8 @@ void GameUpdateAndRender(GameMemory *gameMem) {
     RenderRectBuffer(&Game->rectBuffer);
     Game->rectBuffer.count = 0;
     
-    DrawGlyphs(gameMem->glyphBuffers);
+    DrawGlyphs(gameMem->glyphBuffers); 
+   // RenderOBJBuffer(gameMem->objBuffers, &Game->testMesh);
     
     //DeleteEntities(&Game->entityDB);
     
@@ -378,6 +395,8 @@ void GameUpdateAndRender(GameMemory *gameMem) {
 
     gameMem->frame++;
     ClearMemoryArena(&Game->frameMem);
+    ClearMemoryArena(&Game->frameMem2);
+    ClearMemoryArena(&Game->frameMem3);
 
     ClearInputManager(input);
 }

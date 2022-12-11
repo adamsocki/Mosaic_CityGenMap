@@ -37,7 +37,7 @@ bool isNewLine(char c)
 void LoadModelParse(OBJModel* model)
 {
     
-    DynamicArray<TokenVal> tokens   = MakeDynamicArray<TokenVal>(&tokenArena, 10000);
+    DynamicArray<TokenVal> tokens   = MakeDynamicArray<TokenVal>(&tokenArena, 1000);
     /*DynamicArray<OBJFaceVec> faces = MakeDynamicArray<OBJFaceVec>(&facesArena, 10000);
     DynamicArray<vec3> vertices = MakeDynamicArray<vec3>(&vertexArena, 10000);
     DynamicArray<OBJvNormals> normals = MakeDynamicArray<OBJvNormals>(&normalArena, 10000);
@@ -48,10 +48,15 @@ void LoadModelParse(OBJModel* model)
 
     char* path[] = 
     {
-        "data/untitled1.obj"
+        "data/tile4.obj",
+        "data/untitled1.obj",
+        "data/untitled2.obj",
+        "data/block_Test2.obj"
     };
 
-    if (OpenFileForRead(path[0], & file, &Game->frameMem))
+
+
+    if (OpenFileForRead(path[model->pathNumber], &file, &Game->frameMem))
     {
         //      STEP 1 - TOKENIZE .OBJ CONTENTS
         TokenVal t = {};
@@ -444,6 +449,8 @@ void RenderOBJModel(Mesh* mesh, vec3 pos, vec3 scale, vec4 color, quaternion rot
 
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glEnable(GL_DEPTH_TEST);
+    glDepthFunc(GL_LESS);
 
     mat4 model = TRS(pos, rotation, scale);
 
@@ -472,12 +479,161 @@ void RenderOBJModel(Mesh* mesh, vec3 pos, vec3 scale, vec4 color, quaternion rot
     int texcoord = glGetAttribLocation(shader->programID, "in_texcoord");
     glEnableVertexAttribArray(texcoord);
     glVertexAttribPointer(texcoord, 2, GL_FLOAT, GL_FALSE, 0, (void*)(((sizeof(vec3) + sizeof(vec3)) * mesh->vertCount)));
-
+    stbi_set_flip_vertically_on_load(true);
     glDrawElements(GL_TRIANGLES, mesh->indexCount, GL_UNSIGNED_INT, (GLvoid*)0);
 
     glDisableVertexAttribArray(vert);
     glDisableVertexAttribArray(normals);
     glDisableVertexAttribArray(texcoord);
+
+    //glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+}
+
+void RenderOBJModelBuffer(int32 num, vec3 posStart, vec3 scale, quaternion rotation,  vec3 *positionArray, Sprite* texture)
+{
+    OBJBuffer* objBuffer = &Game->objBuffers[Game->currengOBJBufferIndex];
+
+    objBuffer->count += num;
+
+    objBuffer->model = TRS(posStart, rotation, scale);
+    objBuffer->texture = texture;
+
+    //vec3* positions = PushArray(&Game->frameMem3, vec3, num);
+
+    for (int i = 0; i < num; i++)
+    {
+        objBuffer->data[i].position = positionArray[i];
+    }
+
+    Game->currengOBJBufferIndex++;
+}
+
+void RenderOBJBuffer(OBJBuffer* buffers, Mesh* mesh)
+{
+    Shader* shader = &Game->objBufferShader;
+    SetShader(shader);
+
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glEnable(GL_DEPTH_TEST);
+    glDepthFunc(GL_LESS);
+
+    for (int i = 0; i < OBJBufferCount; i++)
+    {
+        OBJBuffer* buffer = &buffers[i];
+        
+        if (buffer->count == 0)
+        {
+            continue;
+        }
+
+        mat4 model = buffer->model;
+
+        glUniformMatrix4fv(shader->uniforms[0].id, 1, GL_FALSE, model.data);
+        glUniformMatrix4fv(shader->uniforms[1].id, 1, GL_FALSE, Game->camera.viewProjection.data);
+
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, buffer->texture->textureID);
+        glUniform1i(shader->uniforms[3].id, 0);
+
+
+        glBindBuffer(GL_ARRAY_BUFFER, mesh->vertBufferID);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->indexBufferID);
+
+        // 1st attribute buffer : vertices
+        int vert = glGetAttribLocation(shader->programID, "vertexPosition_modelspace");
+        glEnableVertexAttribArray(vert);
+        glVertexAttribPointer(vert, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+
+        int normals = glGetAttribLocation(shader->programID, "normals");
+        //glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
+        glEnableVertexAttribArray(normals);
+        glVertexAttribPointer(normals, 3, GL_FLOAT, GL_FALSE, 0, (void*)(sizeof(vec3) * mesh->vertCount));
+
+        int texcoord = glGetAttribLocation(shader->programID, "in_texcoord");
+        glEnableVertexAttribArray(texcoord);
+        glVertexAttribPointer(texcoord, 2, GL_FLOAT, GL_FALSE, 0, (void*)(((sizeof(vec3) + sizeof(vec3)) * mesh->vertCount)));
+
+
+        // BUFFER DATA AND DRAW IT
+        glBindBuffer(GL_ARRAY_BUFFER, buffer->bufferID);
+        glBufferData(GL_ARRAY_BUFFER, buffer->size, buffer->data, GL_STATIC_DRAW);
+
+        int positions = glGetAttribLocation(shader->programID, "pOffset");
+        glEnableVertexAttribArray(positions);
+        //glVertexAttribIPointer(positions, 3, GL_FLOAT, sizeof(OBJData), (void*)FIELD_OFFSET(OBJData, position));
+        glVertexAttribIPointer(positions, 3, GL_FLOAT, 0, (void *)FIELD_OFFSET(GlyphData, codepoint));
+        glVertexAttribDivisor(positions, 1); 
+        
+        
+        glDrawElementsInstanced(GL_TRIANGLES, mesh->indexCount, GL_UNSIGNED_INT, (GLvoid*)0, buffer->count);
+
+        glVertexAttribDivisor(positions, 0);
+
+        glDisableVertexAttribArray(vert);
+        glDisableVertexAttribArray(normals);
+        glDisableVertexAttribArray(texcoord);
+        glDisableVertexAttribArray(positions);
+
+        buffer->count = 0;
+
+    }
+}
+
+void RenderOBJModelInstance(int32 num, Mesh* mesh, vec3 pos, vec3 scale, vec4 color, quaternion rotation, Sprite* texture)
+{
+    Shader* shader = &Game->objShader;
+    SetShader(shader);
+
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glEnable(GL_DEPTH_TEST);
+    glDepthFunc(GL_LESS);
+
+    mat4 model = TRS(pos, rotation, scale);
+
+    glUniformMatrix4fv(shader->uniforms[0].id, 1, GL_FALSE, model.data);
+    glUniformMatrix4fv(shader->uniforms[1].id, 1, GL_FALSE, Game->camera.viewProjection.data);
+    glUniform4fv(shader->uniforms[2].id, 1, color.data);
+
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, texture->textureID);
+    glUniform1i(shader->uniforms[3].id, 0);
+
+
+    glBindBuffer(GL_ARRAY_BUFFER, mesh->vertBufferID);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->indexBufferID);
+
+    // 1st attribute buffer : vertices
+    int vert = glGetAttribLocation(shader->programID, "vertexPosition_modelspace");
+    glEnableVertexAttribArray(vert);
+    glVertexAttribPointer(vert, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+
+    int normals = glGetAttribLocation(shader->programID, "normals");
+    //glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
+    glEnableVertexAttribArray(normals);
+    glVertexAttribPointer(normals, 3, GL_FLOAT, GL_FALSE, 0, (void*)(sizeof(vec3) * mesh->vertCount));
+
+    int texcoord = glGetAttribLocation(shader->programID, "in_texcoord");
+    glEnableVertexAttribArray(texcoord);
+    glVertexAttribPointer(texcoord, 2, GL_FLOAT, GL_FALSE, 0, (void*)(((sizeof(vec3) + sizeof(vec3)) * mesh->vertCount)));
+    
+    
+    stbi_set_flip_vertically_on_load(true);
+
+
+
+
+
+    glDrawElements(GL_TRIANGLES, mesh->indexCount, GL_UNSIGNED_INT, (GLvoid*)0);
+
+
+
+    glDisableVertexAttribArray(vert);
+    glDisableVertexAttribArray(normals);
+    glDisableVertexAttribArray(texcoord);
+
+    //glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
 

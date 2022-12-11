@@ -35,9 +35,9 @@ void OBJBufferInit()
 
     for (int i = 0; i < num; i++)
     {
-        positions[i].x = i + 4.0f;
-        positions[i].y = 4.0f;
-        positions[i].z = -10.0f;
+        positions[i].x = (i * 2.0f) + 4.0f;
+        //positions[i].y = (i * 2.0f) + 4.0f;
+       // positions[i].z = 0.0f;
     }
 
 }
@@ -109,16 +109,16 @@ void MyInit()
 
 
 
-void TestOBJBufferRender()
+void TestOBJBufferRender(GameMemory* gameMem)
 {
     vec4 color = V4(1.0f, 0.1f, 1.0f, 1.0f);
     int32 num = 10;
     RenderOBJModelBuffer(num, V3(0,0,-10), V3(1,1,1), IdentityQuaternion(), positions, &Data->sprites.tile3);
-
+    RenderOBJBuffer(gameMem->objBuffers, &Game->testMesh);
 
 }
 
-void MyGameUpdate()
+void MyGameUpdate(GameMemory* gameMem)
 {
     TimerAdvance();
     vec2 mousePos = Input->mousePosNormSigned;
@@ -188,9 +188,9 @@ void MyGameUpdate()
    // MouseRender();
 	
     CityStateRender();
-
+        
     UIEventRender();
 
 
-    TestOBJBufferRender();
+    TestOBJBufferRender(gameMem);
 }

@@ -375,7 +375,7 @@ void GameUpdateAndRender(GameMemory *gameMem) {
     // We want to do this before the update obviously
 
     if (!Game->paused || Game->steppingFrame) {
-        MyGameUpdate();
+        MyGameUpdate(gameMem);
     }
 
     Camera *cam = &gameMem->camera;
@@ -387,7 +387,7 @@ void GameUpdateAndRender(GameMemory *gameMem) {
     Game->rectBuffer.count = 0;
     
     DrawGlyphs(gameMem->glyphBuffers); 
-    RenderOBJBuffer(gameMem->objBuffers, &Game->testMesh);
+   // RenderOBJBuffer(gameMem->objBuffers, &Game->testMesh);
     
     //DeleteEntities(&Game->entityDB);
     

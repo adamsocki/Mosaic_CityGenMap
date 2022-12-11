@@ -15,10 +15,17 @@ out vec4 fs_color;
 out vec3 fs_normal;
 
 void main() {
-    vec4 worldVert4 = model * vec4(vertexPosition_modelspace, 1.0f);
+	vec3 positionChange = pOffset;
+    vec4 worldVert4 = model * vec4(vertexPosition_modelspace + positionChange, 1.0f);
+	worldVert4.x = worldVert4.x + pOffset.x;
     vec3 worldVert = worldVert4.xyz;
+	
+	
+	//positionChange.x += vertexPosition_modelspace.x;
+	//positionChange.y += vertexPosition_modelspace.y;
+	//positionChange.z += vertexPosition_modelspace.z;
     
-    gl_Position = viewProjection * worldVert4 * vec4(pOffset, 1.0f);
+    gl_Position = viewProjection * worldVert4 * vec4(positionChange, 1.0f);
 
     fs_color = color;
 

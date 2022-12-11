@@ -554,14 +554,15 @@ void RenderOBJBuffer(OBJBuffer* buffers, Mesh* mesh)
         glEnableVertexAttribArray(texcoord);
         glVertexAttribPointer(texcoord, 2, GL_FLOAT, GL_FALSE, 0, (void*)(((sizeof(vec3) + sizeof(vec3)) * mesh->vertCount)));
 
+        int positions = glGetAttribLocation(shader->programID, "pOffset");
+        glEnableVertexAttribArray(positions);
+        //glVertexAttribIPointer(positions, 3, GL_FLOAT, sizeof(OBJData), (void*)FIELD_OFFSET(OBJData, position));
+        glVertexAttribIPointer(positions, 3, GL_FLOAT, 0, (void*)(((sizeof(vec3) + sizeof(vec2) + sizeof(vec3)) * mesh->vertCount)));
+        glVertexAttribDivisor(positions, 1); 
+        
         // BUFFER DATA AND DRAW IT
         glBindBuffer(GL_ARRAY_BUFFER, buffer->bufferID);
         glBufferData(GL_ARRAY_BUFFER, buffer->size, buffer->data, GL_STATIC_DRAW);
-
-        int positions = glGetAttribLocation(shader->programID, "pOffset");
-        glEnableVertexAttribArray(positions);
-        glVertexAttribIPointer(positions, 3, GL_FLOAT, sizeof(OBJData), (void*)FIELD_OFFSET(OBJData, position));
-        glVertexAttribDivisor(positions, 1);
 
         glDrawElementsInstanced(GL_TRIANGLES, mesh->indexCount, GL_UNSIGNED_INT, (GLvoid*)0, buffer->count);
 

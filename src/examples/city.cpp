@@ -80,6 +80,7 @@ void CityMapTileInit(vec2 tileGridSize, vec2 tileSize)
 			tileEntity->position.x = i * 2;
 			tileEntity->position.z = j * 2 - 10.0f;
 			//tileEntity->rotation = AxisAngle(V3(1, 0, 0), 1.5708f);
+			tileEntity->meshType = Tile_Mesh;
 			tileEntity->rotation = IdentityQuaternion();
 			tileIndex++;
 
@@ -139,6 +140,7 @@ void CityMapLogic()
 		Tile* tileEntity = (Tile*)GetEntity(&Data->em, arrowEntity->tileHandle);
 		tileEntity->entityOnTileHandle = buildingHandle;
 		tileEntity->tileType = TileType_CommercialBuilding;
+		tileEntity->meshType = CommercialBuilding_Mesh;
 
 	}
 	if (InputPressed(Keyboard, Input_H))
@@ -177,6 +179,7 @@ void CityMapLogic()
 		tileEntity->entityOnTileHandle = buildingHandle;
 		// SET THE tileENTITY TO THE NEW TILE TYPE THAT IS BEING CREATED
 		tileEntity->tileType = TileType_ResidentialBuilding_Type1;
+		tileEntity->meshType = ResidentialBuildingType1_Mesh;
 	}
 	if (InputPressed(Keyboard, Input_P))
 	{
@@ -190,6 +193,7 @@ void CityMapLogic()
 
 		// SET THE tileENTITY TO THE NEW TILE TYPE THAT IS CREATED.
 		tileEntity->tileType = TileType_Test;
+		tileEntity->meshType = ResidentialBuildingType1_Mesh;
 	}
 	if (InputPressed(Keyboard, Input_R))
 	{	// get current tile arrow
@@ -203,6 +207,8 @@ void CityMapLogic()
 		Tile* tileEntity = (Tile*)GetEntity(&Data->em, arrowEntity->tileHandle);
 
 		tileEntity->tileType = TileType_Road;
+		tileEntity->meshType = Tile_Mesh;
+
 
 	}
 
@@ -256,27 +262,27 @@ void CityMapRender()
 		{
 			case TileType_Road:
 			{
-				RenderOBJModel(&Game->modelMesh, tileEntity->position, V3(1.0f, 1.0f, 1.0f), color, tileEntity->rotation, &Data->sprites.road_uv);
+				RenderOBJModel(&Data->meshManager.meshes[tileEntity->meshType], tileEntity->position, V3(1.0f, 1.0f, 1.0f), color, tileEntity->rotation, &Data->sprites.road_uv);
 				break;
 			}
 			case TileType_CommercialBuilding:
 			{
-				RenderOBJModel(&Game->bldMesh, tileEntity->position, V3(1.0f, 1.0f, 1.0f), color, tileEntity->rotation, &Data->sprites.bld2);
+				RenderOBJModel(&Data->meshManager.meshes[tileEntity->meshType], tileEntity->position, V3(1.0f, 1.0f, 1.0f), color, tileEntity->rotation, &Data->sprites.bld2);
 				break;
 			}
 			case TileType_Test:
 			{
-				RenderOBJModel(&Game->testMesh, tileEntity->position, V3(1.0f, 1.0f, 1.0f), color, tileEntity->rotation, &Data->sprites.tile3);
+				RenderOBJModel(&Data->meshManager.meshes[tileEntity->meshType], tileEntity->position, V3(1.0f, 1.0f, 1.0f), color, tileEntity->rotation, &Data->sprites.tile3);
 				break;
 			}
 			case TileType_ResidentialBuilding_Type1:
 			{
-				RenderOBJModel(&Game->testMesh, tileEntity->position, V3(1.0f, 1.0f, 1.0f), color, tileEntity->rotation, &Data->sprites.tile3);
+				RenderOBJModel(&Data->meshManager.meshes[tileEntity->meshType], tileEntity->position, V3(1.0f, 1.0f, 1.0f), color, tileEntity->rotation, &Data->sprites.tile3);
 				break;
 			}
 			default:
 			{
-				RenderOBJModel(&Game->modelMesh, tileEntity->position, V3(1.0f, 1.0f, 1.0f), color, tileEntity->rotation, &Data->sprites.tile3);
+				RenderOBJModel(&Data->meshManager.meshes[tileEntity->meshType], tileEntity->position, V3(1.0f, 1.0f, 1.0f), color, tileEntity->rotation, &Data->sprites.tile3);
 				break;
 			}
 		}

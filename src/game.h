@@ -13,7 +13,6 @@
 #include "hashtable.h"
 #include "dynamic_array.h"
 
-
 #include "log.h"
 #include "network.h"
 

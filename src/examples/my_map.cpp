@@ -50,10 +50,12 @@ void MyInit()
 
     Data = (MyData*)Game->myData;
 
-    Data->meshManager.meshCapacity = 20000;
+    Data->meshManager.meshCapacity = MeshType_Count;
     Data->meshManager.meshes = (Mesh*)malloc(sizeof(Mesh) * Data->meshManager.meshCapacity);
     memset(Data->meshManager.meshes, 0, sizeof(Mesh) * Data->meshManager.meshCapacity);
     Data->meshManager.meshCount = 0;
+
+   // Data->meshManager.meshes[Data->meshManager.meshCount] = testMesh;
 
     LoadSprites();
 
@@ -94,17 +96,27 @@ void MyInit()
     TileArrowInit();
     PersonsInit();
 
-    AllocateModelOBJMesh(&Game->modelMesh, &Data->model);
-    InitMesh(&Game->modelMesh);
-
-    AllocateModelOBJMesh(&Game->bldMesh, &Data->modelBld);
-    InitMesh(&Game->bldMesh);
-
-    AllocateModelOBJMesh(&Game->testMesh, &Data->modelTest);
-    InitMesh(&Game->testMesh);
 
 
-    OBJBufferInit();
+    /*for (int i = 0; i < MeshType_Count; i++)
+    {
+    
+    }*/
+    AllocateModelOBJMesh(&Data->meshManager.meshes[Tile_Mesh], &Data->model);
+    InitMesh(&Data->meshManager.meshes[Tile_Mesh]);
+    Data->meshManager.meshCount++;
+
+    AllocateModelOBJMesh(&Data->meshManager.meshes[CommercialBuilding_Mesh], &Data->modelBld);
+    InitMesh(&Data->meshManager.meshes[CommercialBuilding_Mesh]);
+    Data->meshManager.meshCount++;
+
+
+    AllocateModelOBJMesh(&Data->meshManager.meshes[ResidentialBuildingType1_Mesh], &Data->modelTest);
+    InitMesh(&Data->meshManager.meshes[ResidentialBuildingType1_Mesh]);
+    Data->meshManager.meshCount++;
+
+
+    //OBJBufferInit();
 }
 
 
@@ -192,5 +204,5 @@ void MyGameUpdate(GameMemory* gameMem)
     UIEventRender();
 
 
-    TestOBJBufferRender(gameMem);
+   // TestOBJBufferRender(gameMem);
 }

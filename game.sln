@@ -1,14 +1,14 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.4.33122.133
+VisualStudioVersion = 17.4.33110.190
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{911E67C6-3D85-4FCE-B560-20A9C3E3FF48}") = "game", "build\game.exe", "{87A7AB5A-A2A7-4724-A735-4E4F58C10972}"
+Project("{911E67C6-3D85-4FCE-B560-20A9C3E3FF48}") = "game", "build\game.exe", "{B1EE7A5F-A1CC-43AB-B38F-2978ABDB85D9}"
 	ProjectSection(DebuggerProjectSystem) = preProject
 		PortSupplier = 00000000-0000-0000-0000-000000000000
-		Executable = E:\school\Mosaic_CityGenMap\build\game.exe
-		RemoteMachine = DESKTOP-3H4KGUK
-		StartingDirectory = E:\school\Mosaic_CityGenMap\build
+		Executable = C:\dev\Mosaic_CityGenMap\build\game.exe
+		RemoteMachine = LAPTOP-DGI9IL02
+		StartingDirectory = C:\dev\Mosaic_CityGenMap\build
 		Environment = Default
 		LaunchingEngine = 00000000-0000-0000-0000-000000000000
 		UseLegacyDebugEngines = No
@@ -22,12 +22,12 @@ Global
 		Release|x64 = Release|x64
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{87A7AB5A-A2A7-4724-A735-4E4F58C10972}.Release|x64.ActiveCfg = Release|x64
+		{B1EE7A5F-A1CC-43AB-B38F-2978ABDB85D9}.Release|x64.ActiveCfg = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {83C308A7-BA18-4A38-9AFE-0B7059140381}
+		SolutionGuid = {E0262B26-B03B-4621-BA82-1196A98BD348}
 	EndGlobalSection
 EndGlobal

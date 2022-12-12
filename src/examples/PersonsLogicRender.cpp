@@ -62,13 +62,10 @@ void PersonsLogic()
     //Building* buildingEntitiesInBuffer = (Building*)roomBuffer->entities;
 
 	// GENERATION OF PERSONS
-
 	// check to see if there are buildings in the current map
 	EntityTypeBuffer* gameMapBuffer = &Data->em.buffers[GameMap_Type];
 	GameMap* gameMapEntitiesInBuffer = (GameMap*)gameMapBuffer->entities;
 	GameMap* gameMapEntity = &gameMapEntitiesInBuffer[0];
-
-	DrawTextScreenPixel(&Game->monoFont, V2(60,200), 10.0f, RGB(1.0f, 1.0f, 1.0f), "ResDelta: %d", 	gameMapEntity->mapData.residentialDelta);
     
 	// check capacity and occupancy of residential buildings
 	bool canGeneratePerson = false;
@@ -83,10 +80,11 @@ void PersonsLogic()
 		// if capacity is reached, still generate person ? to allow for overcrowding 
 	} 
 	
+	DrawTextScreenPixel(&Game->monoFont, V2(60,200), 10.0f, RGB(1.0f, 1.0f, 1.0f), "ResDelta: %d", 	gameMapEntity->mapData.residentialDelta);
+	MapData mapData = PersonCapacityOccupancyCalc(gameMapEntity);
 	// if above conditions->add personEntity
 	if (canGeneratePerson)
 	{
-		MapData mapData = PersonCapacityOccupancyCalc(gameMapEntity);
 		Data->timerManager.playerGenerationTimer = 0;
 		
 		if (mapData.residentialDelta <= 0)
@@ -100,6 +98,8 @@ void PersonsLogic()
 			personEntity->handle = personHandle;
 
 			// CREATE PERSON
+			// TODO: CAN CREATE PEOPLE BASED ON THE NUMBER OF VACANT BUILDINGS
+			// THE IDEA IS THAT EACH BUILDING CAN BE A VECTOR FOR A PERSON GENERATOR.
 			GeneratePerson(personEntity, gameMapEntity->buildingCount);
 
 			// assign person to specific building

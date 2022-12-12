@@ -187,6 +187,16 @@ struct BBox
 
 
 
+enum MeshType
+{
+	Tile_Mesh,
+	CommercialBuilding_Mesh,
+	ResidentialBuildingType1_Mesh,
+
+	MeshType_Count,
+
+};
+
 
 // UI STRUCTS
 
@@ -267,6 +277,8 @@ struct Tile
 
 	bool mouseOver;
 
+	MeshType meshType;
+
 	TileType tileType;
 	//int32 height;
 	
@@ -279,8 +291,6 @@ struct Tile
 enum LandUse_Type
 {
 	road,
-
-
 };
 
 struct MouseEntity
@@ -299,6 +309,7 @@ struct TileArrow
 	int32 tileIndex;
 	quaternion rotation;
 	EntityHandle tileHandle;
+	MeshType meshType;
 
 	bool developed;
 };

@@ -64,5 +64,5 @@ void CityStateLogic()
 void CityStateRender()
 {
 	// display no of peoples
-	DrawSpriteScreen(V2(1, 1), V2(1, 1), 0, &Data->sprites.pop_sprite);
+	//DrawSpriteScreen(V2(1, 1), V2(1, 1), 0, &Data->sprites.pop_sprite);
 }

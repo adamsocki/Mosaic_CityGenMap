@@ -104,6 +104,7 @@ void CityMapLogic()
 		// check for a building
 
 
+
 	// create a building 
 		// check to see if location is along road
 
@@ -122,25 +123,26 @@ void CityMapLogic()
 		}
 		else 
 		{
-			//BuildingCreate(BuildingType_Commercial);
+			EntityHandle buildingHandle = AddEntity(&Data->em, Building_Type);
+			Building* buildingEntity = (Building*)GetEntity(&Data->em, buildingHandle);
+			buildingEntity->handle = buildingHandle;
+			buildingEntity->tileHandle = tileArrowEntity->handle;
+			buildingEntity->buildingType = BuildingType_Commercial;
+
+			gameMapEntity->buildings[gameMapEntity->buildingCount] = buildingHandle;
+			gameMapEntity->buildingCount++;
+
+			BuildingInit(buildingEntity);
+
+
+			Tile* tileEntity = (Tile*)GetEntity(&Data->em, arrowEntity->tileHandle);
+			tileEntity->entityOnTileHandle = buildingHandle;
+			tileEntity->tileType = TileType_CommercialBuilding;
+			tileEntity->meshType = CommercialBuilding_Mesh;
+			tileEntity->developed = true;
 		}
 
-		EntityHandle buildingHandle = AddEntity(&Data->em, Building_Type);
-		Building* buildingEntity = (Building*)GetEntity(&Data->em, buildingHandle);
-		buildingEntity->handle = buildingHandle;
-		buildingEntity->tileHandle = tileArrowEntity->handle;
-		buildingEntity->buildingType = BuildingType_Commercial;
-
-		gameMapEntity->buildings[gameMapEntity->buildingCount] = buildingHandle;
-		gameMapEntity->buildingCount++;
 		
-		BuildingInit(buildingEntity);
-
-		
-		Tile* tileEntity = (Tile*)GetEntity(&Data->em, arrowEntity->tileHandle);
-		tileEntity->entityOnTileHandle = buildingHandle;
-		tileEntity->tileType = TileType_CommercialBuilding;
-		tileEntity->meshType = CommercialBuilding_Mesh;
 
 	}
 	if (InputPressed(Keyboard, Input_H))
@@ -159,9 +161,7 @@ void CityMapLogic()
 		}
 		else 
 		{
-			//BuildingCreate(BuildingType_Commercial);
-		}
-		// CREATE THE BUILDING ENTITY 
+			// CREATE THE BUILDING ENTITY 
 		EntityHandle buildingHandle = AddEntity(&Data->em, Building_Type);
 		Building* buildingEntity = (Building*)GetEntity(&Data->em, buildingHandle);
 		buildingEntity->handle = buildingHandle;
@@ -180,6 +180,10 @@ void CityMapLogic()
 		// SET THE tileENTITY TO THE NEW TILE TYPE THAT IS BEING CREATED
 		tileEntity->tileType = TileType_ResidentialBuilding_Type1;
 		tileEntity->meshType = ResidentialBuildingType1_Mesh;
+		tileEntity->developed = true;
+			//BuildingCreate(BuildingType_Commercial);
+		}
+		
 	}
 	if (InputPressed(Keyboard, Input_P))
 	{
@@ -208,7 +212,7 @@ void CityMapLogic()
 
 		tileEntity->tileType = TileType_Road;
 		tileEntity->meshType = Tile_Mesh;
-
+		tileEntity->developed = true;
 
 	}
 

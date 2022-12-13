@@ -31,14 +31,25 @@ MapData PersonCapacityOccupancyCalc(GameMap* gameMapEntity)
 		{
 			case BuildingType_Residential_Type1:
 			{
+				int32 buildingDelta = buildingEntity->personCapacity - buildingEntity->personCount;
+				if (buildingDelta > 0)
+				{
+					returnMapData.numberOfResidentalBuildingsWithVacancy++;
+				}
 				returnMapData.residentialOccupancy += buildingEntity->personCount;
 				returnMapData.residentialCapacity  += buildingEntity->personCapacity; 
 				break;
 			}
 			case BuildingType_Commercial:
 			{
+				int32 buildingDelta = buildingEntity->personCapacity - buildingEntity->personCount;
+				if (buildingDelta > 0)
+				{
+					returnMapData.numberOfCommercialBuildingsWithVacancy++;
+				}
 				returnMapData.commercialOccupancy += buildingEntity->personCount;
 				returnMapData.commercialCapacity += buildingEntity->personCapacity;
+				
 				break;
 			}
 			default:
@@ -79,59 +90,70 @@ void PersonsLogic()
 		canGeneratePerson = true;
 		// if capacity is reached, still generate person ? to allow for overcrowding 
 	} 
-	
-	DrawTextScreenPixel(&Game->monoFont, V2(60,200), 10.0f, RGB(1.0f, 1.0f, 1.0f), "ResDelta: %d", 	gameMapEntity->mapData.residentialDelta);
-	MapData mapData = PersonCapacityOccupancyCalc(gameMapEntity);
-	// if above conditions->add personEntity
+
 	if (canGeneratePerson)
 	{
+		//GeneratePerson();
+		EntityHandle personHandle = AddEntity(&Data->em, Person_Type);
+		Person* personEntity = (Person*)GetEntity(&Data->em, personHandle);
+		personEntity->handle = personHandle;
+
+		// add person to map
+
+		gameMapEntity->persons[gameMapEntity->personCount] = personHandle;
+		gameMapEntity->personCount++;
+
 		Data->timerManager.playerGenerationTimer = 0;
-		
-		if (mapData.residentialDelta <= 0)
-		{
-			int32 value = {};
-		}
-		else 
-		{
-			EntityHandle personHandle = AddEntity(&Data->em, Person_Type);
-			Person* personEntity = (Person*)GetEntity(&Data->em, personHandle);
-			personEntity->handle = personHandle;
-
-			// CREATE PERSON
-			// TODO: CAN CREATE PEOPLE BASED ON THE NUMBER OF VACANT BUILDINGS
-			// THE IDEA IS THAT EACH BUILDING CAN BE A VECTOR FOR A PERSON GENERATOR.
-			GeneratePerson(personEntity, gameMapEntity->buildingCount);
-
-			// assign person to specific building
-				// person to building assignment logic	
-
-			Building* buildingEntity = (Building*)GetEntity(&Data->em, gameMapEntity->buildings[personEntity->residentialAssignment]);
-			buildingEntity->persons[buildingEntity->personCount] = personHandle;
-			buildingEntity->personCount++;
-
-			gameMapEntity->persons[gameMapEntity->personCount] = personHandle;
-			gameMapEntity->personCount++;
-
-			for (int i = 0; i < gameMapEntity->buildingCount; i++)
-			{
-				switch (personEntity->residentialAssignment)
-				{
-					case 1:
-					{
-						break;
-					}
-					default:
-					{
-						break;
-					}
-				}
-				// income bracket choice
-				// transport choice
-				
-			}
-		}
-
-		
 	}
 	
+	//DrawTextScreenPixel(&Game->monoFont, V2(60,200), 10.0f, RGB(1.0f, 1.0f, 1.0f), "ResDelta: %d", 	gameMapEntity->mapData.residentialDelta);
+	//MapData mapData = PersonCapacityOccupancyCalc(gameMapEntity);
+	// if above conditions->add personEntity
+	// if (canGeneratePerson)
+	// {
+	// 	Data->timerManager.playerGenerationTimer = 0;
+		
+	// 	if (mapData.residentialDelta <= 0)
+	// 	{
+	// 		int32 value = {};
+	// 	}
+	// 	else 
+	// 	{
+	// 		EntityHandle personHandle = AddEntity(&Data->em, Person_Type);
+	// 		Person* personEntity = (Person*)GetEntity(&Data->em, personHandle);
+	// 		personEntity->handle = personHandle;
+
+	// 		// CREATE PERSON
+	// 		// TODO: CAN CREATE PEOPLE BASED ON THE NUMBER OF VACANT BUILDINGS
+	// 		// THE IDEA IS THAT EACH BUILDING CAN BE A VECTOR FOR A PERSON GENERATOR.
+	// 		GeneratePerson(personEntity, gameMapEntity->buildingCount);
+
+	// 		// assign person to specific building
+	// 			// person to building assignment logic	
+
+	// 		Building* buildingEntity = (Building*)GetEntity(&Data->em, gameMapEntity->buildings[personEntity->residentialAssignment]);
+	// 		buildingEntity->persons[buildingEntity->personCount] = personHandle;
+	// 		buildingEntity->personCount++;
+
+	// 		gameMapEntity->persons[gameMapEntity->personCount] = personHandle;
+	// 		gameMapEntity->personCount++;
+
+	// 		for (int i = 0; i < gameMapEntity->buildingCount; i++)
+	// 		{
+	// 			switch (personEntity->residentialAssignment)
+	// 			{
+	// 				case 1:
+	// 				{
+	// 					break;
+	// 				}
+	// 				default:
+	// 				{
+	// 					break;
+	// 				}
+	// 			}
+	// 			// income bracket choice
+	// 			// transport choice
+	// 		}
+	// 	}
+	// }	
 }

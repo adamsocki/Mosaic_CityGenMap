@@ -83,8 +83,8 @@ void MyInit()
     Data->modelTest.pathNumber = 3;
     LoadModelParse(&Data->modelTest);
 
-    InitializeVoronoiMap();
-    VoronoiTest2();
+   // InitializeVoronoiMap();
+    //VoronoiTest2();
 
     CityMapInit();
     

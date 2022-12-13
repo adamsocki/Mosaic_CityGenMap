@@ -239,10 +239,13 @@ struct MapData
 	int32 residentialOccupancy;
 	int32 residentialCapacity;
 	int32 residentialDelta;
+	int32 numberOfResidentalBuildingsWithVacancy;
 
 	int32 commercialOccupancy;
 	int32 commercialCapacity;
 	int32 commercialDelta;
+	int32 numberOfCommercialBuildingsWithVacancy;
+
 };
 
 enum TileType

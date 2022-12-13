@@ -38,7 +38,7 @@ void UIEventRender()
     for (int i = 0; i < uiEventBuffer->count; i++)
     {
         //(UIEvent*) uiEventEntity = (UIEvent*)GetEntity(&Data->em, uiEventEntitiesInBuffer[i].handle);
-
+        
     }
 
 

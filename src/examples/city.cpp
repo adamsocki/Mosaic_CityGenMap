@@ -213,44 +213,17 @@ void CityMapLogic()
 		tileEntity->tileType = TileType_Road;
 		tileEntity->meshType = Tile_Mesh;
 		tileEntity->developed = true;
-
 	}
-
-
-
 }
 
 void CityMapRender()
 {
-
 	vec4 color = V4(1.0f, 0.1f, 1.0f, 1.0f);
 
 	EntityTypeBuffer* gameMapBuffer = &Data->em.buffers[GameMap_Type];
 	GameMap* gameMapEntitiesInBuffer = (GameMap*)gameMapBuffer->entities;
 
 	GameMap* gameMapEntity = &gameMapEntitiesInBuffer[0];
-
-	// Test rotation of tiles
-	real32 angle_zMod = 0;
-
-	real32 angle_xMod = 0;
-
-	if (InputPressed(Keyboard, Input_T))
-	{
-		angle_zMod += Game->deltaTime * 3;
-	}
-	if (InputPressed(Keyboard, Input_Y))
-	{
-		angle_zMod -= Game->deltaTime * 3;
-	}
-	if (InputHeld(Keyboard, Input_U))
-	{
-		angle_xMod += Game->deltaTime * 3;
-	}
-	if (InputHeld(Keyboard, Input_I))
-	{
-		angle_xMod -= Game->deltaTime * 3;
-	}
 
 	// RENDER TILES
 	for (int i = 0; i < gameMapEntity->tileCount; i++)

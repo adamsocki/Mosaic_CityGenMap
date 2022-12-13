@@ -89,7 +89,30 @@ void PersonsLogic()
 	{
 		canGeneratePerson = true;
 		// if capacity is reached, still generate person ? to allow for overcrowding 
-	} 
+	}
+
+	// calculate the capacity of people
+	int32 totalResidentialCapacity = {};
+	for (int i = 0; i < gameMapEntity->buildingCount; i++)
+	{
+		Building* buildingEntity = (Building*)GetEntity(&Data->em, gameMapEntity->buildings[i]);
+		switch (buildingEntity->buildingType)
+		{
+			case BuildingType_Residential_Type1:
+			{
+
+				break;
+			}
+			case BuildingType_Commercial:
+			{
+				break;
+			}
+			default:
+			{
+				break;
+			}
+		}
+	}
 
 	if (canGeneratePerson)
 	{
@@ -99,13 +122,16 @@ void PersonsLogic()
 		personEntity->handle = personHandle;
 
 		// add person to map
-
 		gameMapEntity->persons[gameMapEntity->personCount] = personHandle;
 		gameMapEntity->personCount++;
 
 		Data->timerManager.playerGenerationTimer = 0;
 	}
 	
+
+	// 
+
+
 	//DrawTextScreenPixel(&Game->monoFont, V2(60,200), 10.0f, RGB(1.0f, 1.0f, 1.0f), "ResDelta: %d", 	gameMapEntity->mapData.residentialDelta);
 	//MapData mapData = PersonCapacityOccupancyCalc(gameMapEntity);
 	// if above conditions->add personEntity

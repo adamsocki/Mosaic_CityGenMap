@@ -1,5 +1,5 @@
 
-void TileArrowInit()
+void TileArrowEntityInit()
 {
 	EntityHandle tileArrowHandle = AddEntity(&Data->em, TileArrow_Type);
 	TileArrow* tileArrowEntity = (TileArrow*)GetEntity(&Data->em, tileArrowHandle);

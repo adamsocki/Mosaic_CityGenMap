@@ -15,11 +15,6 @@ void GeneratePerson(Person* personEntity, int32 buildingCount)
 	personEntity->residentialAssignment = RandiRange(0, buildingCount);
 }
 
-void PersonsInit()
-{
-
-
-}
 
 MapData PersonCapacityOccupancyCalc(GameMap* gameMapEntity)
 {

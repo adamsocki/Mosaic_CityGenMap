@@ -8,6 +8,7 @@ MyData* Data = {};
 
 #include "renderCode.cpp"
 #include "cameraController.cpp"
+#include "InputLogicRender.cpp"
 #include "geoTools.cpp"
 #include "EntityManager.cpp"
 #include "LoadSprites.cpp"
@@ -15,10 +16,12 @@ MyData* Data = {};
 #include "UIEventLogicRender.cpp"
 #include "PersonsLogicRender.cpp"
 
+
 #include "ParseOBJ.cpp"
+#include "MeshModelManager.cpp"
+
 #include "Voronoi.cpp"
 #include "city.cpp"
-#include "camera.cpp"
 #include "MouseLogicRender.cpp"
 #include "KeyboardLogicRender.cpp"
 #include "CityStateLogic.cpp"
@@ -26,21 +29,6 @@ MyData* Data = {};
 
 int32 counter = 0;
 vec3* positions = {};
-
-void OBJBufferInit()
-{
-    int32 num = 10;
-
-    positions = PushArray(&Game->frameMem3, vec3, num);
-
-    for (int i = 0; i < num; i++)
-    {
-        positions[i].x = (i * 4.0f) + 4.0f;
-        positions[i].y = (i*3) + 4.0f;
-       // positions[i].z = 0.0f;
-    }
-
-}
 
 void MyInit()
 {
@@ -55,8 +43,7 @@ void MyInit()
     memset(Data->meshManager.meshes, 0, sizeof(Mesh) * Data->meshManager.meshCapacity);
     Data->meshManager.meshCount = 0;
 
-   // Data->meshManager.meshes[Data->meshManager.meshCount] = testMesh;
-
+    // Data->meshManager.meshes[Data->meshManager.meshCount] = testMesh;
     LoadSprites();
 
     Camera* cam = &Game->camera;
@@ -74,67 +61,21 @@ void MyInit()
     InitializeEntityManager();
     InitializeEntityBuffers();
 
-    Data->model.pathNumber = 0;
-    LoadModelParse(&Data->model);
+    MeshModelInit();
 
-    Data->modelBld.pathNumber = 2;
-    LoadModelParse(&Data->modelBld);
-    
-    Data->modelTest.pathNumber = 3;
-    LoadModelParse(&Data->modelTest);
-
-   // InitializeVoronoiMap();
-    //VoronoiTest2();
-
-    CityMapInit();
-    
+    CityMapEntitiesInit();    
     CityMapTileInit(V2(10, 10), V2(1, 1));
 
-    TimerInit();
-    SetCameraToMap();
-    MouseInit();
-    TileArrowInit();
-    PersonsInit();
+    SetCameraToMapPositionInit();
 
-
-
-    /*for (int i = 0; i < MeshType_Count; i++)
-    {
-    
-    }*/
-    AllocateModelOBJMesh(&Data->meshManager.meshes[Tile_Mesh], &Data->model);
-    InitMesh(&Data->meshManager.meshes[Tile_Mesh]);
-    Data->meshManager.meshCount++;
-
-    AllocateModelOBJMesh(&Data->meshManager.meshes[CommercialBuilding_Mesh], &Data->modelBld);
-    InitMesh(&Data->meshManager.meshes[CommercialBuilding_Mesh]);
-    Data->meshManager.meshCount++;
-
-
-    AllocateModelOBJMesh(&Data->meshManager.meshes[ResidentialBuildingType1_Mesh], &Data->modelTest);
-    InitMesh(&Data->meshManager.meshes[ResidentialBuildingType1_Mesh]);
-    Data->meshManager.meshCount++;
-
-
-    //OBJBufferInit();
-}
-
-
-
-void TestOBJBufferRender(GameMemory* gameMem)
-{
-    vec4 color = V4(1.0f, 0.1f, 1.0f, 1.0f);
-    int32 num = 10;
-    RenderOBJModelBuffer(num, V3(0,0,-10), V3(1,1,1), IdentityQuaternion(), positions, &Data->sprites.tile3);
-    RenderOBJBuffer(gameMem->objBuffers, &Game->testMesh);
-
+    MouseEntityInit();
+    TileArrowEntityInit();
 }
 
 void MyGameUpdate(GameMemory* gameMem)
 {
-    TimerAdvance();
-    vec2 mousePos = Input->mousePosNormSigned;
 
+    vec2 mousePos = Input->mousePosNormSigned;
     vec3 pos = V3(mousePos.x, mousePos.y, -1.0f);
     vec3 scale = V3(1.0f, 1.0f, 1.0f);
     real32 angle = 0;
@@ -142,67 +83,33 @@ void MyGameUpdate(GameMemory* gameMem)
 
     pos = V3(-10, -3, 1);
 
+    
+    // *********************
+    // *********************
+    //      lOGIC
+    // *********************
+    // *********************
+    GameTimerAdvance();
+    
+    //      ***HANDLE USER INPUT***
+    InputLogic(); // camera control || gameplay control
+    
 
-    DrawSprite(V2(0), V2(1, 1), &Data->sprites.bld);
-
-    Camera* cam = &Game->camera;
-    int32 cameraSpeed = 8;
-   /* if (InputHeld(Keyboard, Input_Q))
-    {
-        Game->cameraPosition.y += cameraSpeed * Game->deltaTime;
-    }
-    if (InputHeld(Keyboard, Input_E))
-    {
-        Game->cameraPosition.y -= cameraSpeed * Game->deltaTime;
-    }
-    if (InputHeld(Keyboard, Input_Z))
-    {
-        Game->cameraPosition.x += cameraSpeed * Game->deltaTime;
-    }*/
-   /* if (InputHeld(Keyboard, Input_C))
-    {
-        Game->cameraPosition.x -= cameraSpeed * Game->deltaTime;
-    }*/
-    if (InputHeld(Keyboard, Input_W))
-    {
-        Game->cameraPosition.z += cameraSpeed * Game->deltaTime;
-    }
-    if (InputHeld(Keyboard, Input_S))
-    {
-        Game->cameraPosition.z -= cameraSpeed * Game->deltaTime;
-    }
-    if (InputHeld(Keyboard, Input_A))
-    {
-        Game->cameraRotation.x += 1.5f * Game->deltaTime;
-    }
-    if (InputHeld(Keyboard, Input_D))
-    {
-        Game->cameraRotation.x -= 1.5f * Game->deltaTime;
-
-    }
-    /*if (InputHeld(Keyboard, Input_I))
-    {
-        Game->cameraRotation.z += 1.5f * Game->deltaTime;
-    }*/
-    if (InputHeld(Keyboard, Input_J))
-    {
-      //  Game->cameraRotation.w += 1.5f * Game->deltaTime;
-    }
-
+    //      ***EXECUTE GAME LOGIC***   
+    // TODO1 - ENSURE THIS IS IN PROPER EXECUTION ORDER
     CityMapLogic();
-    MouseLogic();
     TileArrowLogic();
-	
 	CityStateLogic();
 	PersonsLogic();
+    
+    // *********************
+    // *********************
+    //      RENDER
+    // *********************
+    // *********************
+    
     CityMapRender();
-    TileArrowRender();
-   // MouseRender();
-	
+    TileArrowRender();	
     CityStateRender();
-        
     UIEventRender();
-
-
-   // TestOBJBufferRender(gameMem);
 }

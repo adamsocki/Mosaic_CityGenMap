@@ -1,4 +1,4 @@
-void CityMapInit()
+void CityMapEntitiesInit()
 {
 
 	// INIT TILES

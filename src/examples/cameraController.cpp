@@ -1,50 +1,14 @@
 
-
-
-void MoveCamera()
+void SetCameraToMapPositionInit()
 {
+    Camera* cam = &Game->camera;
 
-	Camera* cam = &Game->camera;
-	
+    vec3 posToStartCamera = {};
+ 
+    posToStartCamera.x = 9.f;
+    posToStartCamera.y = 10.0f;
+    posToStartCamera.z = -18.0f;
 
-	if (InputPressed(Keyboard, Input_W))
-	{
-
-		real32 movement = 1.0f;
-		Game->cameraPosition.y += movement;
-	}
-
-	if (InputPressed(Keyboard, Input_S))
-	{
-
-		real32 movement = 1.0f;
-		Game->cameraPosition.y -= movement;
-	}
-
-	if (InputPressed(Keyboard, Input_D))
-	{
-
-		real32 movement = 1.0f;
-		Game->cameraPosition.x += movement;
-	}
-
-	if (InputPressed(Keyboard, Input_A))
-	{
-
-		real32 movement = 1.0f;
-		Game->cameraPosition.x -= movement;
-	}
-
-
-
-	if (InputPressed(Keyboard, Input_G))
-	{
-
-		Game->cameraRotation = AxisAngle(V3(1,1,0), 1.0);
-	}
-
-
-
-
-
+    Game->cameraRotation.x += 0.3f;
+    Game->cameraPosition = posToStartCamera;
 }

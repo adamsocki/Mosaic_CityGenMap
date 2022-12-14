@@ -43,15 +43,12 @@ Ray MousePositionToWorldRay(Camera *camera, vec2 mousePos) {
             result.origin = mouseWorld;
         } break;
     }
-
- 
-
     return result;
 }
 
 
 
-void MouseInit()
+void MouseEntityInit()
 {
    EntityHandle mouseHandle = AddEntity(&Data->em, Mouse_Type);
    MouseEntity* mouseEntity = (MouseEntity*)GetEntity(&Data->em, mouseHandle);

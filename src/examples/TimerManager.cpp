@@ -1,15 +1,14 @@
 
 
 
-void TimerInit()
+void GameTimerInit()
 {
 
 
 }
 
 
-void TimerAdvance()
+void GameTimerAdvance()
 {    
-
     Data->timerManager.playerGenerationTimer += Game->deltaTime;
 }

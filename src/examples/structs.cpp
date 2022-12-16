@@ -163,7 +163,6 @@ struct MyData
 	OBJModel modelTest;
 
 	TimerManager timerManager;
-
 };
 
 

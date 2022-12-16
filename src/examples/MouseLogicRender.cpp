@@ -22,6 +22,7 @@ Ray MousePositionToWorldRay(Camera *camera, vec2 mousePos) {
             mat4 invView;
             Inverse(camera->view, &invView);
             // This is the direction
+                       
             vec4 rayWorld4 = invView * rayEye;
             vec3 rayWorld = Normalize(rayWorld4.xyz);
             
@@ -50,8 +51,8 @@ Ray MousePositionToWorldRay(Camera *camera, vec2 mousePos) {
 
 void MouseEntityInit()
 {
-   EntityHandle mouseHandle = AddEntity(&Data->em, Mouse_Type);
-   MouseEntity* mouseEntity = (MouseEntity*)GetEntity(&Data->em, mouseHandle);
+    EntityHandle mouseHandle = AddEntity(&Data->em, Mouse_Type);
+    MouseEntity* mouseEntity = (MouseEntity*)GetEntity(&Data->em, mouseHandle);
 
     mouseEntity->handle = mouseHandle;
     mouseEntity->position = V3(0,0,-10);
@@ -74,7 +75,7 @@ void MouseLogic()
     vec2 mousePos = Input->mousePosNormSigned;
     //mousePos.x = mousePos.x / cam->width;
 
-    mousePos.y = mousePos.y + 1.0f;
+   // mousePos.y = mousePos.y + 1.0f;
     Ray rayMouse = MousePositionToWorldRay(cam, mousePos);
 
     Plane p1 = MakePlane(tileEntityTest->position, IdentityQuaternion());
@@ -89,9 +90,15 @@ void MouseLogic()
    // DrawTextScreenPixel(&Game->monoFont, V2(60, 100), 10.0f, RGB(1.0f, 1.0f, 1.0f), "m.y: %.10f", mousePos.y);
 
     vec3 pointOnRay1 = PointAt(rayMouse, t_);
+    vec3 valueToShow;
+    valueToShow = pointOnRay1;
+    valueToShow.z = -pointOnRay1.y;
+    valueToShow.y = 0;
+    valueToShow.x = -pointOnRay1.x;
+
 
     DrawMesh(&Game->cube, p1.point, Game->cameraRotation, V3(1), RGB(1.0f, 0.3f, 0.3f));
-    RenderOBJModel(&Game->modelMesh, pointOnRay1, V3(1.0f, 1.0f, 1.0f), V4(0), IdentityQuaternion(), &Data->sprites.tile3);
+    RenderOBJModel(&Data->meshManager.meshes[Tile_Mesh], valueToShow, V3(1.0f, 1.0f, 1.0f), V4(0), IdentityQuaternion(), &Data->sprites.tile3);
 
 
     for (int i = 0; i < gameMapEntity->tileCount; i++)
@@ -105,9 +112,11 @@ void MouseLogic()
 
         bool rayPlaneBool = RaycastPlane(plane, rayMouse, &t);
         vec3 pointOnRay = PointAt(rayMouse, t);
+        pointOnRay.y = 0;
+        pointOnRay.x = -pointOnRay.x;
 
-     //   RenderOBJModel(&Game->modelMesh, plane.point, V3(1.0f, 1.0f, 1.0f), V4(0), IdentityQuaternion(), &Data->sprites.tile3);
-    }
+        RenderOBJModel(&Data->meshManager.meshes[Tile_Mesh], pointOnRay, V3(1.0f, 1.0f, 1.0f), V4(0), IdentityQuaternion(), &Data->sprites.tile3);
+    } 
 
     //vec3 rayMousetest = rayMouse.origin;
     //rayMousetest.z -= 100;

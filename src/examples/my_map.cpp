@@ -49,14 +49,15 @@ void MyInit()
     Camera* cam = &Game->camera;
     cam->type = CameraType_Perspective;
     cam->projection = Perspective(1, 16.0f / 9.0f, 0.1f, 1000.0f);
-    Game->cameraPosition = V3(0, 0, -10);
-    Game->cameraRotation = IdentityQuaternion();
+
+    //Game->cameraPosition = V3(0, 0, -10);
+    // Game->cameraRotation = IdentityQuaternion();
     //// gameMem->cameraRotation = AxisAngle(V3(0, 1, 0), gameMem->camAngle);
 
-    mat4 camWorld = TRS(Game->cameraPosition, Game->cameraRotation, V3(0));
+    mat4 camWorld = TRS(Game->cameraPosition, Game->cameraRotation, V3(1));
     cam->view = OrthogonalInverse(camWorld);
 
-    cam->viewProjection = cam->projection * cam->view;
+    //cam->viewProjection = cam->projection * cam->view;
 
     InitializeEntityManager();
     InitializeEntityBuffers();
@@ -74,7 +75,6 @@ void MyInit()
 
 void MyGameUpdate(GameMemory* gameMem)
 {
-
     vec2 mousePos = Input->mousePosNormSigned;
     vec3 pos = V3(mousePos.x, mousePos.y, -1.0f);
     vec3 scale = V3(1.0f, 1.0f, 1.0f);
@@ -82,21 +82,27 @@ void MyGameUpdate(GameMemory* gameMem)
     vec4 color = V4(1.0f, 0.1f, 1.0f, 1.0f);
 
     pos = V3(-10, -3, 1);
-
     
     // *********************
     // *********************
     //      lOGIC
     // *********************
     // *********************
+
     GameTimerAdvance();
     
     //      ***HANDLE USER INPUT***
     InputLogic(); // camera control || gameplay control
     
 
+
     //      ***EXECUTE GAME LOGIC***   
     // TODO1 - ENSURE THIS IS IN PROPER EXECUTION ORDER
+    
+    // 1. MOUSE POINTER LOGIC
+    // 2. CALCULATE THE CURRENT MAP CONDITIONS LOGIC
+    // 3. CALCULATE AND EXECUTE THE CONDITIONS FOR GAMEPLAY LOGIC (GENERATE PERSONS ETC.)
+    MouseLogic();
     CityMapLogic();
     TileArrowLogic();
 	CityStateLogic();
@@ -108,8 +114,19 @@ void MyGameUpdate(GameMemory* gameMem)
     // *********************
     // *********************
     
+    // 1. RENDER THE MAP
+    // 2. RENDER THE CITY
+    // 3. RENDER THE MOUSE/POINTER 
+    // 4. RENDER THE UI
     CityMapRender();
     TileArrowRender();	
     CityStateRender();
     UIEventRender();
 }
+
+
+    // ******
+    // EXTRAS
+    // ******
+
+    //DrawTextScreenPixel(&Game->monoFont, V2(60,100), 10.0f, RGB(1.0f, 1.0f, 1.0f), "Commerical total cap: %d", commercialBuildingPersonCapacity);

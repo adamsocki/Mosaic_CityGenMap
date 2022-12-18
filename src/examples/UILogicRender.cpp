@@ -17,6 +17,17 @@ void ManagerRender(GameMap* gameMapEntity)
 
 void UIRender(GameMap* gameMapEntity)
 {
+	//DrawSprite(V2(Game->cameraPosition.x, Game->cameraPosition.y), V2(10) , Game->cameraRotation, &Data->sprites.road_uv);
+    //DrawRectScreen(V2(10.0f, 1.0f), V2(10), V4(1,1,1,1));
+	//DrawRectScreenNorm(V2(10.0f, 1.0f), V2(10), V4(1,1,1,1));
 	CityStateRender(gameMapEntity);
 	ManagerRender(gameMapEntity);
+	vec2 cursorPos = V2(400, 500);
+
+
+    DrawRectScreen(cursorPos, V2(24.0f, 48.0f), V4(0.5f, 0.5f, 0.5f, 0.5f));   
+    DrawSpriteScreen(cursorPos, V2(24.0f, 48.0f), 0, &Data->sprites.road_uv); 
+
+	  
+    DrawSpriteScreen(V2(800, 400), V2(100.0f, 50.0f), 0, &Data->sprites.ui1);   
 }

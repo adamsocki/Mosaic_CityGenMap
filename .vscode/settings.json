@@ -6,7 +6,9 @@
         "vector": "cpp",
         "xhash": "cpp",
         "xstring": "cpp",
-        "format": "cpp"
+        "format": "cpp",
+        "thread": "cpp",
+        "xlocale": "cpp"
     },
     "C_Cpp.errorSquiggles": "Disabled"
 }

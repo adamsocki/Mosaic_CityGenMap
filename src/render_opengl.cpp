@@ -515,11 +515,12 @@ void DrawSpriteScreen(vec2 pos, vec2 scale, real32 angle, Sprite* texture) {
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-    Mesh* mesh = &Game->quad;
+    Mesh* mesh = &Game->quadTopLeft;
    // pos = V2();
 
 
-    mat4 model = TRS(V3(pos.x * Game->screenWidth, (1 - pos.y) * Game->screenHeight, -1), AxisAngle(V3(0, 0, 1), angle), V3(scale.x, scale.y, 1.0f));
+   // mat4 model = TRS(V3(pos.x * Game->screenWidth, (1 - pos.y) * Game->screenHeight, 0), AxisAngle(V3(0, 0, 1), angle), V3(scale.x, scale.y, 1.0f));
+    mat4 model = TRS(V3(pos.x, pos.y, 0), IdentityQuaternion(), V3(scale.x, scale.y, 0.0f));
 
     mat4 projMat = Orthographic(0, Game->screenWidth, Game->screenHeight, 0, -1, 1);
 
@@ -547,6 +548,7 @@ void DrawSpriteScreen(vec2 pos, vec2 scale, real32 angle, Sprite* texture) {
 
     glDrawElements(GL_TRIANGLES, mesh->indexCount, GL_UNSIGNED_INT, (GLvoid*)0);
 
+    //;  
     glDisableVertexAttribArray(vert);
     glDisableVertexAttribArray(texcoord);
 }

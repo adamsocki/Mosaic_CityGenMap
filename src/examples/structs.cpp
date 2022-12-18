@@ -140,6 +140,7 @@ struct EntitySprites {
 	Sprite road_uv;
 	Sprite bld2;
 	Sprite pop_sprite;
+	Sprite ui1;
 };
 
 struct TimerManager

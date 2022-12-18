@@ -6,7 +6,7 @@
 
 void GameplayLogic(GameMap *gameMapEntity)
 {
-	ManagerLogic();                         //                          
+	ManagerLogic(gameMapEntity);                         //                          
     PersonsLogic();                         // PersonsLogicRender.cpp
     //BuildingsLogic();
 }

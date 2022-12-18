@@ -145,7 +145,7 @@ struct EntitySprites {
 struct TimerManager
 {
 	real32 playerGenerationTimer;
-	real32 timer2;
+	real32 annualTaxationTimer;
 	real32 timer3;
 };
 
@@ -375,6 +375,7 @@ struct Person : MapEntity
 	int32 age;
 
 	Income incomeGroup;
+	int32 taxBracket;
 
 	EntityHandle employmentLocation;
 

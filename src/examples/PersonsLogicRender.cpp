@@ -121,12 +121,14 @@ void PersonsLogic()
 		EntityHandle personHandle = AddEntity(&Data->em, Person_Type);
 		Person* personEntity = (Person*)GetEntity(&Data->em, personHandle);
 		personEntity->handle = personHandle;
+		personEntity->taxBracket = RandiRange(0, 3);
 
 		// add person to map
 		gameMapEntity->persons[gameMapEntity->personCount] = personHandle;
 		gameMapEntity->personCount++;
 
 		Data->timerManager.playerGenerationTimer = 0;
+
 	}
 	
 

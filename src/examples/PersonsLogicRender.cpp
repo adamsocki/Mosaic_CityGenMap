@@ -3,12 +3,11 @@ void GeneratePerson(Person* personEntity, int32 buildingCount)
 
 	// examine world conditions to find propensity of immigrant type
 	
-	
 	personEntity->age = 25;
+	//personEntity->taxBracket = 
 	//personEntity->incomeBracketType = 
 	//personEntity->educationType = 
 	//personEntity->commerical
-
 
 	// calculate residential assignment
 	bool buildingAssigned = false;
@@ -101,7 +100,6 @@ void PersonsLogic()
 		{
 			case BuildingType_Residential_Type1:
 			{
-
 				break;
 			}
 			case BuildingType_Commercial:
@@ -118,6 +116,7 @@ void PersonsLogic()
 	if (canGeneratePerson)
 	{
 		//GeneratePerson();
+		//GeneratePerson();
 		EntityHandle personHandle = AddEntity(&Data->em, Person_Type);
 		Person* personEntity = (Person*)GetEntity(&Data->em, personHandle);
 		personEntity->handle = personHandle;
@@ -128,7 +127,6 @@ void PersonsLogic()
 		gameMapEntity->personCount++;
 
 		Data->timerManager.playerGenerationTimer = 0;
-
 	}
 	
 

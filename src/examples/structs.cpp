@@ -237,11 +237,13 @@ struct MapData
 {
 	int32 residentialOccupancy;
 	int32 residentialCapacity;
+	int32 residentialBuildingPersonCapacity;
 	int32 residentialDelta;
 	int32 numberOfResidentalBuildingsWithVacancy;
 
 	int32 commercialOccupancy;
 	int32 commercialCapacity;
+	int32 commercialBuildingPersonCapacity;
 	int32 commercialDelta;
 	int32 numberOfCommercialBuildingsWithVacancy;
 
@@ -321,6 +323,11 @@ struct MapEntity
 	vec3 position;
 };
 
+struct Manager
+{
+	real32 currentMoney;
+};
+
 enum BuildingType
 {
 	BuildingType_Commercial,
@@ -389,6 +396,7 @@ struct GameMap
 	CityGenState_Type cityGenState;
 
 	MapData mapData;
+	Manager gameManager;
 
 	EntityHandle* tiles;
 	int32 tileCount;
@@ -399,10 +407,12 @@ struct GameMap
 	int32 buildingCount;
 	int32 buildingCapacity;
 	int32 buildingSizeInBytes;
+
 	EntityHandle* roads;
 	int32 roadCount;
 	int32 roadCapacity;
 	int32 roadSizeInBytes;
+
 	EntityHandle* persons;
 	int32 personCount;
 	int32 personCapacity;
@@ -417,8 +427,6 @@ struct VoronoiIntersection : VoronoiEntity
 
 struct VoronoiLine : VoronoiEntity
 {
-
-
 	bool lineFinalized;
 
 	vec3 distPosA;

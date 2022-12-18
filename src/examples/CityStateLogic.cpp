@@ -10,21 +10,18 @@ void CityStateInit()
 
 }
 
-void CityStateLogic()
+void CityStateLogic(GameMap* gameMapEntity)
 {
 	// GET MAP
-	EntityTypeBuffer* gameMapBuffer = &Data->em.buffers[GameMap_Type];
-	GameMap* gameMapEntitiesInBuffer = (GameMap*)gameMapBuffer->entities;
-
-	GameMap* gameMapEntity = &gameMapEntitiesInBuffer[0];
+	
 
 	// get tiles
 
 	// determine if 
 	
 	// calculate person commercial capacity
-	int32 commercialBuildingPersonCapacity = {};
-	int32 residentialBuildingPersonCapacity = {};
+	gameMapEntity->mapData.commercialBuildingPersonCapacity = {};
+	gameMapEntity->mapData.residentialBuildingPersonCapacity = {};
 	for (int i = 0; i < gameMapEntity->buildingCount; i++)
 	{
 		Building* buildingEntity = (Building*)GetEntity(&Data->em, gameMapEntity->buildings[i]);
@@ -32,37 +29,35 @@ void CityStateLogic()
 		{
 			case BuildingType_Residential_Type1:
 			{
-				residentialBuildingPersonCapacity += buildingEntity->personCapacity;
+				gameMapEntity->mapData.residentialBuildingPersonCapacity += buildingEntity->personCapacity;
 				break;
 			}
 			case BuildingType_Commercial:
 			{
-				commercialBuildingPersonCapacity += buildingEntity->personCapacity;
+				gameMapEntity->mapData.commercialBuildingPersonCapacity += buildingEntity->personCapacity;
 				break;
 			}
 			default:
 			{
 				break;
 			}
-		}
-		
+		}	
 	}
-	
-	DrawTextScreenPixel(&Game->monoFont, V2(60,100), 10.0f, RGB(1.0f, 1.0f, 1.0f), "Commerical total cap: %d", commercialBuildingPersonCapacity);
-	DrawTextScreenPixel(&Game->monoFont, V2(60,120), 10.0f, RGB(1.0f, 1.0f, 1.0f), "Residential total cap: %d", residentialBuildingPersonCapacity);
-	DrawTextScreenPixel(&Game->monoFont, V2(60,140), 10.0f, RGB(1.0f, 1.0f, 1.0f), "Total persons: %d", gameMapEntity->personCount);
-	// calculate person residential capacity
-	
-	for (int i = 0; i < gameMapEntity->buildingCount; i++)
-	{
-		Building* buildingEntity = (Building*)GetEntity(&Data->em, gameMapEntity->buildings[i]);
-		commercialBuildingPersonCapacity += buildingEntity->personCapacity;
-	}
+	// for (int i = 0; i < gameMapEntity->buildingCount; i++)
+	// {
+	// 	Building* buildingEntity = (Building*)GetEntity(&Data->em, gameMapEntity->buildings[i]);
+	// 	gameMapEntity->mapData.commercialBuildingPersonCapacity += buildingEntity->personCapacity;
+	// }
 }
 
 
-void CityStateRender()
+void CityStateRender(GameMap* gameMapEntity)
 {
 	// display no of peoples
-	//DrawSpriteScreen(V2(1, 1), V2(1, 1), 0, &Data->sprites.pop_sprite);
+	
+	DrawTextScreenPixel(&Game->monoFont, V2(60,100), 10.0f, RGB(1.0f, 1.0f, 1.0f), "Commerical total cap: %d", gameMapEntity->mapData.commercialBuildingPersonCapacity);
+	DrawTextScreenPixel(&Game->monoFont, V2(60,120), 10.0f, RGB(1.0f, 1.0f, 1.0f), "Residential total cap: %d", gameMapEntity->mapData.residentialBuildingPersonCapacity);
+	DrawTextScreenPixel(&Game->monoFont, V2(60,140), 10.0f, RGB(1.0f, 1.0f, 1.0f), "Total persons: %d", gameMapEntity->personCount);
+
+	// calculate person residential capacity
 }

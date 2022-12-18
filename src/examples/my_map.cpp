@@ -6,26 +6,31 @@ MemoryArena tokenArena = {};
 
 MyData* Data = {};
 
+#include "EntityManager.cpp"
 #include "renderCode.cpp"
 #include "cameraController.cpp"
-#include "InputLogicRender.cpp"
 #include "geoTools.cpp"
-#include "EntityManager.cpp"
 #include "LoadSprites.cpp"
-#include "BuildingLogicRender.cpp"
-#include "UIEventLogicRender.cpp"
-#include "PersonsLogicRender.cpp"
 
+#include "PersonsLogicRender.cpp"
+#include "BuildingLogicRender.cpp"
+
+#include "UIEventLogicRender.cpp"
 
 #include "ParseOBJ.cpp"
 #include "MeshModelManager.cpp"
 
+#include "InputLogicRender.cpp"
+#include "CityEntityLogicRender.cpp"
+#include "ManagerLogicRender.cpp"
+#include "GameplayLogic.cpp"
+
 #include "Voronoi.cpp"
-#include "city.cpp"
+#include "MapLogicRender.cpp"
 #include "MouseLogicRender.cpp"
 #include "KeyboardLogicRender.cpp"
-#include "CityStateLogic.cpp"
 #include "TimerManager.cpp"
+#include "UILogicRender.cpp"
 
 int32 counter = 0;
 vec3* positions = {};
@@ -67,6 +72,8 @@ void MyInit()
     CityMapEntitiesInit();    
     CityMapTileInit(V2(10, 10), V2(1, 1));
 
+    ManagerInit(100.0f);
+
     SetCameraToMapPositionInit();
 
     MouseEntityInit();
@@ -75,6 +82,11 @@ void MyInit()
 
 void MyGameUpdate(GameMemory* gameMem)
 {
+    EntityTypeBuffer* gameMapBuffer = &Data->em.buffers[GameMap_Type];
+	GameMap* gameMapEntitiesInBuffer = (GameMap*)gameMapBuffer->entities;
+
+	GameMap* gameMapEntity = &gameMapEntitiesInBuffer[0];
+    
     vec2 mousePos = Input->mousePosNormSigned;
     vec3 pos = V3(mousePos.x, mousePos.y, -1.0f);
     vec3 scale = V3(1.0f, 1.0f, 1.0f);
@@ -89,24 +101,25 @@ void MyGameUpdate(GameMemory* gameMem)
     // *********************
     // *********************
 
-    GameTimerAdvance();
     
     //      ***HANDLE USER INPUT***
-    InputLogic(); // camera control || gameplay control
     
-
-
     //      ***EXECUTE GAME LOGIC***   
     // TODO1 - ENSURE THIS IS IN PROPER EXECUTION ORDER
+    // 1. ADVANCE GAME CLOCK
+    // 2. HANDLE USER INPUT
+    //      A. MOUSE/POINTER LOGIC
+    //      B. LISTEN FOR USER INPUT
+    //      C. EXECUTE INPUT INTO GAMEPLAY
+    // 2. EXECUTE GAMEPLAY LOGIC
+    //      B. ?? CALCULATE AND EXECUTE THE CONDITIONS FOR GAMEPLAY LOGIC (GENERATE PERSONS ETC.)
+    //      A. CALCULATE THE NEW AND MOST CURRENT MAP CONDITIONS LOGIC 
     
-    // 1. MOUSE POINTER LOGIC
-    // 2. CALCULATE THE CURRENT MAP CONDITIONS LOGIC
-    // 3. CALCULATE AND EXECUTE THE CONDITIONS FOR GAMEPLAY LOGIC (GENERATE PERSONS ETC.)
-    MouseLogic();
-    CityMapLogic();
-    TileArrowLogic();
-	CityStateLogic();
-	PersonsLogic();
+    GameTimerAdvance();             // STEP 1. -- TimerManager.cpp
+    InputLogic(gameMapEntity);                   // camera control || gameplay control
+    MouseLogic();               // DOESN'T WORK YET
+
+    GameplayLogic(gameMapEntity);                // STEP 3. -- EXECUTE GAMEPLAY LOGIC
     
     // *********************
     // *********************
@@ -114,14 +127,14 @@ void MyGameUpdate(GameMemory* gameMem)
     // *********************
     // *********************
     
-    // 1. RENDER THE MAP
-    // 2. RENDER THE CITY
-    // 3. RENDER THE MOUSE/POINTER 
+    // 1. RENDER THE MAP                    - MapRender();
+    // 2. RENDER THE CITY                   - CityEntityRender();    ILOvE YOU <3
+    // 3. RENDER THE MOUSE/POINTER/INPUT          - 
     // 4. RENDER THE UI
-    CityMapRender();
-    TileArrowRender();	
-    CityStateRender();
-    UIEventRender();
+    MapRender(gameMapEntity);           // MapRenderLogic.cpp
+    // CityEntityRender(gameMapEntity); // CityEntityRender.cpp
+    InputRender();                      // InputLogicRender.cpp
+    UIRender(gameMapEntity);            // UIRender.cpp
 }
 
 

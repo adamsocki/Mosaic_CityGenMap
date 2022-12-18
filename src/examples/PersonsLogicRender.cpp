@@ -86,6 +86,12 @@ void PersonsLogic()
 		// if capacity is reached, still generate person ? to allow for overcrowding 
 	}
 
+	if (gameMapEntity->personCount >= gameMapEntity->mapData.residentialBuildingPersonCapacity)
+	{
+		canGeneratePerson = false;
+	}
+
+	
 	// calculate the capacity of people
 	int32 totalResidentialCapacity = {};
 	for (int i = 0; i < gameMapEntity->buildingCount; i++)

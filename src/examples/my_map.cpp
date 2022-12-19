@@ -80,6 +80,12 @@ void MyInit()
     TileArrowEntityInit();
 }
 
+//#include "wtypes.h"
+//#include <iostream>
+//using namespace std;
+
+
+
 void MyGameUpdate(GameMemory* gameMem)
 {
     EntityTypeBuffer* gameMapBuffer = &Data->em.buffers[GameMap_Type];
@@ -94,6 +100,15 @@ void MyGameUpdate(GameMemory* gameMem)
     vec4 color = V4(1.0f, 0.1f, 1.0f, 1.0f);
 
     pos = V3(-10, -3, 1);
+
+
+    // @TODO set up horizontal and vertical screen size capacity Mod
+   // int horizontal = 0;
+   //int vertical = 0;
+   //GetDesktopResolution(horizontal, vertical);
+   //DrawTextScreenPixel(&Game->monoFont, V2(60,200), 10.0f, RGB(1.0f, 1.0f, 1.0f), "Horiz: %d", horizontal);
+
+    
     
     // *********************
     // *********************

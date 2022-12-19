@@ -382,9 +382,24 @@ int CALLBACK WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmndL
 
     bool gotConfigFile = ReadConfigFile("config.m_txt");
 
+
+    
+    RECT desktop;
+    // Get a handle to the desktop window
+    const HWND hDesktop = GetDesktopWindow();
+    // Get the size of screen to the variable desktop
+    GetWindowRect(hDesktop, &desktop);
+    // The top left corner will have coordinates (0,0)
+    // and the bottom right corner will have coordinates
+    // (horizontal, vertical)
+    int32 horizontal = desktop.right;
+    int32 vertical = desktop.bottom;
+
     if (!gotConfigFile) {
-        Game->screenWidth = 1600;
-        Game->screenHeight = 900;
+        //Game->screenWidth = 1600;
+        //Game->screenHeight = 900;
+        Game->screenWidth = horizontal;
+        Game->screenHeight = vertical;
 
         Game->audioPlayer.volume = 1.0f;
         Game->networkInfo.serverIPString = "192.0.0.1"; // @NOTE: this is just the IP address referring to yourself

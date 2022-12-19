@@ -395,6 +395,8 @@ int CALLBACK WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmndL
     int32 horizontal = desktop.right;
     int32 vertical = desktop.bottom;
 
+
+
     if (!gotConfigFile) {
         //Game->screenWidth = 1600;
         //Game->screenHeight = 900;
@@ -425,7 +427,8 @@ int CALLBACK WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmndL
 
     
     DWORD dwExStyle = 0; WS_EX_APPWINDOW | WS_EX_WINDOWEDGE;
-    DWORD dwStyle = WS_OVERLAPPEDWINDOW & ~WS_SIZEBOX & ~WS_MAXIMIZEBOX;
+    //DWORD dwStyle = WS_OVERLAPPEDWINDOW & ~WS_SIZEBOX & ~WS_MAXIMIZEBOX & ~WS_BORDER;
+    DWORD dwStyle = WS_POPUPWINDOW & ~WS_SIZEBOX & ~WS_MAXIMIZEBOX & ~WS_BORDER;
 
     RECT windowRect;
     windowRect.left = 0;
@@ -447,10 +450,11 @@ int CALLBACK WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmndL
     // left/right/top/bottom coordinates of the rect, so the proper size is the difference between coordinates
     AdjustWindowRectEx(&windowRect, dwStyle, false, dwExStyle);
     
-    SetWindowPos(window, HWND_NOTOPMOST,
+    SetWindowPos(window, HWND_TOPMOST,
                  0, 0,
                  windowRect.right - windowRect.left, windowRect.bottom - windowRect.top,
                  SWP_NOZORDER);
+    //SetWindowLong(window, GWL_STYLE, 0);
     ShowWindow(window, SW_SHOW);
     UpdateWindow(window);
 
